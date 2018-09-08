@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-{% load staticfiles %}
+{% load static %}
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <title>Library</title>
 
     <!-- Bootstrap4 -->
-    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap/js/bootstrap.min.js' %}">
     <link rel="stylesheet" href="{% static 'js/jquery-3.3.1.min.js' %}">
 
@@ -30,7 +30,7 @@
   <span class="navbar-right">
       <a class="nav navbar-right" href="">
           <span class="login_icon">
-              <img src="{% static "website_icons/user.png" %}" alt="website_icons/user.png not found" height="42" width="42">
+              <img src="{% static 'website_icons/user.png' %}" alt="website_icons/user.png not found" height="42" width="42">
             </span>
         </a>
   </span>
