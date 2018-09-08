@@ -1,0 +1,25 @@
+h1{
+    text-align: center;
+}
+
+.signup-form{
+    margin-right: auto;
+    margin-left: auto;
+    width: 50%
+}
+
+.login-form{
+    margin-right: auto;
+    margin-left: auto;
+    width: 50%
+}
+
+.login-btn{
+    width: 100%;
+    margin-top: 20px;
+}
+
+.sign-up-btn{
+    width: 100%;
+    margin-top: 20px;
+}

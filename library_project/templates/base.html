@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Library</title>
 
+
     <!-- Bootstrap4 -->
     <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap/js/bootstrap.min.js' %}">
@@ -15,27 +16,36 @@
 </head>
 <body>
 
-
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="{% url 'index' %}">Home</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse">
-    <div class="navbar-nav">
-      <a class="nav-item nav-link" href="{% url 'admin:index' %}">Admin</a>
-      <a class="nav-item nav-link" href="">Lista książek</a></li> 
-    </div>
-  </div>
-  <span class="navbar-right">
-      <a class="nav navbar-right" href="">
-          <span class="login_icon">
-              <img src="{% static 'website_icons/user.png' %}" alt="website_icons/user.png not found" height="42" width="42">
-            </span>
-        </a>
-  </span>
-</nav>
-
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'index' %}">Biblioteka</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbarNavDropdown" class="navbar-collapse collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'contact' %}">Kontakt</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Lista książek</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+            {% if user.is_authenticated %}
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'accounts:logout' %}">Wyloguj</a>
+                </li>
+    		{% else %}
+    			<li class="nav-item active">
+                    <a class="nav-link" href="{% url 'accounts:login' %}">Zaloguj się</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'accounts:signup' %}">Zarejestruj się</a>
+                </li>
+    		{% endif %}
+            </ul>
+        </div>
+    </nav>
 
     <div class="container">
     {% block body_block %}
