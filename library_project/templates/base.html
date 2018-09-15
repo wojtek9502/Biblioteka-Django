@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap/js/bootstrap.min.js' %}">
     <link rel="stylesheet" href="{% static 'js/jquery-3.3.1.min.js' %}">
+    <link rel="stylesheet" href="{% static 'js/popper.min.js' %}">
 
     <!-- Wlasny css -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -27,7 +28,7 @@
                     <a class="nav-link" href="{% url 'contact' %}">Kontakt</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Lista książek</a>
+                    <a class="nav-link" href="#">Katalog online</a>
                 </li>
             </ul>
             <ul class="navbar-nav">
@@ -47,7 +48,13 @@
         </div>
     </nav>
 
+
+
     <div class="container">
+     {% if user.is_authenticated %}
+     {% endif %}
+    
+    
     {% block body_block %}
     {% endblock %}
     </div>
