@@ -57,14 +57,18 @@ class Book(models.Model):
 
 class BookCopy(models.Model):
     book = models.ForeignKey(Book)
+   
+    def __str__(self):
+        return self.book.title + ' copy_nr= ' + str(self.id)
+    
 
 class Borrow(models.Model):
     user = models.ForeignKey(User)
-    book_copy = models.ForeignKey(BookCopy)
+    book_copy_id = models.ForeignKey(BookCopy)
     borrow_date = models.DateField(auto_now=True)
-    receive_date = models.DateField(auto_now=False)
+    receive_date = models.DateField(auto_now=False, blank=True, null=True )
 
     def __str__(self):
-        return self.user.username
+        return "user=" + self.user.username + " book= " + str(self.book_copy_id) 
 
     
