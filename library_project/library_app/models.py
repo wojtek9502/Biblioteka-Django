@@ -17,6 +17,11 @@ class Author(models.Model):
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     country = models.CharField(max_length=200)
+    biography = models.TextField(default='', blank=True, null=True)
+    birth_place = models.CharField(max_length=200, default='', blank=True, null=True)
+    image_url = models.URLField(default='', blank=True, null=True)
+    years_of_life = models.CharField(max_length=10, default='', blank=True, null=True)
+
 
     def __str__(self):
         return self.last_name + " " + self.first_name
@@ -42,7 +47,7 @@ class Book(models.Model):
     description = models.TextField(blank=True, default='')
     publish_date = models.DateField(auto_now=False)
     edition = models.IntegerField(default=1)
-    image_url = models.URLField(default='', blank=True, null=True )
+    image_url = models.URLField(default='', blank=True, null=True)
     is_borrowed = models.BooleanField(default=False)
     slug = models.SlugField(allow_unicode=True, unique=True)
 

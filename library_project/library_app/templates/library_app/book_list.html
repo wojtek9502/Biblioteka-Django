@@ -20,7 +20,7 @@
                         <td><a href="{% url 'library_app:book_detail' pk=book.pk %}">{{book.title}}</a></td>
                         <td>
                             {% for author in book.authors.all %}
-                                {{author}}
+                                <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author}}</a>
                             {% endfor %}
                         </td>
                         <td>{{book.category}}</td>

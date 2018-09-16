@@ -13,3 +13,6 @@ class BookListView(generic.ListView):
 
 class BookDetailView(generic.DetailView):
     model = models.Book
+
+class AuthorDetailView(generic.DetailView):
+    model = models.Author
