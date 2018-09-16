@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+<div class="container">
+    <div class="page-title">
+        <h2>Katalog Online</h2>
+    </div>
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Tytuł</th>
+                    <th scope="col">Autor</th>
+                    <th scope="col">Kategoria</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            {% for book in book_list %}
+                    <tr>
+                        <td><a href="{% url 'library_app:book_detail' pk=book.pk %}">{{book.title}}</a></td>
+                        <td>
+                            {% for author in book.authors.all %}
+                                {{author}}
+                            {% endfor %}
+                        </td>
+                        <td>{{book.category}}</td>
+                    </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+</div>
+{% endblock %}
+
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Handle</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+        </tr>
+    </tbody>
+</table>

@@ -40,8 +40,9 @@ class Book(models.Model):
     isbn = models.CharField(max_length=30, unique=True)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True, default='')
-    publish_year = models.DateField(auto_now=False)
+    publish_date = models.DateField(auto_now=False)
     edition = models.IntegerField(default=1)
+    image_url = models.URLField(default='', blank=True, null=True )
     is_borrowed = models.BooleanField(default=False)
     slug = models.SlugField(allow_unicode=True, unique=True)
 

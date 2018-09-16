@@ -28,7 +28,7 @@
                     <a class="nav-link" href="{% url 'contact' %}">Kontakt</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Katalog online</a>
+                    <a class="nav-link" href="{% url 'library_app:book_list' %}">Katalog online</a>
                 </li>
             </ul>
             <ul class="navbar-nav">
@@ -48,15 +48,8 @@
         </div>
     </nav>
 
-
-
     <div class="container">
-     {% if user.is_authenticated %}
-     {% endif %}
-    
-    
-    {% block body_block %}
-    {% endblock %}
+         {% block body_block %}{% endblock %}
     </div>
 </body>
 </html>

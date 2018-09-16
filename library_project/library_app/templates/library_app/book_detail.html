@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+
+<div class="page-title book_detail jumbotron">
+    <h2>Szczegóły książki</h2>
+    <ul>
+        {% if book.image_url %}
+          <img src="{{book.image_url}}">
+        {% endif %}
+        <li class="authors">
+            <b>Autor: </b>
+            {% for author in book.authors.all %}
+                {{author}} 
+            {% endfor %}
+        </li>
+        <li class="title"><b>Tytuł: </b> {{book.title}} </li>
+        <li class="category"><b>Kategoria: </b> {{book.category}} </li>
+        <li class="publishing_house"><b>Wydawnictwo: </b> {{book.publishing_house}} </li>
+        <li class="isbn"><b>ISBN: </b> {{book.isbn}} </li>
+        <li class="edition"><b>Wydanie: </b> {{book.edition}} </li>
+        <li class="publish_year"><b>Data publikacji: </b> {{book.publish_date}} </li>
+        <li class="book_detail_description"><b>Opis: </b> {{book.description|safe|linebreaksbr}} </li>
+    </ul>
+</div>
+
+{% endblock %}

@@ -1,3 +1,20 @@
+
+.page-title{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.book_detail_description{
+    text-justify: auto
+}
+
+/* kolor linkow */
+a { 
+    text-decoration: none; 
+    color: black; 
+}
+
 h1{
     text-align: center;
 }

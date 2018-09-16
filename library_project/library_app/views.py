@@ -1,13 +1,15 @@
-from django.shortcuts import render
-from library_app import views
-from django.views.generic import TemplateView
+from django.core.urlresolvers import reverse_lazy
+from django.http import Http404
+from django.views import generic
 
-# Create your views here.
-class HomePage(TemplateView):
-    template_name = "index.html"
+from . import models
 
-class TestPage(TemplateView):
-    template_name = 'test.html'
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
-class ThanksPage(TemplateView):
-    template_name = 'thanks.html'  
+
+class BookListView(generic.ListView):
+    model = models.Book
+
+class BookDetailView(generic.DetailView):
+    model = models.Book
