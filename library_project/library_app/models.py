@@ -22,6 +22,8 @@ class Author(models.Model):
     image_url = models.URLField(default='', blank=True, null=True)
     years_of_life = models.CharField(max_length=10, default='', blank=True, null=True)
 
+    def get_absolute_url(self):
+        return reverse('library_app:author_detail', kwargs={"pk": str(self.pk)})
 
     def __str__(self):
         return self.last_name + " " + self.first_name
@@ -48,18 +50,20 @@ class Book(models.Model):
     publish_date = models.DateField(auto_now=False)
     edition = models.IntegerField(default=1)
     image_url = models.URLField(default='', blank=True, null=True)
+    add_date = models.DateTimeField(auto_now=True)
     is_borrowed = models.BooleanField(default=False)
     slug = models.SlugField(allow_unicode=True, unique=True)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        self.slug = slugify(self.isbn)
+        print('slug: ',self.slug)
         super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('book_single', kwargs={"slug": self.slug})
+        return reverse('library_app:book_detail', kwargs={"pk": str(self.pk)})
 
 class BookCopy(models.Model):
     book = models.ForeignKey(Book)

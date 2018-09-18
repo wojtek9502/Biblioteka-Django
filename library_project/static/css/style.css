@@ -9,6 +9,10 @@
     text-justify: auto
 }
 
+ul {
+  list-style: none;
+}
+
 /* kolor linkow */
 a { 
     text-decoration: none; 
