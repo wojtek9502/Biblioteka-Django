@@ -2,9 +2,8 @@
 {% load bootstrap4 %}
 
 {% block body_block %}
-    <h1>Dodaj nową książkę</h1>
-    <a class="btn btn-primary" href="{% url 'library_app:publishinghouse_create' %}">Dodaj wydawnictwo</a>
-    <form method="POST" action="{% url 'library_app:book_create' %}" class="book-form">
+    <h1>Dodaj nową kategorię</h1>
+    <form method="POST" action="{% url 'library_app:category_create' %}" class="category-form">
         {% csrf_token %}
         {% bootstrap_form form %}
         <input type="submit" value="Dodaj" class="btn btn-primary btn-large">

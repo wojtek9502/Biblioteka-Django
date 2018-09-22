@@ -37,6 +37,9 @@ class PublishingHouse(models.Model):
     house_number = models.CharField(max_length=20)
     postal_code = models.CharField(max_length=9)
 
+    def get_absolute_url(self):
+        return reverse('library_app:publishinghouse_detail', kwargs={"pk": str(self.pk)})
+
     def __str__(self):
         return self.name
     

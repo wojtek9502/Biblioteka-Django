@@ -16,7 +16,11 @@
         </li>
         <li class="title"><b>Tytuł: </b> {{book.title}} </li>
         <li class="category"><b>Kategoria: </b> {{book.category}} </li>
-        <li class="publishing_house"><b>Wydawnictwo: </b> {{book.publishing_house}} </li>
+        
+        <li class="category"><b>Wydawnictwo: </b>
+            <a href="{% url 'library_app:publishinghouse_detail' pk=book.publishing_house.pk %}">{{book.publishing_house.name}}</a>
+        </li>
+
         <li class="isbn"><b>ISBN: </b> {{book.isbn}} </li>
         <li class="edition"><b>Wydanie: </b> {{book.edition}} </li>
         <li class="publish_year"><b>Data publikacji: </b> {{book.publish_date}} </li>

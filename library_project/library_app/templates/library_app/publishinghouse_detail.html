@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+
+<div class="page-title publishing_house_detail jumbotron">
+    <h2>Szczegóły wydawnictwa</h2>
+    <ul>
+        <li class="name"><b>Nazwa: </b> {{publishinghouse.name}} </li>
+        <li class="city"><b>Miasto: </b> {{publishinghouse.city}} </li>
+        <li class="address"><b>Adres: </b> {{publishinghouse.street}} {{publishinghouse.house_number}} </li>
+        <li class="postal_code"><b>Kod pocztowy: </b> {{publishinghouse.postal_code}} </li>
+    </ul>
+
+    
+    <div class="book_list_back_link button">
+        <a href="{% url 'library_app:book_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
+    </div>
+
+    <div class="update_book_link button">
+        <a href="{% url 'library_app:publishinghouse_update' pk=publishinghouse.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj wydawnictwo"></a>
+    </div>
+
+    <div class="delete_book_link button">
+        <a href="{% url 'library_app:publishinghouse_delete' pk=publishinghouse.pk %}"><input type="submit" class="btn btn-danger" value="Usuń wydawnictwo"></a>
+    </div>
+
+</div>
+
+{% endblock %}

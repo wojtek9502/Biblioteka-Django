@@ -58,3 +58,28 @@ class DeleteAuthorView(LoginRequiredMixin, generic.DeleteView):
 
     model = models.Author
     success_url = reverse_lazy("library_app:book_list")
+
+
+##########################Wydawnictwo
+class PublishingHouseDetailView(generic.DetailView):
+    model = models.PublishingHouse
+
+class CreatePublishingHouseView(LoginRequiredMixin,generic.CreateView):
+    login_url = reverse_lazy('login')
+
+    form_class = forms.PublishingHouseForm
+    model = models.PublishingHouse
+
+class DeletePublishingHouseView(LoginRequiredMixin, generic.DeleteView):
+    login_url = reverse_lazy('login')
+
+    model = models.PublishingHouse
+    success_url = reverse_lazy("library_app:book_list")
+
+class UpdatePublishingHouseView(LoginRequiredMixin, generic.UpdateView):
+    login_url = reverse_lazy('login')
+
+    fields = ('name', 'city', 'street', 'house_number', 'postal_code')
+    model = models.PublishingHouse
+
+    template_name_suffix = '_update_form' #czyli templatka = author_update_form.html

@@ -11,6 +11,7 @@
                     <th scope="col">Tytuł</th>
                     <th scope="col">Autor</th>
                     <th scope="col">Kategoria</th>
+                    <th scope="col">Wydawnictwo</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,6 +25,7 @@
                             {% endfor %}
                         </td>
                         <td>{{book.category}}</td>
+                        <td><a href="{% url 'library_app:publishinghouse_detail' pk=book.publishing_house.pk %}">{{book.publishing_house}}</a></td>
                     </tr>
             {% endfor %}
 
