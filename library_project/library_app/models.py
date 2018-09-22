@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.core.urlresolvers import reverse
+from datetime import datetime   
 
 # Create your models here.
 from django.contrib.auth import get_user_model
@@ -47,8 +48,8 @@ class Book(models.Model):
     isbn = models.CharField(max_length=30, unique=True)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True, default='')
-    publish_date = models.DateField(auto_now=False)
-    edition = models.IntegerField(default=1)
+    publish_date = models.DateField(default=datetime.now, blank=True)
+    edition = models.PositiveIntegerField(default=1)
     image_url = models.URLField(default='', blank=True, null=True)
     add_date = models.DateTimeField(auto_now=True)
     is_borrowed = models.BooleanField(default=False)
