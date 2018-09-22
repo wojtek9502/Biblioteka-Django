@@ -75,6 +75,9 @@ class BookCopy(models.Model):
     def __str__(self):
         return self.book.title + ' copy_nr= ' + str(self.id)
     
+    def get_absolute_url(self):
+        return reverse('library_app:category_detail', kwargs={"pk": str(self.pk)})
+    
 
 class Borrow(models.Model):
     user = models.ForeignKey(User)
