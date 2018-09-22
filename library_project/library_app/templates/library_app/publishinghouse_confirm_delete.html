@@ -3,10 +3,11 @@
 {% block body_block %}
 
 <h2>Usunąć {{publishinghouse.name}}?</h2>
+<h3>Ta akcja usunie także wszystkie książki danego wydawnictwa</h3>
 <form method="POST">
     {% csrf_token %}
     <input type="submit" class="btn btn-danger" value="Usuń">
-    <a href="{% url 'library_app:publishinghouse_detail' pk=publishinghouse.pk %}">Powrót</a>
+    <a class="btn btn-primary" href="{% url 'library_app:publishinghouse_detail' pk=publishinghouse.pk %}">Powrót</a>
 
 </form>
 

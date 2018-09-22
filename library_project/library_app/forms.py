@@ -50,3 +50,12 @@ class PublishingHouseForm(forms.ModelForm):
             'house_number':'Nr domu',
             'postal_code':'Kod pocztowy',
         }
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = models.Category
+        fields = ('category_name',)
+
+        labels = {
+            'category_name':'Kategoria',
+        }

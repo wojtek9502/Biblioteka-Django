@@ -3,11 +3,15 @@
 
 {% block body_block %}
     <h1>Dodaj nową książkę</h1>
-    <a class="btn btn-primary" href="{% url 'library_app:publishinghouse_create' %}">Dodaj wydawnictwo</a>
+    <div class="book_create_other_create_links">
+        <a class="btn btn-primary" href="{% url 'library_app:publishinghouse_create' %}">Dodaj wydawnictwo</a>
+        <a class="btn btn-primary" href="{% url 'library_app:category_create' %}">Dodaj kategorię</a>
+    </div>
+   
     <form method="POST" action="{% url 'library_app:book_create' %}" class="book-form">
         {% csrf_token %}
         {% bootstrap_form form %}
-        <input type="submit" value="Dodaj" class="btn btn-primary btn-large">
+        <input type="submit" value="Dodaj" class="btn btn-primary btn-large add-obj-btn">
     </form>
 
 {% endblock %}

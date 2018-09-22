@@ -15,8 +15,11 @@
             {% endfor %}
         </li>
         <li class="title"><b>Tytuł: </b> {{book.title}} </li>
-        <li class="category"><b>Kategoria: </b> {{book.category}} </li>
-        
+
+        <li class="category"><b>Wydawnictwo: </b>
+            <a href="{% url 'library_app:category_detail' pk=book.category.pk %}">{{book.category.category_name}}</a>
+        </li>
+
         <li class="category"><b>Wydawnictwo: </b>
             <a href="{% url 'library_app:publishinghouse_detail' pk=book.publishing_house.pk %}">{{book.publishing_house.name}}</a>
         </li>

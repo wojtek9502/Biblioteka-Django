@@ -24,7 +24,7 @@
                                 <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author}}</a>
                             {% endfor %}
                         </td>
-                        <td>{{book.category}}</td>
+                        <td><a href="{% url 'library_app:category_detail' pk=book.category.pk %}">{{book.category.category_name}}</a></td>
                         <td><a href="{% url 'library_app:publishinghouse_detail' pk=book.publishing_house.pk %}">{{book.publishing_house}}</a></td>
                     </tr>
             {% endfor %}

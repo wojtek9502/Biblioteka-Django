@@ -5,6 +5,18 @@
     text-align: center;
 }
 
+.add-obj-btn { /* przycisk pod formularzem dodawania */
+    margin-top: 20px;
+    margin-bottom: 100px;
+    text-align: center;
+}
+
+.book_create_other_create_links{
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 .book_detail_description{
     text-justify: auto
 }
