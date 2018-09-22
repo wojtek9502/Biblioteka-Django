@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+
+<h2>Usunąć {{book.title}}?</h2>
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" class="btn btn-danger" value="Usuń">
+    <a href="{% url 'library_app:book_detail' pk=book.pk %}">Powrót</a>
+    
+</form>
+
+{% endblock %}

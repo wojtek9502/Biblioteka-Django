@@ -16,11 +16,26 @@ class BookListView(generic.ListView):
 class BookDetailView(generic.DetailView):
     model = models.Book
 
-class CreateBookView(LoginRequiredMixin,generic.CreateView):
+class CreateBookView(LoginRequiredMixin, generic.CreateView):
     login_url = reverse_lazy('login')
 
     form_class = forms.BookForm
     model = models.Book
+
+class UpdateBookView(LoginRequiredMixin, generic.UpdateView):
+    login_url = reverse_lazy('login')
+
+    fields = ('title','authors','description','isbn','category','edition','publishing_house','publish_date','image_url')
+    model = models.Book
+    template_name_suffix = '_update_form' #czyli templatka = book_update_form.html
+
+class DeleteBookView(LoginRequiredMixin, generic.DeleteView):
+    login_url = reverse_lazy('login')
+
+    model = models.Book
+    success_url = reverse_lazy("library_app:book_list")
+
+
 
 class AuthorDetailView(generic.DetailView):
     model = models.Author
@@ -30,3 +45,16 @@ class CreateAuthorView(LoginRequiredMixin,generic.CreateView):
 
     form_class = forms.AuthorForm
     model = models.Author
+
+class UpdateAuthorView(LoginRequiredMixin, generic.UpdateView):
+    login_url = reverse_lazy('login')
+
+    fields = ('first_name', 'last_name', 'country', 'biography', 'birth_place', 'image_url', 'years_of_life')
+    model = models.Author
+    template_name_suffix = '_update_form' #czyli templatka = author_update_form.html
+
+class DeleteAuthorView(LoginRequiredMixin, generic.DeleteView):
+    login_url = reverse_lazy('login')
+
+    model = models.Author
+    success_url = reverse_lazy("library_app:book_list")

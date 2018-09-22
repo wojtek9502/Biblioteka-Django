@@ -11,7 +11,7 @@
         <li class="authors">
             <b>Autor: </b>
             {% for author in book.authors.all %}
-                {{author}} 
+                <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author.first_name}} {{author.last_name}}</a>
             {% endfor %}
         </li>
         <li class="title"><b>Tytuł: </b> {{book.title}} </li>
@@ -23,8 +23,16 @@
         <li class="book_detail_description"><b>Opis: </b> {{book.description|safe|linebreaksbr}} </li>
     </ul>
 
-    <div class="detail_back_link">
+    <div class="book_list_back_link button">
         <a href="{% url 'library_app:book_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
+    </div>
+
+    <div class="update_book_link button">
+        <a href="{% url 'library_app:book_update' pk=book.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj książkę"></a>
+    </div>
+
+    <div class="delete_book_link button">
+        <a href="{% url 'library_app:book_delete' pk=book.pk %}"><input type="submit" class="btn btn-danger" value="Usuń książkę"></a>
     </div>
 </div>
 

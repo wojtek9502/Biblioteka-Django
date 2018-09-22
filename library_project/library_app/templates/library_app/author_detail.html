@@ -5,18 +5,36 @@
 <div class="page-title author_detail jumbotron">
     <h2>Szczegóły autora</h2>
     <ul>
-        {% if author.image_url %}
+        {% if author.image_url %} <!-- Jesli link jest uzupełniony -->
             <img src="{{author.image_url}}">
         {% endif %}
-        <li class="personal_date"><b>Imie i nazwisko: </b> {{author.first_name}} {{author.last_name}} </li>
-        <li class="title"><b>Lata życia: </b> {{author.years_of_life}} </li>
-        <li class="title"><b>Miejsce urodzenia: </b> {{author.birth_place}} </li>
-        <li class="title"><b>Kraj pochodzenia: </b> {{author.country}} </li>
-        <li class="title"><b>Biografia: </b> <br> {{author.biography}} </li>
+        <li class="personal_data"><b>Imie i nazwisko: </b> {{author.first_name}} {{author.last_name}} </li>
+        
+        {% if author.years_of_life %}
+            <li class="years_of_life"><b>Lata życia: </b> {{author.years_of_life}} </li>
+        {% endif %}
+
+        {% if author.birth_place %}
+            <li class="birth_place"><b>Miejsce urodzenia: </b> {{author.birth_place}} </li>
+        {% endif %}
+
+        <li class="country"><b>Kraj pochodzenia: </b> {{author.country}} </li>
+
+        {% if author.biography %}
+            <li class="biography"><b>Biografia: </b> <br> {{author.biography}} </li>
+        {% endif %}
     </ul>
 
-    <div class="detail_back_link">
+    <div class="detail_back_link button">
         <a href="{% url 'library_app:book_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
+    </div>
+
+    <div class="update_author_link button">
+        <a href="{% url 'library_app:author_update' pk=author.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj autora"></a>
+    </div>
+
+    <div class="delete_author_link button">
+        <a href="{% url 'library_app:author_delete' pk=author.pk %}"><input type="submit" class="btn btn-danger" value="Usuń autora"></a>
     </div>
 </div>
 
