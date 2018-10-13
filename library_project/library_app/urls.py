@@ -9,6 +9,12 @@ urlpatterns = [
     url(r'^update_book/(?P<pk>\d+)/$', views.UpdateBookView.as_view(), name='book_update'),
     url(r'^delete_book/(?P<pk>\d+)/$', views.DeleteBookView.as_view(), name='book_delete'),
 
+    url(r'^book_copy_list/$', views.BookCopyListView.as_view(), name='bookcopy_list'),
+    url(r'^bookcopy_list/bookcopy_detail/(?P<pk>\d+)/$', views.BookCopyDetailView.as_view(), name='bookcopy_detail'),
+    url(r'^new_bookcopy/$', views.CreateBookCopyView.as_view(), name='bookcopy_create'),
+    url(r'^update_bookcopy/(?P<pk>\d+)/$', views.UpdateBookCopyView.as_view(), name='bookcopy_update'),
+    url(r'^delete_bookcopy/(?P<pk>\d+)/$', views.DeleteBookCopyView.as_view(), name='bookcopy_delete'),
+
     url(r'^authors/(?P<pk>\d+)$', views.AuthorDetailView.as_view(), name='author_detail'),
     url(r'^new_author/$', views.CreateAuthorView.as_view(), name='author_create'),
     url(r'^update_author/(?P<pk>\d+)/$', views.UpdateAuthorView.as_view(), name='author_update'),

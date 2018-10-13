@@ -36,7 +36,34 @@ class DeleteBookView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("library_app:book_list")
 
 ############################ Egzemplarz książki
+class BookCopyListView(generic.ListView):
+    model = models.BookCopy
 
+
+class BookCopyDetailView(generic.DetailView):
+    model = models.BookCopy
+
+
+class CreateBookCopyView(LoginRequiredMixin, generic.CreateView):
+    login_url = reverse_lazy('login')
+
+    form_class = forms.BookCopyForm
+    model = models.BookCopy
+
+
+class UpdateBookCopyView(LoginRequiredMixin, generic.UpdateView):
+    login_url = reverse_lazy('login')
+
+    fields = ('book', 'is_borrowed')
+    model = models.BookCopy
+    template_name_suffix = '_update_form'  # czyli templatka = book_update_form.html
+
+
+class DeleteBookCopyView(LoginRequiredMixin, generic.DeleteView):
+    login_url = reverse_lazy('login')
+
+    model = models.BookCopy
+    success_url = reverse_lazy("library_app:bookcopy_list")
 
 
 ############################   AUTOR

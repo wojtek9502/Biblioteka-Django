@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+
+<div class="page-title book_detail jumbotron">
+    <h2>Szczegóły egzemplarza książki</h2>
+    <ul>
+        {% if bookcopy.book.image_url %}
+          <img src="{{bookcopy.book.image_url}}" width="300px" height="300px">
+        {% endif %}
+        <li class="bookcopy_id"><b>Id kopii: </b>{{bookcopy.id}}</li>
+        <li class="bookcopy_is_borrowed"><b>Czy wypożyczona: </b> {{bookcopy.is_borrowed}}</li>
+        <br>
+        
+        <li class="authors">
+            <b>Autor: </b>
+            {% for author in bookcopy.book.authors.all %}
+                {{author.first_name}} {{author.last_name}}
+            {% endfor %}
+        </li>
+        <li class="title"><b>Tytuł: </b> {{book.title}} </li>
+
+        <li class="category"><b>Kategoria: </b>
+            {{bookcopy.book.category.category_name}}
+        </li>
+
+        <li class="publishing_house"><b>Wydawnictwo: </b>
+            {{bookcopy.book.publishing_house.name}}
+        </li>
+
+        <li class="isbn"><b>ISBN: </b> {{bookcopy.book.isbn}} </li>
+        <li class="edition"><b>Wydanie: </b> {{bookcopy.book.edition}} </li>
+        <li class="publish_year"><b>Data publikacji: </b> {{bookcopy.book.publish_date}} </li>
+        <li class="book_detail_description"><b>Opis: </b> {{bookcopy.book.description|safe|linebreaksbr}} </li>
+    </ul>
+
+    
+    <div class="book_list_back_link button">
+        <a href="{% url 'library_app:bookcopy_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
+    </div>
+
+    {% if user.is_authenticated and user.is_superuser %}
+        <div class="update_book_link button">
+            <a href="{% url 'library_app:bookcopy_update' pk=bookcopy.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj egzemplarz książki"></a>
+        </div>
+
+        <div class="delete_book_link button">
+            <a href="{% url 'library_app:bookcopy_delete' pk=bookcopy.pk %}"><input type="submit" class="btn btn-danger" value="Usuń egzemplarz książki"></a>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

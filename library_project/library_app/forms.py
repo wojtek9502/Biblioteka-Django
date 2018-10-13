@@ -1,5 +1,4 @@
 from django import forms
-
 from library_app import models
 
 class BookForm(forms.ModelForm):
@@ -17,6 +16,16 @@ class BookForm(forms.ModelForm):
             'publish_date':'Data publikacji (DD.MM.YYYY)',
             'edition':'Wydanie',
             'image_url':'Adres url okładki',
+        }
+
+
+class BookCopyForm(forms.ModelForm):
+    class Meta:
+        model = models.BookCopy
+        fields = ('book','is_borrowed')
+        labels = {
+            'book': 'Książka',
+            'is_borrowed': 'Czy wypożyczona?'
         }
         
 

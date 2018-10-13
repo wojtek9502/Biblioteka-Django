@@ -74,12 +74,13 @@ class Book(models.Model):
 
 class BookCopy(models.Model):
     book = models.ForeignKey(Book)
+    is_borrowed = models.BooleanField(default=False)
    
     def __str__(self):
         return self.book.title + ' Kopia id ' + str(self.id)
     
     def get_absolute_url(self):
-        return reverse('library_app:category_detail', kwargs={"pk": str(self.pk)})
+        return reverse('library_app:bookcopy_detail', kwargs={"pk": str(self.pk)})
     
 
 class Borrow(models.Model):
