@@ -69,6 +69,8 @@ class CreatePublishingHouseView(LoginRequiredMixin,generic.CreateView):
 
     form_class = forms.PublishingHouseForm
     model = models.PublishingHouse
+    success_url = reverse_lazy("library_app:book_create")
+    
 
 class DeletePublishingHouseView(LoginRequiredMixin, generic.DeleteView):
     login_url = reverse_lazy('login')
@@ -94,6 +96,7 @@ class CreateCategoryView(LoginRequiredMixin,generic.CreateView):
 
     form_class = forms.CategoryForm
     model = models.Category
+    success_url = reverse_lazy("library_app:book_create")
 
 class UpdateCategoryView(LoginRequiredMixin, generic.UpdateView):
     login_url = reverse_lazy('login')

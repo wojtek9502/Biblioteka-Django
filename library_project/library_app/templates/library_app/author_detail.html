@@ -29,13 +29,15 @@
         <a href="{% url 'library_app:book_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
     </div>
 
-    <div class="update_author_link button">
-        <a href="{% url 'library_app:author_update' pk=author.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj autora"></a>
-    </div>
+    {% if user.is_authenticated and user.is_superuser %}
+        <div class="update_author_link button">
+            <a href="{% url 'library_app:author_update' pk=author.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj autora"></a>
+        </div>
 
-    <div class="delete_author_link button">
-        <a href="{% url 'library_app:author_delete' pk=author.pk %}"><input type="submit" class="btn btn-danger" value="Usuń autora"></a>
-    </div>
+        <div class="delete_author_link button">
+            <a href="{% url 'library_app:author_delete' pk=author.pk %}"><input type="submit" class="btn btn-danger" value="Usuń autora"></a>
+        </div>
+    {% endif %}
 </div>
 
 {% endblock %}

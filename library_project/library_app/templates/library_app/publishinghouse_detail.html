@@ -16,14 +16,15 @@
         <a href="{% url 'library_app:book_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
     </div>
 
-    <div class="update_book_link button">
-        <a href="{% url 'library_app:publishinghouse_update' pk=publishinghouse.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj wydawnictwo"></a>
-    </div>
+    {% if user.is_authenticated and user.is_superuser %}
+        <div class="update_book_link button">
+            <a href="{% url 'library_app:publishinghouse_update' pk=publishinghouse.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj wydawnictwo"></a>
+        </div>
 
-    <div class="delete_book_link button">
-        <a href="{% url 'library_app:publishinghouse_delete' pk=publishinghouse.pk %}"><input type="submit" class="btn btn-danger" value="Usuń wydawnictwo"></a>
-    </div>
-
+        <div class="delete_book_link button">
+            <a href="{% url 'library_app:publishinghouse_delete' pk=publishinghouse.pk %}"><input type="submit" class="btn btn-danger" value="Usuń wydawnictwo"></a>
+        </div>
+    {% endif %}
 </div>
 
 {% endblock %}
