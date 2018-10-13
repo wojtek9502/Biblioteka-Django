@@ -11,7 +11,10 @@ class Category(models.Model):
     category_name = models.CharField(max_length=400)
 
     def __str__(self):
-        return self.name
+        return self.category_name
+
+    def get_absolute_url(self):
+        return reverse('library_app:category_detail', kwargs={"pk": str(self.pk)})
     
 
 class Author(models.Model):
