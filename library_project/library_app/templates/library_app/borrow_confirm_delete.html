@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+
+<h2>Usunąć wypożyczenie?</h2>
+<br>
+<h4>Szczegóły wypożyczenia</h4>
+<ul>
+    <li class="user"><b>Wypożyczający: </b> {{borrow.user}} </li>
+    <li class="book"><b>Książka: </b> {{borrow.book_copy_id.book}} </li>
+    <li class="book_copy_nr"><b>Nr kopii: </b> {{borrow.id}} </li>
+    <li class="borrow_date"><b>Data wypozyczenia: </b> {{borrow.borrow_date}} </li>
+    <li class="receive_date"><b>Data oddania: </b> {{borrow.receive_date}} </li>
+</ul>
+<br>
+<form method="POST">
+    {% csrf_token %}
+    <a class="btn btn-primary" href="{% url 'library_app:borrow_list' %}">Powrót</a>
+    <input type="submit" class="btn btn-danger" value="Usuń">
+    
+
+</form>
+
+{% endblock %}

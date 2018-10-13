@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block body_block %}
 <div class="container">
@@ -8,6 +9,7 @@
         <table class="table table-bordered table-hover">
             <thead class="thead-light">
                 <tr>
+                    <th scope="col">Opcje</th>
                     <th scope="col">Tytuł</th>
                     <th scope="col">Autor</th>
                     <th scope="col">Kategoria</th>
@@ -18,12 +20,19 @@
 
             {% for book in book_list %}
                     <tr>
+                        <td>
+                            <a href="{% url 'library_app:book_detail' pk=book.pk %}"><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20"></a>
+                            <a href="{% url 'library_app:book_delete' pk=book.pk %}"><img src="{% static 'website_icons/del_ico.png' %}" alt="Usuń" width="20" height="20"></a> 
+                        </td>
+
                         <td><a href="{% url 'library_app:book_detail' pk=book.pk %}">{{book.title}}</a></td>
+                        
                         <td>
                             {% for author in book.authors.all %}
                                 <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author}}</a>
                             {% endfor %}
                         </td>
+
                         <td><a href="{% url 'library_app:category_detail' pk=book.category.pk %}">{{book.category.category_name}}</a></td>
                         <td><a href="{% url 'library_app:publishinghouse_detail' pk=book.publishing_house.pk %}">{{book.publishing_house}}</a></td>
                     </tr>

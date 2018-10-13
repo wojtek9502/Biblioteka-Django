@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.core.urlresolvers import reverse
-from datetime import datetime   
+from datetime import datetime, timedelta
 
 # Create your models here.
 from django.contrib.auth import get_user_model
@@ -76,7 +76,7 @@ class BookCopy(models.Model):
     book = models.ForeignKey(Book)
    
     def __str__(self):
-        return self.book.title + ' copy_nr= ' + str(self.id)
+        return self.book.title + ' Kopia id ' + str(self.id)
     
     def get_absolute_url(self):
         return reverse('library_app:category_detail', kwargs={"pk": str(self.pk)})
@@ -86,9 +86,10 @@ class Borrow(models.Model):
     user = models.ForeignKey(User)
     book_copy_id = models.ForeignKey(BookCopy)
     borrow_date = models.DateField(auto_now=True)
-    receive_date = models.DateField(auto_now=False, blank=True, null=True )
+    receive_date = models.DateField(default=datetime.now()+timedelta(days=60))
 
     def __str__(self):
         return "user=" + self.user.username + " book= " + str(self.book_copy_id) 
+
 
     

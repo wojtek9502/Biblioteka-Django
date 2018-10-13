@@ -6,7 +6,7 @@
     <h2>Szczegóły autora</h2>
     <ul>
         {% if author.image_url %} <!-- Jesli link jest uzupełniony -->
-            <img src="{{author.image_url}}">
+            <img src="{{author.image_url}}" width="300" height="300">
         {% endif %}
         <li class="personal_data"><b>Imie i nazwisko: </b> {{author.first_name}} {{author.last_name}} </li>
         

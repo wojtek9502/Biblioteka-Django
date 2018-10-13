@@ -23,4 +23,9 @@ urlpatterns = [
     url(r'^new_category/$', views.CreateCategoryView.as_view(), name='category_create'),
     url(r'^delete_category/(?P<pk>\d+)/$', views.DeleteCategoryView.as_view(), name='category_delete'),
     url(r'^update_category/(?P<pk>\d+)/$', views.UpdateCategoryView.as_view(), name='category_update'),
+
+    url(r'^borrow_list/$', views.BorrowListView.as_view(), name='borrow_list'),
+    url(r'^borrow/(?P<pk>\d+)$', views.BorrowDetailView.as_view(), name='borrow_detail'),
+    url(r'^new_borrow/$', views.CreateBorrowView.as_view(), name='borrow_create'),
+    url(r'^delete_borrow/(?P<pk>\d+)/$', views.DeleteBorrowView.as_view(), name='borrow_delete'),
 ]

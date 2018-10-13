@@ -59,3 +59,15 @@ class CategoryForm(forms.ModelForm):
         labels = {
             'category_name':'Kategoria',
         }
+
+
+class BorrowForm(forms.ModelForm):
+    class Meta:
+        model = models.Borrow
+        fields = ('user', 'book_copy_id', 'receive_date')
+
+        labels = {
+            'user': 'Wypożycz dla',
+            'book_copy_id': 'Kopia książki',
+            'receive_date': 'Data oddania',
+        }

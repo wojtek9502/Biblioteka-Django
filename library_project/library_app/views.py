@@ -35,6 +35,9 @@ class DeleteBookView(LoginRequiredMixin, generic.DeleteView):
     model = models.Book
     success_url = reverse_lazy("library_app:book_list")
 
+############################ Egzemplarz książki
+
+
 
 ############################   AUTOR
 class AuthorDetailView(generic.DetailView):
@@ -96,7 +99,7 @@ class CreateCategoryView(LoginRequiredMixin,generic.CreateView):
 
     form_class = forms.CategoryForm
     model = models.Category
-    success_url = reverse_lazy("library_app:book_create")
+    
 
 class UpdateCategoryView(LoginRequiredMixin, generic.UpdateView):
     login_url = reverse_lazy('login')
@@ -110,3 +113,23 @@ class DeleteCategoryView(LoginRequiredMixin, generic.DeleteView):
 
     model = models.Category
     success_url = reverse_lazy("library_app:book_list")
+
+########################## Wypozyczenia
+class BorrowListView(generic.ListView):
+    model = models.Borrow
+
+class BorrowDetailView(generic.DetailView):
+    model = models.Borrow
+
+class CreateBorrowView(LoginRequiredMixin, generic.CreateView):
+    login_url = reverse_lazy('login')
+
+    form_class = forms.BorrowForm
+    model = models.Borrow
+    success_url = reverse_lazy("library_app:borrow_list")
+
+class DeleteBorrowView(LoginRequiredMixin, generic.DeleteView):
+    login_url = reverse_lazy('login')
+
+    model = models.Borrow
+    success_url = reverse_lazy("library_app:borrow_list")
