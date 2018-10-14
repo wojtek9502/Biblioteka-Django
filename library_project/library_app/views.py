@@ -142,10 +142,12 @@ class DeleteCategoryView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("library_app:book_list")
 
 ########################## Wypozyczenia
-class BorrowListView(generic.ListView):
+class BorrowListView(LoginRequiredMixin, generic.ListView):
+    login_url = reverse_lazy('login')
     model = models.Borrow
 
-class BorrowDetailView(generic.DetailView):
+class BorrowDetailView(LoginRequiredMixin, generic.DetailView):
+    login_url = reverse_lazy('login')
     model = models.Borrow
 
 class CreateBorrowView(LoginRequiredMixin, generic.CreateView):
