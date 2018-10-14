@@ -14,8 +14,8 @@
 
     {% if user.is_authenticated and user.is_superuser %}
     <div class="borrow_book_link button">
-        <a href="{% url 'library_app:borrow_delete' pk=borrow.pk %}"><input type="submit" class="btn btn-danger"
-                value="Usuń wypożyczenie"></a>
+        <a href="{% url 'library_app:bookcopy_update' pk=borrow.book_copy_id.pk %}"><input type="submit" class="btn btn-danger"
+                value="Oddaj książkę"></a>
     </div>
     {% endif %}
 

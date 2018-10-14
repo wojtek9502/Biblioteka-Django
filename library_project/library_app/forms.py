@@ -80,3 +80,8 @@ class BorrowForm(forms.ModelForm):
             'book_copy_id': 'Kopia książki',
             'receive_date': 'Data oddania',
         }
+
+    ## w formularzu daj do wyboru tylko niewyporzyczone egzemplarze
+    def __init__(self, *args, **kwargs):
+        super(BorrowForm, self).__init__(*args, **kwargs)  # wywolaj formularz najpierw żeby ustawić mu pola fields
+        self.fields['book_copy_id'].queryset = models.BookCopy.objects.filter(is_borrowed=False)

@@ -58,6 +58,9 @@
                 </li>
             {% elif user.is_authenticated %}
                 <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'library_app:borrow_list' %}">Lista wypożyczeń</a>
+                </li>
+                <li class="nav-item active">
                     <p class="nav-link">Witaj {{user.first_name}} {{user.last_name}}</p>
                 </li>
                 <li class="nav-item active">

@@ -34,4 +34,5 @@ urlpatterns = [
     url(r'^borrow/(?P<pk>\d+)$', views.BorrowDetailView.as_view(), name='borrow_detail'),
     url(r'^new_borrow/$', views.CreateBorrowView.as_view(), name='borrow_create'),
     url(r'^delete_borrow/(?P<pk>\d+)/$', views.DeleteBorrowView.as_view(), name='borrow_delete'),
+    url(r'^update_borrow/(?P<pk>\d+)/$', views.UpdateBorrowView.as_view(), name='borrow_update'),
 ]

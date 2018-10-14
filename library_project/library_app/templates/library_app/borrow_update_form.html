@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block body_block %}
+    <h1>Oddaj książkę</h1>
+    <form method="POST" action="{% url 'library_app:borrow_update' pk=borrow.pk %}" class="borrow-form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <input type="submit" value="Oddaj" class="btn btn-primary btn-large">
+    </form>
+
+{% endblock %}

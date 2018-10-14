@@ -4,6 +4,7 @@ from library_app import forms
 from library_app import models
 from django.core.urlresolvers import reverse_lazy
 from django.core.paginator import Paginator
+from django.http import HttpResponseRedirect
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -151,7 +152,17 @@ class BorrowListView(LoginRequiredMixin, generic.ListView):
     model = models.Borrow
     context_object_name = "borrow_list" #human-understandable name of variable to access from templates
     paginate_by = 10
-    queryset = models.Borrow.objects.all()  # Default: Model.objects.all()
+    #queryset = models.Borrow.objects.all()  # Default: Model.objects.all()
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            # queryset = models.Borrow.objects.filter(book_copy_id__is_borrowed=True)
+            queryset = models.Borrow.objects.all()
+            print('superuser')
+        else:
+            print('user')
+            queryset = models.Borrow.objects.filter(user=self.request.user).filter(book_copy_id__is_borrowed=True)
+        return queryset 
 
 class BorrowDetailView(LoginRequiredMixin, generic.DetailView):
     login_url = reverse_lazy('login')
@@ -164,8 +175,40 @@ class CreateBorrowView(LoginRequiredMixin, generic.CreateView):
     model = models.Borrow
     success_url = reverse_lazy("library_app:borrow_list")
 
+    #przed dodaniem wypożyczenia trzeba zmienic w egzemplarzu ksiazki ze jest wypozyczony
+    def form_valid(self, form):
+        self.object = form.save(commit=False) #wez z formularza stworzony obiekt wypozyczenia
+        bookcopy = self.object.book_copy_id   # w obiekcie wypozyczenia jest obiekt egzemplarza ksiazki
+        bookcopy.is_borrowed = True           #zmien w obiekcie egzemplarza "wypozyczony" na true
+        bookcopy.save()                       #zapisz obiekt egzemplarza
+
+        self.object.save()                    #wszystko zmienione, mozna zapisac wypozyczenie
+        return HttpResponseRedirect(self.get_success_url())
+    
+    
+
+class UpdateBorrowView(LoginRequiredMixin, generic.UpdateView):
+    login_url = reverse_lazy('login')
+
+    fields = ('is_borrowed',)
+    model = models.BookCopy
+
+    template_name_suffix = '_update_form'
+
 class DeleteBorrowView(LoginRequiredMixin, generic.DeleteView):
     login_url = reverse_lazy('login')
 
     model = models.Borrow
     success_url = reverse_lazy("library_app:borrow_list")
+
+    def delete(self, *args, **kwargs):
+        self.object = self.get_object()
+        bookcopy = self.object.book_copy_id   # w obiekcie wypozyczenia jest obiekt egzemplarza ksiazki
+        bookcopy.is_borrowed = False           #zmien w obiekcie egzemplarza "wypozyczony" na false
+        bookcopy.save()                       #zapisz obiekt egzemplarza
+       
+        self.object.delete()                 #usun wypozyczenie z bazy
+        return HttpResponseRedirect(self.get_success_url())
+
+
+

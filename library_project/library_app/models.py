@@ -88,7 +88,7 @@ class Borrow(models.Model):
     book_copy_id = models.ForeignKey(BookCopy)
     borrow_date = models.DateField(auto_now=True)
     receive_date = models.DateField(default=datetime.now()+timedelta(days=60))
-
+    
     def __str__(self):
         return "user=" + self.user.username + " book= " + str(self.book_copy_id) 
 
