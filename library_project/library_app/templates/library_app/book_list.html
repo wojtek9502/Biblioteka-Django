@@ -6,7 +6,7 @@
     <div class="page-title">
         <h2>Katalog Online</h2>
     </div>
-        <table class="table table-bordered table-hover">
+      <table class="table table-bordered table-hover">
             <thead class="thead-light">
                 <tr>
                     <th scope="col">Opcje</th>
@@ -39,9 +39,37 @@
                         <td><a href="{% url 'library_app:publishinghouse_detail' pk=book.publishing_house.pk %}">{{book.publishing_house}}</a></td>
                     </tr>
             {% endfor %}
-
             </tbody>
         </table>
+
+    <!-- pagination bar -->
+    <div class="pagination_bar">
+        {% if is_paginated %}
+        <div class="btn-group pagination_bar" role="group">
+            
+            {% if page_obj.has_previous %}
+                <a class="btn btn-light disable" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+            {% else %}
+                <a class="btn btn-light"><span>&laquo;</span></a>
+            {% endif %}
+
+            {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                <a  class="btn btn-dark active"><span>{{ i }} <span class="sr-only">(current)</span></span></a>
+                {% else %}
+                <a class="btn btn-light" href="?page={{ i }}">{{ i }}</a>
+                {% endif %}
+            {% endfor %}
+                
+            {% if page_obj.has_next %}
+            <a class="btn btn-light" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+            {% else %}
+            <a type="button" class="btn btn-light"><span>&raquo;</span></a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
 </div>
 {% endblock %}
 

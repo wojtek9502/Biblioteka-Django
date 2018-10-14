@@ -3,6 +3,7 @@ from django.views import generic
 from library_app import forms
 from library_app import models
 from django.core.urlresolvers import reverse_lazy
+from django.core.paginator import Paginator
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -12,6 +13,9 @@ User = get_user_model()
 
 class BookListView(generic.ListView):
     model = models.Book
+    context_object_name = "book_list" #human-understandable name of variable to access from templates
+    paginate_by = 10
+    queryset = models.Book.objects.all()  # Default: Model.objects.all()
 
 class BookDetailView(generic.DetailView):
     model = models.Book
@@ -145,6 +149,9 @@ class DeleteCategoryView(LoginRequiredMixin, generic.DeleteView):
 class BorrowListView(LoginRequiredMixin, generic.ListView):
     login_url = reverse_lazy('login')
     model = models.Borrow
+    context_object_name = "borrow_list" #human-understandable name of variable to access from templates
+    paginate_by = 10
+    queryset = models.Borrow.objects.all()  # Default: Model.objects.all()
 
 class BorrowDetailView(LoginRequiredMixin, generic.DetailView):
     login_url = reverse_lazy('login')
