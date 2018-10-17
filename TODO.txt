@@ -1,0 +1,7 @@
+- rejestrowanie ktory bibliotekarz wypozyczyl i odebral egzemplarz
+- ile jest egzemplarzy ksiazki przy tabeli z ksiazkami
+- konto po rejestracji nieaktywne, aktywuje je bibliotekarz po "sprawdzeniu" 
+- wiecej danych o userze
+- zmienic regulami zeby nie przypominal kopiowanego
+- zmienic w kontakcie dane i punkt na mapie na polibude
+- na stronie glownej opis w stylu "to jest projekt na prace inz" itd
