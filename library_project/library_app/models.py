@@ -58,12 +58,10 @@ class Book(models.Model):
     edition = models.PositiveIntegerField(default=1)
     image_url = models.URLField(default='', blank=True, null=True)
     add_date = models.DateTimeField(auto_now=True)
-    is_borrowed = models.BooleanField(default=False)
     slug = models.SlugField(allow_unicode=True, unique=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.isbn)
-        print('slug: ',self.slug)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -73,7 +71,7 @@ class Book(models.Model):
         return reverse('library_app:book_detail', kwargs={"pk": str(self.pk)})
 
 class BookCopy(models.Model):
-    book = models.ForeignKey(Book)
+    book = models.ForeignKey(Book, related_name="bookcopies") #teraz w templatce mozemy z poziomu klasy book odnosic sie do obiektow bookcopy, np {{book.bookcopies.count}} da liczbe kopii ksiazek ktore maja w polu book id danej ksiazki
     is_borrowed = models.BooleanField(default=False)
    
     def __str__(self):
@@ -85,6 +83,8 @@ class BookCopy(models.Model):
 
 class Borrow(models.Model):
     user = models.ForeignKey(User)
+    borrow_librarian = models.ForeignKey(User, related_name="borrow_librarian")
+    receive_librarian = models.ForeignKey(User, related_name="receive_librarian", null=True, blank=True)
     book_copy_id = models.ForeignKey(BookCopy)
     borrow_date = models.DateField(auto_now=True)
     receive_date = models.DateField(default=datetime.now()+timedelta(days=60))

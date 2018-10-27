@@ -1,5 +1,6 @@
 from django import forms
 from library_app import models
+from django.contrib.auth.models import User
 
 class BookForm(forms.ModelForm):
     class Meta:
@@ -71,9 +72,19 @@ class CategoryForm(forms.ModelForm):
 
 
 class BorrowForm(forms.ModelForm):
+    ## w formularzu daj do wyboru tylko niewypozyczone egzemplarze
+    def __init__(self, *args, **kwargs):
+        super(BorrowForm, self).__init__(*args, **kwargs)  # wywolaj formularz najpierw żeby ustawić mu pola fields
+        self.fields['book_copy_id'].queryset = models.BookCopy.objects.filter(is_borrowed=False)
+        
+        #wyswietl w polu user formularza, jego imie i nazwisko zamiast loginu
+        users = User.objects.all()
+        self.fields['user'].choices = [(user.pk, user.get_full_name()) for user in users]
+
     class Meta:
         model = models.Borrow
         fields = ('user', 'book_copy_id', 'receive_date')
+        
 
         labels = {
             'user': 'Wypożycz dla',
@@ -81,7 +92,3 @@ class BorrowForm(forms.ModelForm):
             'receive_date': 'Data oddania',
         }
 
-    ## w formularzu daj do wyboru tylko niewyporzyczone egzemplarze
-    def __init__(self, *args, **kwargs):
-        super(BorrowForm, self).__init__(*args, **kwargs)  # wywolaj formularz najpierw żeby ustawić mu pola fields
-        self.fields['book_copy_id'].queryset = models.BookCopy.objects.filter(is_borrowed=False)

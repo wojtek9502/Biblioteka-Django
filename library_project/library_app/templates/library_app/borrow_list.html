@@ -11,7 +11,8 @@
         <thead class="thead-light">
             <tr>
                 <th scope="col">Opcje</th>
-                <th scope="col">Wypożyczający</th>
+                <th scope="col">Wypożyczone dla</th>
+                <th scope="col">Wypożyczone przez</th>
                 <th scope="col">Książka</th>
                 <th scope="col">Nr kopii</th>
                 <th scope="col">Data wypożyczenia</th>
@@ -27,7 +28,8 @@
                         <a href="{% url 'library_app:borrow_delete' pk=borrow.pk %}"><img src="{% static 'website_icons/del_ico.png' %}" alt="Usuń" width="20" height="20"></a> 
                     {% endif %}
                 </td>
-                <td>{{borrow.user}}</td>
+                <td>{{borrow.user.get_full_name}}</td>
+                <td>{{borrow.borrow_librarian.get_full_name}}</td>
                 <td>{{borrow.book_copy_id.book}}</td>
                 <td>{{borrow.book_copy_id.id}}</td>
                 <td>{{borrow.borrow_date}}</td>

@@ -7,7 +7,13 @@
 <h4>Szczegóły egzemplarza książki</h4>
 <ul>
         <li class="bookcopy_id"><b>Id kopii: </b>{{bookcopy.id}}</li>
-        <li class="bookcopy_is_borrowed"><b>Czy wypożyczona: </b> {{bookcopy.is_borrowed}}</li>
+        <li class="bookcopy_is_borrowed"><b>Czy wypożyczona: </b> 
+            {% if bookcopy.is_borrowed == False %}
+                Nie
+            {% else %}
+                Tak
+            {% endif %}
+        </li>
         <br>
         
         <li class="authors">
@@ -24,10 +30,17 @@
 </ul>
 
 <br>
-<form method="POST">
-    {% csrf_token %}
+
+{% if bookcopy.is_borrowed %}
+    <h5>Nie można usunąć wypożyczonej książki</h5>
     <a href="{% url 'library_app:bookcopy_list' %}" class="btn btn-primary">Powrót</a>
-    <input type="submit" class="btn btn-danger" value="Usuń">
-</form>
+{% else %}
+    <form method="POST">
+        {% csrf_token %}
+        <a href="{% url 'library_app:bookcopy_list' %}" class="btn btn-primary">Powrót</a>
+        <input type="submit" class="btn btn-danger" value="Usuń">
+    </form>
+{% endif %}
+
 
 {% endblock %}

@@ -6,12 +6,12 @@
 }
 
 .add-obj-btn { /* przycisk pod formularzem dodawania */
-    margin-top: 20px;
-    margin-bottom: 100px;
     text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
-.book_create_other_create_links{
+.other_create_buttons{
     text-align: center;
     margin-top: 20px;
     margin-bottom: 20px;

@@ -3,12 +3,20 @@
 {% block body_block %}
 
 <h2>Usunąć {{publishinghouse.name}}?</h2>
-<h3>Ta akcja usunie także wszystkie książki danego wydawnictwa</h3>
+<br>
+
+<h4>Szczegóły wydawnictwa</h4>
+<ul>
+    <li class="name"><b>Nazwa: </b> {{publishinghouse.name}} </li>
+    <li class="address"><b>Adres: </b> {{publishinghouse.street}} {{publishinghouse.house_number}}, {{publishinghouse.postal_code}} {{publishinghouse.city}}</li>
+</ul>
+<br>
 <form method="POST">
     {% csrf_token %}
     <input type="submit" class="btn btn-danger" value="Usuń">
     <a class="btn btn-primary" href="{% url 'library_app:publishinghouse_detail' pk=publishinghouse.pk %}">Powrót</a>
-
 </form>
+<br>
+<h6>Uwaga. Ta akcja usunie także wszystkie książki danego wydawnictwa</h6>
 
 {% endblock %}

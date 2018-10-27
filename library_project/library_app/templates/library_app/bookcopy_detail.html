@@ -9,7 +9,14 @@
           <img src="{{bookcopy.book.image_url}}" width="300px" height="300px">
         {% endif %}
         <li class="bookcopy_id"><b>Id kopii: </b>{{bookcopy.id}}</li>
-        <li class="bookcopy_is_borrowed"><b>Czy wypożyczona: </b> {{bookcopy.is_borrowed}}</li>
+        
+        <li class="bookcopy_is_borrowed"><b>Czy wypożyczona: </b> 
+            {% if bookcopy.is_borrowed %}
+                Tak
+            {% else %}
+                Nie
+            {% endif %}
+        </li>
         <br>
         
         <li class="authors">
@@ -44,9 +51,13 @@
             <a href="{% url 'library_app:bookcopy_update' pk=bookcopy.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj egzemplarz książki"></a>
         </div>
 
-        <div class="delete_book_link button">
-            <a href="{% url 'library_app:bookcopy_delete' pk=bookcopy.pk %}"><input type="submit" class="btn btn-danger" value="Usuń egzemplarz książki"></a>
-        </div>
+
+        {% if bookcopy.is_borrowed == False %}
+            <div class="delete_book_link button">
+                <a href="{% url 'library_app:bookcopy_delete' pk=bookcopy.pk %}"><input type="submit" class="btn btn-danger" value="Usuń egzemplarz książki"></a>
+            </div>
+        {% endif %}
+        
     {% endif %}
 </div>
 

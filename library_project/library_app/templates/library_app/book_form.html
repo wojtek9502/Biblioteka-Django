@@ -3,7 +3,8 @@
 
 {% block body_block %}
     <h1>Dodaj nową książkę</h1>
-    <div class="book_create_other_create_links">
+    <div class="other_create_buttons">
+        <a class="btn btn-primary" href="{% url 'library_app:author_create' %}">Dodaj autora</a>
         <a class="btn btn-primary" href="{% url 'library_app:publishinghouse_create' %}">Dodaj wydawnictwo</a>
         <a class="btn btn-primary" href="{% url 'library_app:category_create' %}">Dodaj kategorię</a>
     </div>

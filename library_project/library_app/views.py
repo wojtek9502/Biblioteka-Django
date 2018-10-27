@@ -18,6 +18,12 @@ class BookListView(generic.ListView):
     paginate_by = 10
     queryset = models.Book.objects.all()  # Default: Model.objects.all()
 
+    #do listy ksiazek dodaj kontekst z egzemplarzami ksiazki
+    # def get_context_data(self, **kwargs):
+    #     context = super(BookListView, self).get_context_data(**kwargs)
+    #     context['bookcopys'] = models.BookCopy.objects.all
+    #     return context
+
 class BookDetailView(generic.DetailView):
     model = models.Book
 
@@ -27,6 +33,15 @@ class CreateBookView(LoginRequiredMixin, generic.CreateView):
     form_class = forms.BookForm
     model = models.Book
 
+    def form_valid(self, form):
+        self.object = form.save(commit=True) #zapisz egzemplarz ksiazki w bazie
+        book_instance = self.object   #wez zapisany egzemplarz
+
+        #dla kazdej nowo utworzonej ksiazki stworz jej egzemplarz
+        models.BookCopy.objects.create(book=book_instance)
+        return HttpResponseRedirect(self.get_success_url())
+    
+      
 class UpdateBookView(LoginRequiredMixin, generic.UpdateView):
     login_url = reverse_lazy('login')
 
@@ -104,7 +119,7 @@ class CreatePublishingHouseView(LoginRequiredMixin,generic.CreateView):
 
     form_class = forms.PublishingHouseForm
     model = models.PublishingHouse
-    success_url = reverse_lazy("library_app:book_create")
+    success_url = reverse_lazy("library_app:book_list")
     
 
 class DeletePublishingHouseView(LoginRequiredMixin, generic.DeleteView):
@@ -158,9 +173,7 @@ class BorrowListView(LoginRequiredMixin, generic.ListView):
         if self.request.user.is_superuser:
             # queryset = models.Borrow.objects.filter(book_copy_id__is_borrowed=True)
             queryset = models.Borrow.objects.all()
-            print('superuser')
         else:
-            print('user')
             queryset = models.Borrow.objects.filter(user=self.request.user).filter(book_copy_id__is_borrowed=True)
         return queryset 
 
@@ -182,6 +195,7 @@ class CreateBorrowView(LoginRequiredMixin, generic.CreateView):
         bookcopy.is_borrowed = True           #zmien w obiekcie egzemplarza "wypozyczony" na true
         bookcopy.save()                       #zapisz obiekt egzemplarza
 
+        self.object.borrow_librarian = User.objects.get(id=self.request.user.id) # zapisz jako wypozyczajacego zalogowanego usera (wypozyczac moze tylko bibliotekarz)
         self.object.save()                    #wszystko zmienione, mozna zapisac wypozyczenie
         return HttpResponseRedirect(self.get_success_url())
     
@@ -205,7 +219,9 @@ class DeleteBorrowView(LoginRequiredMixin, generic.DeleteView):
         self.object = self.get_object()
         bookcopy = self.object.book_copy_id   # w obiekcie wypozyczenia jest obiekt egzemplarza ksiazki
         bookcopy.is_borrowed = False           #zmien w obiekcie egzemplarza "wypozyczony" na false
-        bookcopy.save()                       #zapisz obiekt egzemplarza
+        bookcopy.save()                       #zapisz obiekt egzemplarza        
+       
+        self.object.receive_librarian = User.objects.get(id=self.request.user.id)
        
         self.object.delete()                 #usun wypozyczenie z bazy
         return HttpResponseRedirect(self.get_success_url())

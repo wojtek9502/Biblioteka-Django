@@ -24,10 +24,16 @@
 </ul>
 
 <br>
+{% if book.bookcopies.count > 0 %}
+    <h6>Nie można usuwać ksiązek które mają jakiś egzemplarz</h6>
+    <a href="{% url 'library_app:book_list' %}" class="btn btn-primary">Powrót</a>
+{% else %}
 <form method="POST">
     {% csrf_token %}
     <a href="{% url 'library_app:book_list' %}" class="btn btn-primary">Powrót</a>
     <input type="submit" class="btn btn-danger" value="Usuń">
 </form>
+{% endif %}
+
 
 {% endblock %}

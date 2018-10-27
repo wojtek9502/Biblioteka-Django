@@ -3,6 +3,7 @@
 
 {% block body_block %}
     <h1>Wydawnictwo</h1>
+    
     <form method="POST" action="{% url 'library_app:publishinghouse_create' %}" class="publishing-house-form">
         {% csrf_token %}
         {% bootstrap_form form %}
