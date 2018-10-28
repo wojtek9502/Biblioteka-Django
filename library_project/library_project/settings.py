@@ -43,6 +43,12 @@ INSTALLED_APPS = [
     'bootstrap4',
 ]
 
+EMAIL_USE_SSL = True
+EMAIL_HOST = 'smtp.wp.pl'
+EMAIL_HOST_USER = 'w.k.praca_inz'
+EMAIL_HOST_PASSWORD = 'wojtek1243%!'
+EMAIL_PORT = 465
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
