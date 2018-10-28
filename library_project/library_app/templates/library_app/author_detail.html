@@ -1,43 +1,43 @@
 {% extends "base.html" %}
 
 {% block body_block %}
+<div class="container">
+    <div class="page-title author_detail jumbotron">
+        <h2>Szczegóły autora</h2>
+        <ul>
+            {% if author.image_url %} <!-- Jesli link jest uzupełniony -->
+                <img src="{{author.image_url}}" width="300" height="300">
+            {% endif %}
+            <li class="personal_data"><b>Imie i nazwisko: </b> {{author.first_name}} {{author.last_name}} </li>
+            
+            {% if author.years_of_life %}
+                <li class="years_of_life"><b>Lata życia: </b> {{author.years_of_life}} </li>
+            {% endif %}
 
-<div class="page-title author_detail jumbotron">
-    <h2>Szczegóły autora</h2>
-    <ul>
-        {% if author.image_url %} <!-- Jesli link jest uzupełniony -->
-            <img src="{{author.image_url}}" width="300" height="300">
+            {% if author.birth_place %}
+                <li class="birth_place"><b>Miejsce urodzenia: </b> {{author.birth_place}} </li>
+            {% endif %}
+
+            <li class="country"><b>Kraj pochodzenia: </b> {{author.country}} </li>
+
+            {% if author.biography %}
+                <li class="biography"><b>Biografia: </b> <br> {{author.biography}} </li>
+            {% endif %}
+        </ul>
+
+        <div class="detail_back_link button">
+            <a href="{% url 'library_app:book_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
+        </div>
+
+        {% if user.is_authenticated and user.is_superuser %}
+            <div class="update_author_link button">
+                <a href="{% url 'library_app:author_update' pk=author.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj autora"></a>
+            </div>
+
+            <div class="delete_author_link button">
+                <a href="{% url 'library_app:author_delete' pk=author.pk %}"><input type="submit" class="btn btn-danger" value="Usuń autora"></a>
+            </div>
         {% endif %}
-        <li class="personal_data"><b>Imie i nazwisko: </b> {{author.first_name}} {{author.last_name}} </li>
-        
-        {% if author.years_of_life %}
-            <li class="years_of_life"><b>Lata życia: </b> {{author.years_of_life}} </li>
-        {% endif %}
-
-        {% if author.birth_place %}
-            <li class="birth_place"><b>Miejsce urodzenia: </b> {{author.birth_place}} </li>
-        {% endif %}
-
-        <li class="country"><b>Kraj pochodzenia: </b> {{author.country}} </li>
-
-        {% if author.biography %}
-            <li class="biography"><b>Biografia: </b> <br> {{author.biography}} </li>
-        {% endif %}
-    </ul>
-
-    <div class="detail_back_link button">
-        <a href="{% url 'library_app:book_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
     </div>
-
-    {% if user.is_authenticated and user.is_superuser %}
-        <div class="update_author_link button">
-            <a href="{% url 'library_app:author_update' pk=author.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj autora"></a>
-        </div>
-
-        <div class="delete_author_link button">
-            <a href="{% url 'library_app:author_delete' pk=author.pk %}"><input type="submit" class="btn btn-danger" value="Usuń autora"></a>
-        </div>
-    {% endif %}
 </div>
-
 {% endblock %}

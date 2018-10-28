@@ -11,10 +11,10 @@
         <thead class="thead-light">
             <tr>
                 <th scope="col">Opcje</th>
+                <th scope="col">Książka</th>
+                <th scope="col">Nr egzemplarza</th>
                 <th scope="col">Wypożyczone dla</th>
                 <th scope="col">Wypożyczone przez</th>
-                <th scope="col">Książka</th>
-                <th scope="col">Nr kopii</th>
                 <th scope="col">Data wypożyczenia</th>
                 <th scope="col">Data oddania</th>
             </tr>
@@ -25,13 +25,21 @@
                 <td>
                     <a href="{% url 'library_app:borrow_detail' pk=borrow.pk %}"><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20"></a>
                     {% if user.is_superuser %}
-                        <a href="{% url 'library_app:borrow_delete' pk=borrow.pk %}"><img src="{% static 'website_icons/del_ico.png' %}" alt="Usuń" width="20" height="20"></a> 
+                        <a href="{% url 'library_app:borrow_delete' pk=borrow.pk %}"><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Usuń" width="20" height="20"></a> 
                     {% endif %}
                 </td>
+               
+                <td>
+                    {% for author in borrow.book_copy_id.book.authors.all %}
+                        <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author.first_name}} {{author.last_name}}</a>
+                        <br>
+                    {% endfor %}
+                    <a href="{% url 'library_app:book_detail' pk=borrow.book_copy_id.book.pk %}">{{borrow.book_copy_id.book.title}}</a>
+                </td>
+
+                <td><a href="{% url 'library_app:bookcopy_detail' pk=borrow.book_copy_id.pk %}">{{borrow.book_copy_id.id}}</a></td>
                 <td>{{borrow.user.get_full_name}}</td>
                 <td>{{borrow.borrow_librarian.get_full_name}}</td>
-                <td>{{borrow.book_copy_id.book}}</td>
-                <td>{{borrow.book_copy_id.id}}</td>
                 <td>{{borrow.borrow_date}}</td>
                 <td>{{borrow.receive_date}}</td>
             </tr>
@@ -66,7 +74,14 @@
         </div>
         {% endif %}
     </div>
-    
-   
+
+        <div class="table-legend">
+        <p><b>Legenda:</b></p>
+        <p><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20">Szczegóły wypożyczenia</p>
+        {% if user.is_superuser %}
+            <p><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Usuń wypozyczenie" width="20" height="20">Usuń wypozyczenie egzemplarza</p>
+        {% endif %}
+    </div>
+
 </div>
 {% endblock %}

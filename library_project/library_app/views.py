@@ -5,6 +5,7 @@ from library_app import models
 from django.core.urlresolvers import reverse_lazy
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
+from datetime import datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -56,8 +57,19 @@ class DeleteBookView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("library_app:book_list")
 
 ############################ Egzemplarz książki
-class BookCopyListView(generic.ListView):
+
+
+class BookCopyListView(LoginRequiredMixin, generic.ListView):
+    login_url = reverse_lazy('login')
+
     model = models.BookCopy
+    paginate_by = 5
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["current_borrow_list"] = models.Borrow.objects.filter(user=self.request.user)
+        return context
+
 
 
 class BookCopyDetailView(generic.DetailView):
@@ -98,9 +110,9 @@ class CreateAuthorView(LoginRequiredMixin,generic.CreateView):
 
 class UpdateAuthorView(LoginRequiredMixin, generic.UpdateView):
     login_url = reverse_lazy('login')
-
-    fields = ('first_name', 'last_name', 'country', 'biography', 'birth_place', 'image_url', 'years_of_life')
+    
     model = models.Author
+    form_class = forms.AuthorForm
     template_name_suffix = '_update_form' #czyli templatka = author_update_form.html
 
 class DeleteAuthorView(LoginRequiredMixin, generic.DeleteView):
@@ -221,10 +233,38 @@ class DeleteBorrowView(LoginRequiredMixin, generic.DeleteView):
         bookcopy.is_borrowed = False           #zmien w obiekcie egzemplarza "wypozyczony" na false
         bookcopy.save()                       #zapisz obiekt egzemplarza        
        
-        self.object.receive_librarian = User.objects.get(id=self.request.user.id)
-       
+        self.object.receive_librarian = User.objects.get(id=self.request.user.id) #ustaw bibliotekarza ktory przyjal ksiazke
+        self.object.receive_date = datetime.now()                                 #ustaw date oddania na aktualna
+
+        #zapisanie obiektu borrow jako obiekt borrowHistory przed usunieciem obiektu Borrow
+        models.BorrowHistory.objects.create(
+            user=self.object.user, 
+            borrow_librarian=self.object.borrow_librarian,
+            receive_librarian=self.object.receive_librarian,
+            book_copy_id=self.object.book_copy_id,
+            borrow_date=self.object.borrow_date,
+            receive_date=self.object.receive_date
+        )
+
         self.object.delete()                 #usun wypozyczenie z bazy
         return HttpResponseRedirect(self.get_success_url())
 
+########### WYPOŻYCZENIA UŻYTKOWNIKA
+class MyBorrowListView(LoginRequiredMixin, generic.ListView):
+    login_url = reverse_lazy('login')
+    model = models.BorrowHistory
+    context_object_name = "history_borrow_list" #human-understandable name of variable to access from templates
+    paginate_by = 5
+    template_name = "library_app/myborrowlist.html"
+    #queryset = models.Borrow.objects.all()  # Default: Model.objects.all()
 
+    def get_queryset(self):
+        queryset = models.BorrowHistory.objects.filter(user=self.request.user)
+        return queryset 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["current_borrow_list"] = models.Borrow.objects.filter(user=self.request.user)
+        return context
+    
 

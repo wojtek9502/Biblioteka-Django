@@ -85,12 +85,22 @@ class Borrow(models.Model):
     user = models.ForeignKey(User)
     borrow_librarian = models.ForeignKey(User, related_name="borrow_librarian")
     receive_librarian = models.ForeignKey(User, related_name="receive_librarian", null=True, blank=True)
-    book_copy_id = models.ForeignKey(BookCopy)
+    book_copy_id = models.ForeignKey(BookCopy, related_name="borrow_bookcopy")
     borrow_date = models.DateField(auto_now=True)
     receive_date = models.DateField(default=datetime.now()+timedelta(days=60))
     
     def __str__(self):
         return "user=" + self.user.username + " book= " + str(self.book_copy_id) 
 
+class BorrowHistory(models.Model):
+    user = models.ForeignKey(User, related_name="history_user")
+    borrow_librarian = models.ForeignKey(User, related_name="history_borrow_librarian")
+    receive_librarian = models.ForeignKey(User, related_name="history_receive_librarian", null=True, blank=True)
+    book_copy_id = models.ForeignKey(BookCopy)
+    borrow_date = models.DateField()
+    receive_date = models.DateField()
+    
+    def __str__(self):
+        return "history_borrow user=" + self.user.username + " book= " + str(self.book_copy_id) 
 
     

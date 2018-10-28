@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body_block %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div id="navbarNavDropdown" class="navbar-collapse collapse">
+        <ul class="navbar-nav mr-auto">
+            <a class="btn" data-toggle="collapse" href="#collapse_current_borrow" role="button" aria-expanded="false" aria-controls="collapseExample">
+                Pokaż wypożyczenia
+            </a>
+            <a class="btn" data-toggle="collapse" href="#collapse_borrow_history" role="button" aria-expanded="false" aria-controls="collapseExample">
+                Pokaż historię wypożyczeń
+            </a>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+<!-- Aktualne wypożyczenia -->
+<div class="collapse show" id="collapse_current_borrow">
+        {% if current_borrow_list.count is 0 %}
+            <div class="page-title">
+                <h4>Aktualnie nie wypożyczasz żadnej książki</h4>
+            </div>
+        {% else %}
+            <div class="page-title">
+                <h4>Twoje wypożyczenia</h4>
+            </div>
+
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Książka</th>
+                        <th scope="col">Nr egzemplarza</th>
+                        <th scope="col">Wypożyczone przez</th>
+                        <th scope="col">Data wypożyczenia</th>
+                        <th scope="col">Data oddania</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    {% for borrow in current_borrow_list %}
+                    <tr>
+                        <td>
+                            {% for author in borrow.book_copy_id.book.authors.all %}
+                                <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author.first_name}} {{author.last_name}}</a>
+                                <br>
+                            {% endfor %}
+                            <a href="{% url 'library_app:book_detail' pk=borrow.book_copy_id.book.pk %}">{{borrow.book_copy_id.book.title}}</a>
+                        </td>
+                        <td><a href="{% url 'library_app:bookcopy_detail' pk=borrow.book_copy_id.pk %}">{{borrow.book_copy_id.id}}</a></td>
+                        <td>{{borrow.borrow_librarian.get_full_name}}</td>
+                        <td>{{borrow.borrow_date}}</td>
+                        <td>{{borrow.receive_date}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+</div>
+ 
+    <!-- Historia wypożyczeń -->
+<div class="collapse" id="collapse_borrow_history">
+
+    <div class="page-title">
+        <h4>Historia wypożyczeń</h4>
+    </div>
+   
+    <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Książka</th>
+                        <th scope="col">Nr egzemplarza</th>
+                        <th scope="col">Wypożyczone przez</th>
+                        <th scope="col">Odebrane przez</th>
+                        <th scope="col">Data wypożyczenia</th>
+                        <th scope="col">Data oddania</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for borrow in history_borrow_list %}
+                    <tr>
+                        <td>
+                            {% for author in borrow.book_copy_id.book.authors.all %}
+                                <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author.first_name}} {{author.last_name}}</a>
+                                <br>
+                            {% endfor %}
+                            <a href="{% url 'library_app:book_detail' pk=borrow.book_copy_id.book.pk %}">{{borrow.book_copy_id.book.title}}</a>
+                        </td>
+                        <td><a href="{% url 'library_app:bookcopy_detail' pk=borrow.book_copy_id.pk %}">{{borrow.book_copy_id.id}}</a></td>
+                        <td>{{borrow.borrow_librarian.get_full_name}}</td>
+                        <td>{{borrow.receive_librarian.get_full_name}}</td>
+                        <td>{{borrow.borrow_date}}</td>
+                        <td>{{borrow.receive_date}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- pagination bar -->
+            <div class="pagination_bar">
+                {% if is_paginated %}
+                <div class="btn-group" role="group">
+                    
+                    {% if page_obj.has_previous %}
+                        <a class="btn btn-light disable" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+                    {% else %}
+                        <a class="btn btn-light"><span>&laquo;</span></a>
+                    {% endif %}
+
+                    {% for i in paginator.page_range %}
+                        {% if page_obj.number == i %}
+                        <a  class="btn btn-dark active"><span>{{ i }} <span class="sr-only">(current)</span></span></a>
+                        {% else %}
+                        <a class="btn btn-light" href="?page={{ i }}">{{ i }}</a>
+                        {% endif %}
+                    {% endfor %}
+                        
+                    {% if page_obj.has_next %}
+                    <a class="btn btn-light" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+                    {% else %}
+                    <a type="button" class="btn btn-light"><span>&raquo;</span></a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        
+</div>
+    
+    
+   
+</div>
+{% endblock %}

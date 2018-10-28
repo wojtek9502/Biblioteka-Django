@@ -1,27 +1,27 @@
 {% extends "base.html" %}
 
 {% block body_block %}
+<div class="container">
+    <div class="page-title book_detail jumbotron">
+        <h2>Szczegóły kategorii:</h2>
+        <ul>
+            <li class="title"><b>Nazwa: </b> {{category.category_name}} </li>
+        </ul>
 
-<div class="page-title book_detail jumbotron">
-    <h2>Szczegóły kategorii:</h2>
-    <ul>
-        <li class="title"><b>Nazwa: </b> {{category.category_name}} </li>
-    </ul>
+        
+        <div class="category_list_back_link button">
+            <a href="{% url 'library_app:book_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
+        </div>
 
-    
-    <div class="category_list_back_link button">
-        <a href="{% url 'library_app:book_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
+        {% if user.is_authenticated and user.is_superuser %}
+            <div class="update_category_link button">
+                <a href="{% url 'library_app:category_update' pk=category.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj kategorię"></a>
+            </div>
+
+            <div class="delete_category_link button">
+                <a href="{% url 'library_app:category_delete' pk=category.pk %}"><input type="submit" class="btn btn-danger" value="Usuń kategorię"></a>
+            </div>
+        {% endif %}
     </div>
-
-    {% if user.is_authenticated and user.is_superuser %}
-        <div class="update_category_link button">
-            <a href="{% url 'library_app:category_update' pk=category.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj kategorię"></a>
-        </div>
-
-        <div class="delete_category_link button">
-            <a href="{% url 'library_app:category_delete' pk=category.pk %}"><input type="submit" class="btn btn-danger" value="Usuń kategorię"></a>
-        </div>
-    {% endif %}
 </div>
-
 {% endblock %}

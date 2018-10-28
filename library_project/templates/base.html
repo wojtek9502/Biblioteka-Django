@@ -3,14 +3,11 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Library</title>
+    <title>Biblioteka</title>
 
 
     <!-- Bootstrap4 -->
     <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'bootstrap/js/bootstrap.min.js' %}">
-    <link rel="stylesheet" href="{% static 'js/jquery-3.3.1.min.js' %}">
-    <link rel="stylesheet" href="{% static 'js/popper.min.js' %}">
 
     <!-- Wlasny css -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -33,17 +30,14 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="{% url 'library_app:book_list' %}">Katalog online</a>
                 </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'library_app:my_borrow_list' %}">Twoje wypożyczenia</a>
+                </li>
             </ul>
             <ul class="navbar-nav" >
             {% if user.is_authenticated and user.is_superuser %}
                 <li class="nav-item active">
                     <a class="nav-link" href="{% url 'library_app:borrow_create' %}">Wypożycz książkę</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'library_app:borrow_list' %}">Lista wypożyczeń</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'library_app:bookcopy_list' %}">Lista egzemplarzy</a>
                 </li>
 
                 <li class="nav-item active">
@@ -57,9 +51,6 @@
                   <a class="nav-link" href="{% url 'accounts:logout' %}">Wyloguj</a>
                 </li>
             {% elif user.is_authenticated %}
-                <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'library_app:borrow_list' %}">Lista wypożyczeń</a>
-                </li>
                 <li class="nav-item active">
                     <p class="nav-link">Witaj {{user.first_name}} {{user.last_name}}</p>
                 </li>
@@ -78,8 +69,10 @@
         </div>
     </nav>
 
-    <div class="container">
          {% block body_block %}{% endblock %}
-    </div>
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 </body>
 </html>

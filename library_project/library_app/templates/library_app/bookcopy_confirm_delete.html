@@ -1,46 +1,46 @@
 {% extends "base.html" %}
 
 {% block body_block %}
+<div class="container">
+    <h2>Usunąć egzemplarz książki?</h2>
+    <br>
+    <h4>Szczegóły egzemplarza książki</h4>
+    <ul>
+            <li class="bookcopy_id"><b>Id kopii: </b>{{bookcopy.id}}</li>
+            <li class="bookcopy_is_borrowed"><b>Czy wypożyczona: </b> 
+                {% if bookcopy.is_borrowed == False %}
+                    Nie
+                {% else %}
+                    Tak
+                {% endif %}
+            </li>
+            <br>
+            
+            <li class="authors">
+                <b>Autor: </b>
+                {% for author in bookcopy.book.authors.all %}
+                    {{author.first_name}} {{author.last_name}}
+                {% endfor %}
+            </li>
+            <li class="title"><b>Tytuł: </b> {{bookcopy.book.title}} </li>
 
-<h2>Usunąć egzemplarz książki?</h2>
-<br>
-<h4>Szczegóły egzemplarza książki</h4>
-<ul>
-        <li class="bookcopy_id"><b>Id kopii: </b>{{bookcopy.id}}</li>
-        <li class="bookcopy_is_borrowed"><b>Czy wypożyczona: </b> 
-            {% if bookcopy.is_borrowed == False %}
-                Nie
-            {% else %}
-                Tak
-            {% endif %}
-        </li>
-        <br>
-        
-        <li class="authors">
-            <b>Autor: </b>
-            {% for author in bookcopy.book.authors.all %}
-                {{author.first_name}} {{author.last_name}}
-            {% endfor %}
-        </li>
-        <li class="title"><b>Tytuł: </b> {{bookcopy.book.title}} </li>
+            <li class="category"><b>Kategoria: </b>
+                {{bookcopy.book.category.category_name}}
+            </li>
+    </ul>
 
-        <li class="category"><b>Kategoria: </b>
-            {{bookcopy.book.category.category_name}}
-        </li>
-</ul>
+    <br>
 
-<br>
-
-{% if bookcopy.is_borrowed %}
-    <h5>Nie można usunąć wypożyczonej książki</h5>
-    <a href="{% url 'library_app:bookcopy_list' %}" class="btn btn-primary">Powrót</a>
-{% else %}
-    <form method="POST">
-        {% csrf_token %}
+    {% if bookcopy.is_borrowed %}
+        <h5>Nie można usunąć wypożyczonej książki</h5>
         <a href="{% url 'library_app:bookcopy_list' %}" class="btn btn-primary">Powrót</a>
-        <input type="submit" class="btn btn-danger" value="Usuń">
-    </form>
-{% endif %}
-
+    {% else %}
+        <form method="POST">
+            {% csrf_token %}
+            <a href="{% url 'library_app:bookcopy_list' %}" class="btn btn-primary">Powrót</a>
+            <input type="submit" class="btn btn-danger" value="Usuń">
+        </form>
+    {% endif %}
+</div>
 
 {% endblock %}

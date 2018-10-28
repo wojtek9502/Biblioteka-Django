@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
+{% load custom_tags %}
 
 {% block body_block %}
 <div class="container">
     <div class="page-title">
-        <h2>Lista Egzemplarzy</h2>
+        <h2>Lista egzemplarzy </h2>
     </div>
         <div class="other_create_buttons">
             <a class="btn btn-primary" href="{% url 'library_app:bookcopy_create' %}">Dodaj egzemplarz książki</a>
@@ -14,18 +15,26 @@
             <thead class="thead-light">
                 <tr>
                     <th scope="col">Opcje</th>
+                    <th scope="col">Autor</th>
                     <th scope="col">Książka</th>
-                    <th scope="col">Czy wypożyczona</th>
+                    <th scope="col">Nr egzemplarza</th>
+                    <th scope="col">Pożyczone przez</th>
+                    <th scope="col">Data wypożyczenia</th>
+                    <th scope="col">Data oddania</th>
                 </tr>
             </thead>
             <tbody>
-
+            
+            
             {% for bookcopy in bookcopy_list %}
+            {% get_bookcopy_borrow bookcopy.id as book_copy_borrow_obj %}
                     <tr>
                          <td>
                             <a href="{% url 'library_app:bookcopy_detail' pk=bookcopy.pk %}"><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20"></a>
                             {% if bookcopy.is_borrowed == False %}
                                 <a href="{% url 'library_app:bookcopy_delete' pk=bookcopy.pk %}"><img src="{% static 'website_icons/del_ico.png' %}" alt="Usuń" width="20" height="20"></a> 
+                            {% else %} <!-- Jesli egzemplarz wypozyczony to link do oddania egzemplarza -->
+                                 <a href="{% url 'library_app:borrow_delete' pk=book_copy_borrow_obj.pk %}"><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Usuń wypozyczenie" width="20" height="20"></a> 
                             {% endif %}
                         </td>
                         
@@ -33,25 +42,61 @@
                             {% for author in bookcopy.book.authors.all %}
                             <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author.first_name}} {{author.last_name}}</a>
                             {% endfor %}
-
-                            <a href="{% url 'library_app:book_detail' pk=bookcopy.book.pk %}">{{bookcopy.book.title}}</a>
-                            <a href="{% url 'library_app:bookcopy_detail' pk=bookcopy.pk %}">kopia nr: {{bookcopy.id}}</a>
                         </td>
-
-                        {% if bookcopy.is_borrowed %}
-                            <td>Tak</td>
-                        {% else %}
-                            <td>Nie</td>
-                        {% endif %}
+                        <td><a href="{% url 'library_app:book_detail' pk=bookcopy.book.pk %}">{{bookcopy.book.title}}</a></td>
+                        <td><a href="{% url 'library_app:bookcopy_detail' pk=bookcopy.pk %}"></a>{{bookcopy.id}}</a></td>  
                         
+                        {% if book_copy_borrow_obj %}
+                            <td>{{book_copy_borrow_obj.user.get_full_name}}</a></td>
+                            <td>{{book_copy_borrow_obj.borrow_date}}</a></td>
+                            <td>{{book_copy_borrow_obj.receive_date}}</a></td>
+                        {% else %}
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        {% endif %}
                     </tr>
             {% endfor %}
 
             </tbody>
         </table>
-        {% if user.is_superuser %}
-            <p>Nie można usuwać egzemplarzy książek które są wypożyczone</p>
+
+        <!-- pagination bar -->
+     <div class="pagination_bar">
+        {% if is_paginated %}
+        <div class="btn-group" role="group">
+            
+            {% if page_obj.has_previous %}
+                <a class="btn btn-light disable" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+            {% else %}
+                <a class="btn btn-light"><span>&laquo;</span></a>
+            {% endif %}
+
+            {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                <a  class="btn btn-dark active"><span>{{ i }} <span class="sr-only">(current)</span></span></a>
+                {% else %}
+                <a class="btn btn-light" href="?page={{ i }}">{{ i }}</a>
+                {% endif %}
+            {% endfor %}
+                
+            {% if page_obj.has_next %}
+            <a class="btn btn-light" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+            {% else %}
+            <a type="button" class="btn btn-light"><span>&raquo;</span></a>
+            {% endif %}
+        </div>
         {% endif %}
+    </div>
+
+    <div class="table-legend">
+        <p><b>Legenda:</b></p>
+        <p><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20">Szczegóły egzemplarza</p>
+        {% if user.is_superuser %}
+            <p><img src="{% static 'website_icons/del_ico.png' %}" alt="Usuń egzemplarz" width="20" height="20">Usuń egzemplarz (tylko niewypożyczony)</p>
+            <p><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Usuń wypozyczenie" width="20" height="20">Usuń wypozyczenie egzemplarza</p>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}
 

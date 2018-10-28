@@ -2,11 +2,12 @@
 {% load bootstrap4 %}
 
 {% block body_block %}
+<div class="container">
     <h1>Edytuj książkę</h1>
     <form method="POST" action="{% url 'library_app:book_update' pk=book.pk %}" class="book-form">
         {% csrf_token %}
         {% bootstrap_form form %}
         <input type="submit" value="Uaktualnij" class="btn btn-primary btn-large">
     </form>
-
+</div>
 {% endblock %}

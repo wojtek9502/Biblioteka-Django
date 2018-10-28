@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block body_block %}
-
-<h2>Usunąć kategorię {{category.category_name}}?</h2>
-<h6>Ta akcja usunie także wszystkie książki danej kategorii</h6>
-<form method="POST">
-    {% csrf_token %}
-    <input type="submit" class="btn btn-danger" value="Usuń">
-    <a class="btn btn-primary" href="{% url 'library_app:category_detail' pk=category.pk %}">Powrót</a>
-</form>
-
+<div class="container">
+    <h2>Usunąć kategorię {{category.category_name}}?</h2>
+    <h6>Ta akcja usunie także wszystkie książki danej kategorii</h6>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="submit" class="btn btn-danger" value="Usuń">
+        <a class="btn btn-primary" href="{% url 'library_app:category_detail' pk=category.pk %}">Powrót</a>
+    </form>
+</div>
 {% endblock %}

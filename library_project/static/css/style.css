@@ -67,4 +67,16 @@ h1{
     margin-top: 10px;
 }
 
+.table-legend{
+    margin-bottom: 100px;
+}
 
+.table-legend img{
+    margin-right: 10px;
+}
+
+
+#collapse_current_borrow{
+    margin-top: 50px;
+    margin-bottom: 50px;
+}

@@ -1,39 +1,40 @@
 {% extends "base.html" %}
 
 {% block body_block %}
+<div class="container">
 
-<h2>Usunąć książkę?</h2>
-<br>
-<h4>Szczegóły książki</h4>
-<ul>
-    <li class="authors">
-        <b>Autor: </b>
-        {% for author in book.authors.all %}
-        <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author.first_name}} {{author.last_name}}</a>
-        {% endfor %}
-    </li>
-    <li class="title"><b>Tytuł: </b> {{book.title}} </li>
+    <h2>Usunąć książkę?</h2>
+    <br>
+    <h4>Szczegóły książki</h4>
+    <ul>
+        <li class="authors">
+            <b>Autor: </b>
+            {% for author in book.authors.all %}
+            <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author.first_name}} {{author.last_name}}</a>
+            {% endfor %}
+        </li>
+        <li class="title"><b>Tytuł: </b> {{book.title}} </li>
 
-    <li class="publishing_house"><b>Wydawnictwo: </b>
-        <a href="{% url 'library_app:publishinghouse_detail' pk=book.publishing_house.pk %}">{{book.publishing_house.name}}</a>
-    </li>
-    
-    <li class="isbn"><b>ISBN: </b> {{book.isbn}} </li>
-    <li class="edition"><b>Wydanie: </b> {{book.edition}} </li>
-    <li class="publish_year"><b>Data publikacji: </b> {{book.publish_date}} </li>
-</ul>
+        <li class="publishing_house"><b>Wydawnictwo: </b>
+            <a href="{% url 'library_app:publishinghouse_detail' pk=book.publishing_house.pk %}">{{book.publishing_house.name}}</a>
+        </li>
+        
+        <li class="isbn"><b>ISBN: </b> {{book.isbn}} </li>
+        <li class="edition"><b>Wydanie: </b> {{book.edition}} </li>
+        <li class="publish_year"><b>Data publikacji: </b> {{book.publish_date}} </li>
+    </ul>
 
-<br>
-{% if book.bookcopies.count > 0 %}
-    <h6>Nie można usuwać ksiązek które mają jakiś egzemplarz</h6>
-    <a href="{% url 'library_app:book_list' %}" class="btn btn-primary">Powrót</a>
-{% else %}
-<form method="POST">
-    {% csrf_token %}
-    <a href="{% url 'library_app:book_list' %}" class="btn btn-primary">Powrót</a>
-    <input type="submit" class="btn btn-danger" value="Usuń">
-</form>
-{% endif %}
-
+    <br>
+    {% if book.bookcopies.count > 0 %}
+        <h6>Nie można usuwać ksiązek które mają jakiś egzemplarz</h6>
+        <a href="{% url 'library_app:book_list' %}" class="btn btn-primary">Powrót</a>
+    {% else %}
+    <form method="POST">
+        {% csrf_token %}
+        <a href="{% url 'library_app:book_list' %}" class="btn btn-primary">Powrót</a>
+        <input type="submit" class="btn btn-danger" value="Usuń">
+    </form>
+    {% endif %}
+</div>
 
 {% endblock %}
