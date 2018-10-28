@@ -58,6 +58,9 @@
                     <p class="nav-link">Witaj {{user.first_name}} {{user.last_name}}</p>
                 </li>
                 <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'accounts:password_reset' %}">Zresetuj hasło</a>
+                </li>
+                <li class="nav-item active">
                   <a class="nav-link" href="{% url 'accounts:logout' %}">Wyloguj</a>
                 </li>
     		{% else %}

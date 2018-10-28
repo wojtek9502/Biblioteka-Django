@@ -41,13 +41,37 @@ INSTALLED_APPS = [
     'library_app',
     'accounts',
     'bootstrap4',
+    'anymail',
 ]
 
-EMAIL_USE_SSL = True
-EMAIL_HOST = 'smtp.wp.pl'
-EMAIL_HOST_USER = 'w.k.praca_inz'
-EMAIL_HOST_PASSWORD = 'wojtek1243%!'
-EMAIL_PORT = 465
+# haslo na mailgun G_O_T_C_Z
+# EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
+# MAILGUN_ACCESS_KEY = 'cb2b0923078891832fa67ea4c3856519-4836d8f5-30ee330c'
+# MAILGUN_SERVER_NAME = 'wojtek9502.pythonanywhere.com'
+
+# EMAIL_USE_SSL = True
+# EMAIL_HOST = 'smtp.wp.pl'
+# EMAIL_HOST_USER = 'w.k.praca_inz'
+# EMAIL_HOST_PASSWORD = 'wojtek1243%!'
+# EMAIL_PORT = 465
+
+# EMAIL_HOST = 'smtp.mailgun.org'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'postmaster@sandbox1713d00516124338a9cecbcb9311f950.mailgun.org'
+# EMAIL_HOST_PASSWORD = 'wojtek1243'
+# EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = True
+
+# During development only
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+ANYMAIL = {
+    # (exact settings here depend on your ESP...)
+    "MAILGUN_API_KEY": "cb2b0923078891832fa67ea4c3856519-4836d8f5-30ee330c",
+    "MAILGUN_SENDER_DOMAIN": 'sandbox1713d00516124338a9cecbcb9311f950.mailgun.org',  # your Mailgun domain, if needed
+}
+EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"  # or sendgrid.EmailBackend, or...
+DEFAULT_FROM_EMAIL = "biblioteka@biblioteka.com"  # if you don't already have this in settings
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -110,6 +134,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
