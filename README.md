@@ -2,6 +2,7 @@
 Biblioteka w Django
 
 pip install django-anymail[mailgun]
+pip install django-braces
 argon2-cffi                      18.2.0
 astroid                          2.0.1
 autopep8                         1.3.5

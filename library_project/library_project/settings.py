@@ -68,7 +68,7 @@ INSTALLED_APPS = [
 ANYMAIL = {
     # (exact settings here depend on your ESP...)
     "MAILGUN_API_KEY": "cb2b0923078891832fa67ea4c3856519-4836d8f5-30ee330c",
-    "MAILGUN_SENDER_DOMAIN": 'sandbox1713d00516124338a9cecbcb9311f950.mailgun.org',  # your Mailgun domain, if needed
+    "MAILGUN_SENDER_DOMAIN": 'wojtek9502.pythonanywhere.com',  # your Mailgun domain, if needed
 }
 EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"  # or sendgrid.EmailBackend, or...
 DEFAULT_FROM_EMAIL = "biblioteka@biblioteka.com"  # if you don't already have this in settings

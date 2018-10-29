@@ -6,8 +6,8 @@ from django.core.urlresolvers import reverse_lazy
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from datetime import datetime
-
-from django.contrib.auth.mixins import LoginRequiredMixin
+ 
+from braces.views import SuperuserRequiredMixin, LoginRequiredMixin
 
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -28,8 +28,8 @@ class BookListView(generic.ListView):
 class BookDetailView(generic.DetailView):
     model = models.Book
 
-class CreateBookView(LoginRequiredMixin, generic.CreateView):
-    login_url = reverse_lazy('login')
+class CreateBookView(LoginRequiredMixin, SuperuserRequiredMixin, generic.CreateView):
+    login_url = reverse_lazy('no_permission')
 
     form_class = forms.BookForm
     model = models.Book
@@ -43,15 +43,16 @@ class CreateBookView(LoginRequiredMixin, generic.CreateView):
         return HttpResponseRedirect(self.get_success_url())
     
       
-class UpdateBookView(LoginRequiredMixin, generic.UpdateView):
-    login_url = reverse_lazy('login')
+class UpdateBookView(LoginRequiredMixin, SuperuserRequiredMixin, generic.UpdateView):
+    login_url = reverse_lazy('no_permission')
 
     fields = ('title','authors','description','isbn','category','edition','publishing_house','publish_date','image_url')
     model = models.Book
     template_name_suffix = '_update_form' #czyli templatka = book_update_form.html
 
-class DeleteBookView(LoginRequiredMixin, generic.DeleteView):
-    login_url = reverse_lazy('login')
+
+class DeleteBookView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DeleteView):
+    login_url = reverse_lazy('no_permission')
 
     model = models.Book
     success_url = reverse_lazy("library_app:book_list")
@@ -59,16 +60,14 @@ class DeleteBookView(LoginRequiredMixin, generic.DeleteView):
 ############################ Egzemplarz książki
 
 
-class BookCopyListView(LoginRequiredMixin, generic.ListView):
-    login_url = reverse_lazy('login')
-
+class BookCopyListView(generic.ListView):
     model = models.BookCopy
-    paginate_by = 5
+    paginate_by = 10
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["current_borrow_list"] = models.Borrow.objects.filter(user=self.request.user)
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context["current_borrow_list"] = models.Borrow.objects.filter(user=self.request.user)
+    #     return context
 
 
 
@@ -76,23 +75,23 @@ class BookCopyDetailView(generic.DetailView):
     model = models.BookCopy
 
 
-class CreateBookCopyView(LoginRequiredMixin, generic.CreateView):
-    login_url = reverse_lazy('login')
+class CreateBookCopyView(LoginRequiredMixin, SuperuserRequiredMixin, generic.CreateView):
+    login_url = reverse_lazy('no_permission')
 
     form_class = forms.BookCopyForm
     model = models.BookCopy
 
 
-class UpdateBookCopyView(LoginRequiredMixin, generic.UpdateView):
-    login_url = reverse_lazy('login')
+class UpdateBookCopyView(LoginRequiredMixin, SuperuserRequiredMixin, generic.UpdateView):
+    login_url = reverse_lazy('no_permission')
 
     fields = ('book', 'is_borrowed')
     model = models.BookCopy
     template_name_suffix = '_update_form'  # czyli templatka = book_update_form.html
 
 
-class DeleteBookCopyView(LoginRequiredMixin, generic.DeleteView):
-    login_url = reverse_lazy('login')
+class DeleteBookCopyView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DeleteView):
+    login_url = reverse_lazy('no_permission')
 
     model = models.BookCopy
     success_url = reverse_lazy("library_app:bookcopy_list")
@@ -102,21 +101,24 @@ class DeleteBookCopyView(LoginRequiredMixin, generic.DeleteView):
 class AuthorDetailView(generic.DetailView):
     model = models.Author
 
-class CreateAuthorView(LoginRequiredMixin,generic.CreateView):
-    login_url = reverse_lazy('login')
+
+class CreateAuthorView(LoginRequiredMixin, SuperuserRequiredMixin, generic.CreateView):
+    login_url = reverse_lazy('no_permission')
 
     form_class = forms.AuthorForm
     model = models.Author
 
-class UpdateAuthorView(LoginRequiredMixin, generic.UpdateView):
-    login_url = reverse_lazy('login')
+
+class UpdateAuthorView(LoginRequiredMixin, SuperuserRequiredMixin, generic.UpdateView):
+    login_url = reverse_lazy('no_permission')
     
     model = models.Author
     form_class = forms.AuthorForm
     template_name_suffix = '_update_form' #czyli templatka = author_update_form.html
 
-class DeleteAuthorView(LoginRequiredMixin, generic.DeleteView):
-    login_url = reverse_lazy('login')
+
+class DeleteAuthorView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DeleteView):
+    login_url = reverse_lazy('no_permission')
 
     model = models.Author
     success_url = reverse_lazy("library_app:book_list")
@@ -126,22 +128,24 @@ class DeleteAuthorView(LoginRequiredMixin, generic.DeleteView):
 class PublishingHouseDetailView(generic.DetailView):
     model = models.PublishingHouse
 
-class CreatePublishingHouseView(LoginRequiredMixin,generic.CreateView):
-    login_url = reverse_lazy('login')
+
+class CreatePublishingHouseView(LoginRequiredMixin, SuperuserRequiredMixin, generic.CreateView):
+    login_url = reverse_lazy('no_permission')
 
     form_class = forms.PublishingHouseForm
     model = models.PublishingHouse
     success_url = reverse_lazy("library_app:book_list")
     
 
-class DeletePublishingHouseView(LoginRequiredMixin, generic.DeleteView):
-    login_url = reverse_lazy('login')
+class DeletePublishingHouseView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DeleteView):
+    login_url = reverse_lazy('no_permission')
 
     model = models.PublishingHouse
     success_url = reverse_lazy("library_app:book_list")
 
-class UpdatePublishingHouseView(LoginRequiredMixin, generic.UpdateView):
-    login_url = reverse_lazy('login')
+
+class UpdatePublishingHouseView(LoginRequiredMixin, SuperuserRequiredMixin, generic.UpdateView):
+    login_url = reverse_lazy('no_permission')
 
     fields = ('name', 'city', 'street', 'house_number', 'postal_code')
     model = models.PublishingHouse
@@ -153,29 +157,33 @@ class UpdatePublishingHouseView(LoginRequiredMixin, generic.UpdateView):
 class CategoryDetailView(generic.DetailView):
     model = models.Category
 
-class CreateCategoryView(LoginRequiredMixin,generic.CreateView):
-    login_url = reverse_lazy('login')
+
+class CreateCategoryView(LoginRequiredMixin, SuperuserRequiredMixin, generic.CreateView):
+    login_url = reverse_lazy('no_permission')
 
     form_class = forms.CategoryForm
     model = models.Category
     
 
-class UpdateCategoryView(LoginRequiredMixin, generic.UpdateView):
-    login_url = reverse_lazy('login')
+class UpdateCategoryView(LoginRequiredMixin, SuperuserRequiredMixin, generic.UpdateView):
+    login_url = reverse_lazy('no_permission')
 
     fields = ('category_name',)
     model = models.Category
     template_name_suffix = '_update_form' 
 
-class DeleteCategoryView(LoginRequiredMixin, generic.DeleteView):
-    login_url = reverse_lazy('login')
+
+class DeleteCategoryView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DeleteView):
+    login_url = reverse_lazy('no_permission')
 
     model = models.Category
     success_url = reverse_lazy("library_app:book_list")
 
 ########################## Wypozyczenia
-class BorrowListView(LoginRequiredMixin, generic.ListView):
-    login_url = reverse_lazy('login')
+
+
+class BorrowListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):
+    login_url = reverse_lazy('no_permission')
     model = models.Borrow
     context_object_name = "borrow_list" #human-understandable name of variable to access from templates
     paginate_by = 10
@@ -189,12 +197,14 @@ class BorrowListView(LoginRequiredMixin, generic.ListView):
             queryset = models.Borrow.objects.filter(user=self.request.user).filter(book_copy_id__is_borrowed=True)
         return queryset 
 
-class BorrowDetailView(LoginRequiredMixin, generic.DetailView):
-    login_url = reverse_lazy('login')
+
+class BorrowDetailView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DetailView):
+    login_url = reverse_lazy('no_permission')
     model = models.Borrow
 
-class CreateBorrowView(LoginRequiredMixin, generic.CreateView):
-    login_url = reverse_lazy('login')
+
+class CreateBorrowView(LoginRequiredMixin, SuperuserRequiredMixin, generic.CreateView):
+    login_url = reverse_lazy('no_permission')
 
     form_class = forms.BorrowForm
     model = models.Borrow
@@ -212,17 +222,17 @@ class CreateBorrowView(LoginRequiredMixin, generic.CreateView):
         return HttpResponseRedirect(self.get_success_url())
     
     
-
-class UpdateBorrowView(LoginRequiredMixin, generic.UpdateView):
-    login_url = reverse_lazy('login')
+class UpdateBorrowView(LoginRequiredMixin, SuperuserRequiredMixin, generic.UpdateView):
+    login_url = reverse_lazy('no_permission')
 
     fields = ('is_borrowed',)
     model = models.BookCopy
 
     template_name_suffix = '_update_form'
 
-class DeleteBorrowView(LoginRequiredMixin, generic.DeleteView):
-    login_url = reverse_lazy('login')
+
+class DeleteBorrowView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DeleteView):
+    login_url = reverse_lazy('no_permission')
 
     model = models.Borrow
     success_url = reverse_lazy("library_app:borrow_list")
