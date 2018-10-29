@@ -13,14 +13,14 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="{% url 'index' %}">Biblioteka</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
+            aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div id="navbarNavDropdown" class="navbar-collapse collapse">
-            <ul class="navbar-nav mr-auto">
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
                 <li class="nav-item active">
                     <a class="nav-link" href="{% url 'contact' %}">Kontakt</a>
                 </li>
@@ -31,47 +31,83 @@
                     <a class="nav-link" href="{% url 'library_app:book_list' %}">Katalog online</a>
                 </li>
                 {% if user.is_authenticated %}
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{% url 'library_app:my_borrow_list' %}">Twoje wypożyczenia</a>
-                    </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'library_app:my_borrow_list' %}">Twoje wypożyczenia</a>
+                </li>
                 {% endif %}
 
+                
+            </ul>
+            <ul class="nav navbar-nav ml-auto">
+                {% if user.is_authenticated and user.is_superuser %}
+                    <li class="nav-item dropdown active">
+                        <a class="nav-link dropdown-toggle" href="#" id="BorrowBook" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                            Wypożyczanie
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="BorrowBook">
+                            <a class="dropdown-item" href="{% url 'library_app:borrow_create' %}">Wypożycz egzemplarz książki</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'library_app:borrow_list' %}">Lista egzemplarzy</a>
+                            <a class="dropdown-item" href="{% url 'library_app:bookcopy_list' %}">Lista wypożyczeń</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown active">
+                        <a class="nav-link dropdown-toggle" href="#" id="ManageLibrary" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                            Zarządzaj biblioteką
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="ManageLibrary">
+                            <a class="dropdown-item" href="{% url 'library_app:book_create' %}">Dodaj książkę</a>
+                            <a class="dropdown-item" href="{% url 'library_app:bookcopy_create' %}">Dodaj egzemplarz książki</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'library_app:author_create' %}">Dodaj autora</a>
+                            <a class="dropdown-item" href="{% url 'library_app:publishinghouse_create' %}">Dodaj wydawnictwo</a>
+                            <a class="dropdown-item" href="{% url 'library_app:category_create' %}">Dodaj kategorię</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item active">
+                        <a class="nav-link">Bibliotekarz {{user.first_name}} {{user.last_name}}</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'accounts:logout' %}">Wyloguj</a>
+                    </li>
+                {% elif user.is_authenticated %}
+                    <li class="nav-item active">
+                        <p class="nav-link">Witaj {{user.first_name}} {{user.last_name}}</p>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'accounts:password_reset' %}">Zresetuj hasło</a>
+                    </li>
+                    <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'accounts:logout' %}">Wyloguj</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'accounts:login' %}">Zaloguj się</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'accounts:signup' %}">Zarejestruj się</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+       
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbarNavDropdown" class="navbar-collapse collapse">
+            <ul class="navbar-nav mr-auto">
+                
             </ul>
             <ul class="navbar-nav" >
-            {% if user.is_authenticated and user.is_superuser %}
-                <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'library_app:borrow_create' %}">Wypożycz książkę</a>
-                </li>
-
-                <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'librarian_panel' %}">Zarządzaj biblioteką</a>
-                </li>
-
-                <li class="nav-item active">
-                    <p class="nav-link">Bibliotekarz {{user.first_name}} {{user.last_name}}</p>
-                </li>
-                <li class="nav-item active">
-                  <a class="nav-link" href="{% url 'accounts:logout' %}">Wyloguj</a>
-                </li>
-            {% elif user.is_authenticated %}
-                <li class="nav-item active">
-                    <p class="nav-link">Witaj {{user.first_name}} {{user.last_name}}</p>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'accounts:password_reset' %}">Zresetuj hasło</a>
-                </li>
-                <li class="nav-item active">
-                  <a class="nav-link" href="{% url 'accounts:logout' %}">Wyloguj</a>
-                </li>
-    		{% else %}
-    			<li class="nav-item active">
-                    <a class="nav-link" href="{% url 'accounts:login' %}">Zaloguj się</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'accounts:signup' %}">Zarejestruj się</a>
-                </li>
-    		{% endif %}
-            </ul>
+            
+        </ul>
         </div>
     </nav>
 

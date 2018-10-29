@@ -26,6 +26,5 @@ urlpatterns = [
     url(r'^accounts/', include('accounts.urls', namespace='accounts')),
     url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'^thanks/', views.ThanksPage.as_view(), name="thanks"),
-    url(r'^librarian-panel/', views.LibrarianPanelPage.as_view(), name="librarian_panel"),
     url(r'^no-permission/', views.NoPermsPage.as_view(), name="no_permission"),
 ]

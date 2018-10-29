@@ -17,6 +17,3 @@ class RegulationsPage(TemplateView):
 class NoPermsPage(TemplateView):
     template_name = "no_perms.html"
 
-class LibrarianPanelPage(LoginRequiredMixin, TemplateView):
-    login_url = reverse_lazy('login')
-    template_name = "librarian_panel.html"
