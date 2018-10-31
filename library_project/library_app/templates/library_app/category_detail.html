@@ -1,27 +1,87 @@
 {% extends "base.html" %}
+{% load custom_tags %}
 
 {% block body_block %}
-<div class="container">
-    <div class="page-title book_detail jumbotron">
-        <h2>Szczegóły kategorii:</h2>
-        <ul>
-            <li class="title"><b>Nazwa: </b> {{category.category_name}} </li>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div id="navbarNavDropdown" class="navbar-collapse collapse">
+        <ul class="navbar-nav mr-auto">
+            <a class="btn" data-toggle="collapse" href="#collapse1" role="button" aria-expanded="false" aria-controls="collapse"
+                onclick="scrollToIdElem('collapse1')">
+                Pokaż szczegóły
+            </a>
+            <a class="btn" data-toggle="collapse" href="#collapse2" role="button" aria-expanded="false" aria-controls="collapse"
+                onclick="scrollToIdElem('collapse2')">
+                Pokaż książki z tej kategorii
+            </a>
         </ul>
+    </div>
+</nav>
 
-        
-        <div class="category_list_back_link button">
-            <a href="{% url 'library_app:book_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
+
+<div class="container">
+    <div class="page-title book_detail">
+        <div class="collapse show" id="collapse1">
+            <h2>Szczegóły kategorii:</h2>
+            <ul>
+                <li class="title"><b>Nazwa: </b> {{category.category_name}} </li>
+                <li class="books_in_category"><b>Ksiązki z tej kategorii: </b> {{category_books.count}} </li>
+            </ul>
+
+            
+            <div class="category_list_back_link button">
+                <a href="{% url 'library_app:book_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
+            </div>
+
+            {% if user.is_authenticated and user.is_superuser %}
+                <div class="update_category_link button">
+                    <a href="{% url 'library_app:category_update' pk=category.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj kategorię"></a>
+                </div>
+
+                <div class="delete_category_link button">
+                    <a href="{% url 'library_app:category_delete' pk=category.pk %}"><input type="submit" class="btn btn-danger" value="Usuń kategorię"></a>
+                </div>
+            {% endif %}
         </div>
 
-        {% if user.is_authenticated and user.is_superuser %}
-            <div class="update_category_link button">
-                <a href="{% url 'library_app:category_update' pk=category.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj kategorię"></a>
-            </div>
 
-            <div class="delete_category_link button">
-                <a href="{% url 'library_app:category_delete' pk=category.pk %}"><input type="submit" class="btn btn-danger" value="Usuń kategorię"></a>
-            </div>
-        {% endif %}
+        <!-- Książki autora -->
+        <div class="collapse show" id="collapse2">
+            <h3>Książki z tej kategorii</h3>
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Tytuł</th>
+                        <th scope="col">Autor</th>
+                        <th scope="col">Kategoria</th>
+                        <th scope="col">Wydawnictwo</th>
+                        <th scope="col">Egzemplarzy</th>
+                        <th scope="col">Wolnych egzemplarzy</th>
+                    </tr>
+                </thead>
+                <tbody>
+        
+                    {% for book in category_books %}
+                    <tr>
+                        <td><a href="{% url 'library_app:book_detail' pk=book.pk %}">{{book.title}}</a></td>
+        
+                        <td>
+                            {% for author in book.authors.all %}
+                            <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author}}</a>
+                            {% endfor %}
+                        </td>
+        
+                        <td><a href="{% url 'library_app:category_detail' pk=book.category.pk %}">{{book.category.category_name}}</a></td>
+                        <td><a href="{% url 'library_app:publishinghouse_detail' pk=book.publishing_house.pk %}">{{book.publishing_house}}</a></td>
+                        <td>{{book.bookcopies.count}}</td>
+        
+                        {% free_bookcopies_counter_tag book.bookcopies as free_bookcopies %}
+                        <td>{{free_bookcopies}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>
 {% endblock %}

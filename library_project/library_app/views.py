@@ -124,6 +124,11 @@ class DeleteBookCopyView(LoginRequiredMixin, SuperuserRequiredMixin, generic.Del
 class AuthorDetailView(generic.DetailView):
     model = models.Author
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        #w context['author'] jest przechowywany aktualnie przegladany
+        context["author_books"] = models.Book.objects.all().filter(authors=context['author'])
+        return context
 
 class CreateAuthorView(LoginRequiredMixin, SuperuserRequiredMixin, generic.CreateView):
     login_url = reverse_lazy('no_permission')
@@ -150,6 +155,12 @@ class DeleteAuthorView(LoginRequiredMixin, SuperuserRequiredMixin, generic.Delet
 ##########################      Wydawnictwo
 class PublishingHouseDetailView(generic.DetailView):
     model = models.PublishingHouse
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        #w context['publishinghouse'] jest przechowywane aktualnie przegladane wydawnictwo
+        context["publishing_house_books"] = models.Book.objects.all().filter(publishing_house=context['publishinghouse'])
+        return context
 
 
 class CreatePublishingHouseView(LoginRequiredMixin, SuperuserRequiredMixin, generic.CreateView):
@@ -180,6 +191,13 @@ class UpdatePublishingHouseView(LoginRequiredMixin, SuperuserRequiredMixin, gene
 class CategoryDetailView(generic.DetailView):
     model = models.Category
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        #w context['category_books'] jest przechowywany aktualnie przegladana kategoria
+        context["category_books"] = models.Book.objects.all().filter(category=context['category'])
+        print('context ',context)
+        return context
+
 
 class CreateCategoryView(LoginRequiredMixin, SuperuserRequiredMixin, generic.CreateView):
     login_url = reverse_lazy('no_permission')
@@ -191,8 +209,8 @@ class CreateCategoryView(LoginRequiredMixin, SuperuserRequiredMixin, generic.Cre
 class UpdateCategoryView(LoginRequiredMixin, SuperuserRequiredMixin, generic.UpdateView):
     login_url = reverse_lazy('no_permission')
 
-    fields = ('category_name',)
     model = models.Category
+    form_class = forms.CategoryForm
     template_name_suffix = '_update_form' 
 
 
@@ -203,8 +221,6 @@ class DeleteCategoryView(LoginRequiredMixin, SuperuserRequiredMixin, generic.Del
     success_url = reverse_lazy("library_app:book_list")
 
 ########################## Wypozyczenia
-
-
 class BorrowListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):
     login_url = reverse_lazy('no_permission')
     model = models.Borrow
