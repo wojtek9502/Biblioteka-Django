@@ -48,40 +48,44 @@
 
         
         <div class="collapse show" id="collapse2">
-            <h3>Książki z tego wydawnictwa</h3>
-            <table class="table table-bordered table-hover">
-                <thead class="thead-light">
-                    <tr>
-                        <th scope="col">Tytuł</th>
-                        <th scope="col">Autor</th>
-                        <th scope="col">Kategoria</th>
-                        <th scope="col">Wydawnictwo</th>
-                        <th scope="col">Egzemplarzy</th>
-                        <th scope="col">Wolnych egzemplarzy</th>
-                    </tr>
-                </thead>
-                <tbody>
+        {% if publishing_house_books.count == 0 %}
+            <h5>Brak książek tego wydawnictwa</h5>
+        {% else %}
+        <h3>Książki z tego wydawnictwa</h3>
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Tytuł</th>
+                    <th scope="col">Autor</th>
+                    <th scope="col">Kategoria</th>
+                    <th scope="col">Wydawnictwo</th>
+                    <th scope="col">Egzemplarzy</th>
+                    <th scope="col">Wolnych egzemplarzy</th>
+                </tr>
+            </thead>
+            <tbody>
         
-                    {% for book in publishing_house_books %}
-                    <tr>
-                        <td><a href="{% url 'library_app:book_detail' pk=book.pk %}">{{book.title}}</a></td>
+                {% for book in publishing_house_books %}
+                <tr>
+                    <td><a href="{% url 'library_app:book_detail' pk=book.pk %}">{{book.title}}</a></td>
         
-                        <td>
-                            {% for author in book.authors.all %}
-                            <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author}}</a>
-                            {% endfor %}
-                        </td>
+                    <td>
+                        {% for author in book.authors.all %}
+                        <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author}}</a>
+                        {% endfor %}
+                    </td>
         
-                        <td><a href="{% url 'library_app:category_detail' pk=book.category.pk %}">{{book.category.category_name}}</a></td>
-                        <td><a href="{% url 'library_app:publishinghouse_detail' pk=book.publishing_house.pk %}">{{book.publishing_house}}</a></td>
-                        <td>{{book.bookcopies.count}}</td>
+                    <td><a href="{% url 'library_app:category_detail' pk=book.category.pk %}">{{book.category.category_name}}</a></td>
+                    <td><a href="{% url 'library_app:publishinghouse_detail' pk=book.publishing_house.pk %}">{{book.publishing_house}}</a></td>
+                    <td>{{book.bookcopies.count}}</td>
         
-                        {% free_bookcopies_counter_tag book.bookcopies as free_bookcopies %}
-                        <td>{{free_bookcopies}}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    {% free_bookcopies_counter_tag book.bookcopies as free_bookcopies %}
+                    <td>{{free_bookcopies}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
         </div>
 
 
