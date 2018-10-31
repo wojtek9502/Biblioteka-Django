@@ -50,6 +50,7 @@
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{% url 'library_app:bookcopy_list' %}">Lista egzemplarzy</a>
                             <a class="dropdown-item" href="{% url 'library_app:borrow_list' %}">Lista wypożyczeń</a>
+                            <a class="dropdown-item" href="{% url 'library_app:borrow_list' %}">Historia wypożyczeń @TODO</a>
                         </div>
                     </li>
 
@@ -76,7 +77,7 @@
                     </li>
                 {% elif user.is_authenticated %}
                     <li class="nav-item active">
-                        <p class="nav-link">Witaj {{user.first_name}} {{user.last_name}}</p>
+                        <a class="nav-link">Witaj {{user.first_name}} {{user.last_name}}</a>
                     </li>
                     <li class="nav-item active">
                         <a class="nav-link" href="{% url 'accounts:password_reset' %}">Zresetuj hasło</a>

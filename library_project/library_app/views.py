@@ -19,11 +19,23 @@ class BookListView(generic.ListView):
     paginate_by = 10
     queryset = models.Book.objects.all()  # Default: Model.objects.all()
 
-    #do listy ksiazek dodaj kontekst z egzemplarzami ksiazki
-    # def get_context_data(self, **kwargs):
-    #     context = super(BookListView, self).get_context_data(**kwargs)
-    #     context['bookcopys'] = models.BookCopy.objects.all
-    #     return context
+    def get_queryset(self):
+        search_query = self.request.GET.get("search_query")
+        search_type = self.request.GET.get("search_type")
+        if search_query is not None:
+            if search_type == "title":
+                return models.Book.objects.all().filter(title__icontains=search_query)
+            elif search_type == "author":
+                authors_result = models.Book.objects.all().filter(authors__first_name__icontains=search_query) | models.Book.objects.all().filter(authors__last_name__icontains=search_query)
+                return authors_result
+            elif search_type == "category":
+                return models.Book.objects.all().filter(category__category_name__icontains=search_query)
+            elif search_type == "publishing-house":
+                return models.Book.objects.all().filter(publishing_house__name__icontains=search_query)
+        else:
+            return models.Book.objects.all()
+
+       
 
 class BookDetailView(generic.DetailView):
     model = models.Book
@@ -64,10 +76,21 @@ class BookCopyListView(generic.ListView):
     model = models.BookCopy
     paginate_by = 10
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context["current_borrow_list"] = models.Borrow.objects.filter(user=self.request.user)
-    #     return context
+    def get_queryset(self):
+        search_query = self.request.GET.get("search_query")
+        search_type = self.request.GET.get("search_type")
+        if search_query is not None:
+            if search_type == "title":
+                return models.BookCopy.objects.all().filter(book__title__icontains=search_query)
+            elif search_type == "author":
+                authors_result = models.BookCopy.objects.all().filter(book__authors__first_name__icontains=search_query) | models.BookCopy.objects.all().filter(book__authors__last_name__icontains=search_query)
+                return authors_result
+            elif search_type == "bookcopy_nr":
+                return models.BookCopy.objects.all().filter(id__icontains=search_query)
+            elif search_type == "isbn":
+                return models.BookCopy.objects.all().filter(book__isbn__icontains=search_query)
+        else:
+            return models.BookCopy.objects.all()
 
 
 
@@ -190,12 +213,24 @@ class BorrowListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListVie
     #queryset = models.Borrow.objects.all()  # Default: Model.objects.all()
 
     def get_queryset(self):
-        if self.request.user.is_superuser:
-            # queryset = models.Borrow.objects.filter(book_copy_id__is_borrowed=True)
-            queryset = models.Borrow.objects.all()
+        search_query = self.request.GET.get("search_query")
+        search_type = self.request.GET.get("search_type")
+        if search_query is not None:
+            if search_type == "title":
+                return models.Borrow.objects.all().filter(book_copy_id__book__title__icontains=search_query)
+            elif search_type == "author":
+                authors_result = models.Borrow.objects.all().filter(book_copy_id__book__authors__first_name__icontains=search_query) | models.Borrow.objects.all().filter(book_copy_id__book__authors__last_name__icontains=search_query)
+                return authors_result
+            elif search_type == "bookcopy_nr":
+                return models.Borrow.objects.all().filter(book_copy_id__id__icontains=search_query)
+            elif search_type == "borrow_by_user":
+                borrow_by_result = models.Borrow.objects.all().filter(user__first_name__contains=search_query) | models.Borrow.objects.all().filter(user__last_name__contains=search_query)
+                return borrow_by_result
+            elif search_type == "borrow_by_librarian":
+                borrow_by_result = models.Borrow.objects.all().filter(borrow_librarian__first_name__contains=search_query) | models.Borrow.objects.all().filter(borrow_librarian__last_name__contains=search_query)
+                return borrow_by_result
         else:
-            queryset = models.Borrow.objects.filter(user=self.request.user).filter(book_copy_id__is_borrowed=True)
-        return queryset 
+            return models.Borrow.objects.all()
 
 
 class BorrowDetailView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DetailView):

@@ -8,6 +8,25 @@
     <div class="page-title">
         <h2>Katalog Online</h2>
     </div>
+
+
+<div class="search-bar">
+<form class="form-inline" action="{% url 'library_app:book_list' %}" method="GET">
+    <div class="input-group">
+        <input type="search" class="form-control" name="search_query" placeholder="Wyszukaj">
+        <select class="search-select" name="search_type">
+            <option value="title" selected>Tytuł</option>
+            <option value="author">Autor</option>
+            <option value="category">Kategoria</option>
+            <option value="publishing-house">Wydawnictwo</option>
+        </select>
+        <div class="input-group-append search-button">
+            <button class="btn btn-primary" type="submit">Szukaj</button>
+        </div>
+    </div>
+</form>
+</div>
+
       <table class="table table-bordered table-hover">
             <thead class="thead-light">
                 <tr>

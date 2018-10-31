@@ -7,6 +7,24 @@
         <h2>Wypożyczenia</h2>
     </div>
 
+            <div class="search-bar">
+                <form class="form-inline" action="{% url 'library_app:borrow_list' %}" method="GET">
+                    <div class="input-group">
+                        <input type="search" class="form-control" name="search_query" placeholder="Wyszukaj">
+                        <select class="search-select" name="search_type">
+                            <option value="author" selected>Autor</option>
+                            <option value="title">Tytuł</option>
+                            <option value="bookcopy_nr">Nr kopii</option>
+                            <option value="borrow_by_user">Wypożyczone dla</option>
+                            <option value="borrow_by_librarian">Wypożyczone przez</option>
+                        </select>
+                        <div class="input-group-append search-button">
+                            <button class="btn btn-primary" type="submit">Szukaj</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
     <table class="table table-bordered table-hover">
         <thead class="thead-light">
             <tr>
@@ -79,7 +97,7 @@
         <p><b>Legenda:</b></p>
         <p><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20">Szczegóły wypożyczenia</p>
         {% if user.is_superuser %}
-            <p><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Usuń wypozyczenie" width="20" height="20">Usuń wypozyczenie egzemplarza</p>
+            <p><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Usuń wypozyczenie" width="20" height="20">Usuń wypożyczenie egzemplarza</p>
         {% endif %}
     </div>
 

@@ -8,6 +8,23 @@
         <h2>Lista egzemplarzy </h2>
     </div>
 
+            <div class="search-bar">
+                <form class="form-inline" action="{% url 'library_app:bookcopy_list' %}" method="GET">
+                    <div class="input-group">
+                        <input type="search" class="form-control" name="search_query" placeholder="Wyszukaj">
+                        <select class="search-select" name="search_type">
+                            <option value="author" selected>Autor</option>
+                            <option value="title">Tytuł</option>
+                            <option value="bookcopy_nr">Nr kopii</option>
+                            <option value="isbn">ISBN</option>
+                        </select>
+                        <div class="input-group-append search-button">
+                            <button class="btn btn-primary" type="submit">Szukaj</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
         {% if user.is_authenticated and user.is_superuser %} <!--Jesli strone odwiedza superuser-->
             <div class="other_create_buttons">
                 <a class="btn btn-primary" href="{% url 'library_app:bookcopy_create' %}">Dodaj egzemplarz książki</a>
@@ -20,7 +37,7 @@
                         <th scope="col">Autor</th>
                         <th scope="col">Książka</th>
                         <th scope="col">Nr egzemplarza</th>
-                        <th scope="col">Pożyczone przez</th>
+                        <th scope="col">Pożyczone dla</th>
                         <th scope="col">Data wypożyczenia</th>
                         <th scope="col">Data oddania</th>
                     </tr>
@@ -67,7 +84,7 @@
                 </tbody>
             </table>
         {% else %} <!--Jesli strone odwiedza reszta -->
-                        <table class="table table-bordered table-hover">
+            <table class="table table-bordered table-hover">
                 <thead class="thead-light">
                     <tr>
                         <th scope="col">Opcje</th>
@@ -140,7 +157,7 @@
         <p><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20">Szczegóły egzemplarza</p>
         {% if user.is_superuser %}
             <p><img src="{% static 'website_icons/del_ico.png' %}" alt="Usuń egzemplarz" width="20" height="20">Usuń egzemplarz (tylko niewypożyczony)</p>
-            <p><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Usuń wypozyczenie" width="20" height="20">Usuń wypozyczenie egzemplarza</p>
+            <p><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Usuń wypozyczenie" width="20" height="20">Usuń wypożyczenie egzemplarza</p>
         {% endif %}
     </div>
 </div>
