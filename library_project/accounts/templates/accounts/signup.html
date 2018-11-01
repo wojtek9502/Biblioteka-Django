@@ -6,7 +6,12 @@
     <h1>Zarejestruj się</h1>
     <form method="POST">
         {% csrf_token %}
-        {% bootstrap_form form %}
+        {% bootstrap_form user_form %}
+
+
+        <h3 class="page-title">Informacje dodatkowe</h3>
+
+        {% bootstrap_form profile_form %}
         <input type="submit" class="btn btn-primary sign-up-btn" value="Zarejestruj się">
     </form>
 </div>
