@@ -111,7 +111,7 @@ class UserProfileInfo(models.Model):
     city = models.CharField(max_length=200)
     phone = models.CharField(max_length=20)
     post_code = models.CharField(max_length=20)
-    house_number = models.PositiveIntegerField()
+    house_number = models.CharField(max_length=20)
 
     def __str__(self):
         return 'user profile ' + self.user.username
