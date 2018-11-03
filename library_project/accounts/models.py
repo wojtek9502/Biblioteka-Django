@@ -8,4 +8,5 @@ class User(auth.models.User, auth.models.PermissionsMixin):
     
     def __unicode__(self):
         return self.get_full_name()
+
     

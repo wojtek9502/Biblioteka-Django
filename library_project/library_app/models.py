@@ -110,11 +110,8 @@ class UserProfileInfo(models.Model):
     street = models.CharField(max_length=200)
     city = models.CharField(max_length=200)
     phone = models.CharField(max_length=20)
-    post_code = models.CharField(max_length=20)
+    post_code = models.CharField(max_length=6)
     house_number = models.CharField(max_length=20)
 
     def __str__(self):
         return 'user profile ' + self.user.username
-
-    def get_absolute_url(self):
-        return reverse('accounts:login')

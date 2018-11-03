@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import CreateView
-
+from django.views.generic import CreateView, TemplateView
 
 from library_app import models
 from accounts import forms
@@ -18,6 +17,7 @@ def register(request):
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
             user.set_password(user.password)  # ta metoda hashuje haslo
+            user.is_active = False #na poczatku user jest nieaktywny
             user.save()
             profile = profile_form.save(commit=False)
             # w modelu profile jest pole user z relacja 1do1 wiec uzupelniamy je
@@ -25,7 +25,7 @@ def register(request):
             profile.save()
 
             registered = True
-            return redirect('login')
+            return redirect('accounts:after_signup')
         else:
             print(user_form.errors, profile_form.errors)
 
@@ -37,3 +37,7 @@ def register(request):
                   context={'user_form': user_form,
                            'profile_form': profile_form,
                            'registered': registered})
+
+
+class AfterRegisterPage(TemplateView):
+    template_name = "accounts/after_signup.html"
