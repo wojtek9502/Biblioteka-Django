@@ -23,10 +23,9 @@ class BookForm(forms.ModelForm):
 class BookCopyForm(forms.ModelForm):
     class Meta:
         model = models.BookCopy
-        fields = ('book','is_borrowed')
+        fields = ('book',)
         labels = {
             'book': 'Książka',
-            'is_borrowed': 'Czy wypożyczona?'
         }
         
 

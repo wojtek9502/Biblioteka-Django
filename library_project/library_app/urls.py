@@ -37,4 +37,7 @@ urlpatterns = [
     url(r'^update_borrow/(?P<pk>\d+)/$', views.UpdateBorrowView.as_view(), name='borrow_update'),
 
     url(r'^my_borrow_list/$', views.MyBorrowListView.as_view(), name='my_borrow_list'),
+
+    url(r'^users_list/$', views.UsersListView.as_view(), name='users_list'),
+
 ]

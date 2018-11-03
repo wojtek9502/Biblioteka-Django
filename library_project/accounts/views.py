@@ -16,10 +16,10 @@ def register(request):
 
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
-            user.set_password(user.password)  # ta metoda hashuje haslo
             user.is_active = False #na poczatku user jest nieaktywny
             user.save()
             profile = profile_form.save(commit=False)
+            
             # w modelu profile jest pole user z relacja 1do1 wiec uzupelniamy je
             profile.user = user
             profile.save()

@@ -329,3 +329,9 @@ class MyBorrowListView(LoginRequiredMixin, generic.ListView):
         return context
     
 
+class UsersListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):
+    login_url = reverse_lazy('no_permission')
+    model = models.UserProfileInfo
+    paginate_by = 10
+    context_object_name = "users_profile_list" #w templatce teraz user_list zamiast user_list_set
+    template_name = 'library_app/users_list.html'

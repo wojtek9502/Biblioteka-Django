@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_tags %}
+
+
+{% block body_block %}
+<div class="container">
+    <div class="page-title">
+        <h2>Zarządaj użytkownikami</h2>
+    </div>
+
+
+<div class="search-bar">
+<form class="form-inline" action="{% url 'library_app:users_list' %}" method="GET">
+    <div class="input-group">
+        <input type="search" class="form-control" name="search_query" placeholder="Wyszukaj">
+        <select class="search-select" name="search_type">
+            <option value="title" selected>Imie i nazwisko</option>
+            <option value="author">Adres</option>
+            <option value="category">Telefon</option>
+            <option value="publishing-house">Email</option>
+        </select>
+        <div class="input-group-append search-button">
+            <button class="btn btn-primary" type="submit">Szukaj</button>
+        </div>
+    </div>
+</form>
+</div>
+
+      <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Opcje</th>
+                    <th scope="col">Imię i nazwisko</th>
+                    <th scope="col">PESEL</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Telefon</th>
+                    <th scope="col">Liczba wypożyczeń</th>
+                    <th scope="col">Czy aktywny</th>
+                    <th scope="col">Typ konta</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            {% for user_profile_obj in users_profile_list %}
+                {% get_borrow_by_user_count user_profile_obj.user as user_obj_borrow_count %}
+                    <tr>
+                        <td>
+                            <a><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20"></a>
+                            {% if user_profile_obj.user.is_active == True and user_obj_borrow_count == 0 and user_profile_obj.user.is_superuser == False %}
+                                <a><img src="{% static 'website_icons/del_ico.png' %}" alt="Usuń konto" width="20" height="20"></a> 
+                            {% endif %}
+
+                            {% if user_profile_obj.user.is_active == True and user_profile_obj.user.is_superuser == False %}
+                                <a><img src="{% static 'website_icons/grand_to_librarian_ico.png' %}" alt="Nadaj uprawnienia bibliotekrza" width="20" height="20"></a>
+                            {% endif %}
+
+                            {% if user.is_superuser and user_profile_obj.user.is_active == False %}
+                                <a><img src="{% static 'website_icons/activate_user_ico.png' %}" alt="Aktywuj konto" width="20" height="20"></a>
+                            {% endif %}
+                        </td>
+
+                        <td>{{user_profile_obj.user.get_full_name}}</td>
+                        <td>{{user_profile_obj.pesel}}</td>
+                        <td>{{user_profile_obj.user.email}}</td>
+                        <td>{{user_profile_obj.phone}}</td>
+                        <td>{{user_obj_borrow_count}}</td>
+                        
+
+                        <td>
+                            {% if user_profile_obj.user.is_active %}
+                                Tak
+                            {% else %}
+                                Nie
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if user_profile_obj.user.is_superuser %}
+                                Bibliotekarz
+                            {% else %}
+                                Czytelnik
+                            {% endif %}
+                        </td>
+                        
+                    </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    <!-- pagination bar -->
+    <div class="pagination_bar">
+        {% if is_paginated %}
+        <div class="btn-group pagination_bar" role="group">
+            
+            {% if page_obj.has_previous %}
+                <a class="btn btn-light disable" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+            {% else %}
+                <a class="btn btn-light"><span>&laquo;</span></a>
+            {% endif %}
+
+            {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                <a  class="btn btn-dark active"><span>{{ i }} <span class="sr-only">(current)</span></span></a>
+                {% else %}
+                <a class="btn btn-light" href="?page={{ i }}">{{ i }}</a>
+                {% endif %}
+            {% endfor %}
+                
+            {% if page_obj.has_next %}
+            <a class="btn btn-light" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+            {% else %}
+            <a type="button" class="btn btn-light"><span>&raquo;</span></a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="table-legend">
+        <p><b>Legenda:</b></p>
+        <p><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20">Szczegóły książki</p>
+        <p><img src="{% static 'website_icons/del_ico.png' %}" alt="Usuń wypozyczenie" width="20" height="20">Dezaktywwuj konto (gdy dany użytkownik nie ma wypożyczeń i jego konto nie ma statusu bibliotekarza)</p>
+        <p><img src="{% static 'website_icons/activate_user_ico.png' %}" alt="Aktywuj użytkownika" width="20" height="20">Aktywuj konto</p>
+        <p><img src="{% static 'website_icons/grand_to_librarian_ico.png' %}" alt="Nadaj uprawnienia bibliotekrza" width="20" height="20">Nadaj uprawnienia bibliotekrza</p>
+    </div>
+
+</div>
+
+{% endblock %}
+
+

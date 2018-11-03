@@ -17,4 +17,8 @@ def get_bookcopy_borrow(p_book_copy_id):
     else:
         return None
 
+# zwraca liczbe wypozyczonych przez usera kopii
+@register.simple_tag(name='get_borrow_by_user_count')
+def get_borrow_by_user_count(user_obj):
+    return models.Borrow.objects.filter(user=user_obj).count()
     
