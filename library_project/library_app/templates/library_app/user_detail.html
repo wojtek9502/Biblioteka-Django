@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+{% load static %}
+
+{% block body_block %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div id="navbarNavDropdown" class="navbar-collapse collapse">
+        <ul class="navbar-nav mr-auto">
+            <a class="btn" data-toggle="collapse" href="#collapse1" role="button" aria-expanded="false"
+                aria-controls="collapseExample">
+                Pokaż szczegóły
+            </a>
+            <a class="btn" data-toggle="collapse" href="#collapse-next2" role="button" aria-expanded="false"
+                aria-controls="collapseExample">
+                Pokaż wypożyczenia
+            </a>
+            <a class="btn" data-toggle="collapse" href="#collapse-next3" role="button" aria-expanded="false"
+                aria-controls="collapseExample">
+                Opcje
+            </a>
+        </ul>
+    </div>
+</nav>
+
+<div class="container text-center">
+    <div class="collapse show" id="collapse1">
+        <div class="page-title">
+            <h3>Szczegóły użytkownika </h3>
+        </div>
+
+        <ul>
+            <li><b>Imię i nazwisko: </b>{{user_profile.user.get_full_name}}</li>
+            <li><b>Email: </b> <a href="mailto:jan.kowalski@gmail.pl">{{user_profile.user.email}}</a></li>
+            <li><b>Telefon: </b>{{user_profile.phone}}</li>
+            <li><b>PESEL: </b>{{user_profile.pesel}} </li>
+            <li><b>Adres: </b>{{user_profile.street}} {{user_profile.house_number}} {{user_profile.post_code}} {{user_profile.city}} </li>
+            <br>
+
+            <li><b>Typ konta: </b>
+                {% if user.is_superuser %}
+                    Bibliotekarz
+                {% else %}
+                    Czytelnik
+                {% endif %}
+            </li>
+            <li><b>Dołączył dnia: </b> {{user_profile.user.date_joined}}</li>
+            <li><b>Ostatnie logowanie dnia: </b> {{user_profile.user.last_login}} </li>
+            <li><b>Czy konto aktywne: </b>
+                {% if user_profile.user.is_active %}
+                    Tak
+                {% else %}
+                    Nie
+                {% endif %}
+            </li>
+        </ul>
+        <br>
+    </div>
+
+    <div class="collapse" id="collapse-next2">
+        {% get_borrow_by_user user_profile.user as user_obj_borrow %}
+        {% if user_obj_borrow.count == 0 %}
+            <div class="page-title">
+                <h5>Brak wypożyczeń </h5>
+            </div>
+        {% else %}
+            <div class="page-title">
+                <h5>Wypożyczenia </h5>
+            </div>
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Opcje</th>
+                        <th scope="col">Książka</th>
+                        <th scope="col">Nr egzemplarza</th>
+                        <th scope="col">Wypożyczone dla</th>
+                        <th scope="col">Wypożyczone przez</th>
+                        <th scope="col">Data wypożyczenia</th>
+                        <th scope="col">Data oddania</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for borrow in user_obj_borrow %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'library_app:borrow_detail' pk=borrow.pk %}"><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20"></a>
+                            <a href="{% url 'library_app:borrow_delete' pk=borrow.pk %}"><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Usuń" width="20" height="20"></a> 
+                        </td>
+                    
+                        <td>
+                            {% for author in borrow.book_copy_id.book.authors.all %}
+                                <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author.first_name}} {{author.last_name}}</a>
+                                <br>
+                            {% endfor %}
+                            <a href="{% url 'library_app:book_detail' pk=borrow.book_copy_id.book.pk %}">{{borrow.book_copy_id.book.title}}</a>
+                        </td>
+
+                        <td><a href="{% url 'library_app:bookcopy_detail' pk=borrow.book_copy_id.pk %}">{{borrow.book_copy_id.id}}</a></td>
+                        <td>{{borrow.user.get_full_name}}</td>
+                        <td>{{borrow.borrow_librarian.get_full_name}}</td>
+                        <td>{{borrow.borrow_date}}</td>
+                        <td>{{borrow.receive_date}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+
+    <div class="collapse" id="collapse-next3">  
+        <div class="page-title">
+            <h5>Opcje</h5>
+         </div>   
+        {% if user_profile.user.is_active == True and user_profile.user.is_superuser == False %}
+            <div class="button">
+                <a href="{% url 'library_app:user_grant' pk=user_profile.pk %}"><input type="submit" class="btn btn-primary" value="Nadaj uprawnienia bibliotekarza"></a>
+            </div>
+        {% endif %}
+
+        {% if user_profile.user.is_active == True and user_obj_borrow.count == 0 and user_profile.user.is_superuser == False %}
+            <div class="button">
+                <a><input type="submit" class="btn btn-danger button" value="Dezaktywuj konto"></a>
+            </div>
+        {% endif %}
+
+        {% if user.is_superuser and user_profile.user.is_active == False %}
+            <div class="button">
+                <a><input type="submit" class="btn btn-success button" value="Aktywuj konto"></a>
+            </div>
+        {% endif %}   
+        
+        <div class="borrow_list_back_link button">
+            <a href="javascript:history.back()"><input type="button" class="btn btn-dark" value="Powrót"></a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -335,3 +335,17 @@ class UsersListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView
     paginate_by = 10
     context_object_name = "users_profile_list" #w templatce teraz user_list zamiast user_list_set
     template_name = 'library_app/users_list.html'
+
+
+class UserDetailView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DetailView):
+    login_url = reverse_lazy('no_permission')
+    model = models.UserProfileInfo
+    context_object_name = "user_profile" #w templatce teraz user_profile zamiast user_profile_set
+    template_name = 'library_app/user_detail.html'
+
+
+class UserGrantDetailView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DetailView):
+    login_url = reverse_lazy('no_permission')
+    model = models.UserProfileInfo
+    context_object_name = "user_profile" #w templatce teraz user_profile zamiast user_profile_set
+    template_name = 'library_app/user_grant.html'

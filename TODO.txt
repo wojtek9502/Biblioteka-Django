@@ -2,7 +2,7 @@
 - ile jest egzemplarzy ksiazki przy tabeli z ksiazkami OK
 - konto po rejestracji nieaktywne, aktywuje je bibliotekarz po "sprawdzeniu" OK
 - doprogramować przyciski opcji w tabeli userow
-- dodac widok szczegółu usera
+- dodac widok szczegółu usera OK
 - dodac zakladke mój profil dla uzytkownika a tam zmiana emaila telefonu
 - widok updateUser dla admina
 - wiecej danych o userze OK

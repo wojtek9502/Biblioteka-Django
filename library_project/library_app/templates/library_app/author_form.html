@@ -3,7 +3,7 @@
 
 {% block body_block %}
 <div class="container">
-    <h1>Dodaj autora</h1>
+    <h1>Dodaj nowego autora</h1>
     <form method="POST" action="{% url 'library_app:author_create' %}" class="author-form">
         {% csrf_token %}
         {% bootstrap_form form %}

@@ -60,7 +60,7 @@
                     <li class="nav-item dropdown active">
                         <a class="nav-link dropdown-toggle" href="#" id="ManageLibrary" data-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false">
-                            Zarządzaj biblioteką
+                            Biblioteka
                         </a>
                         <div class="dropdown-menu" aria-labelledby="ManageLibrary">
                             <a class="dropdown-item" href="{% url 'library_app:book_create' %}">Dodaj książkę</a>
@@ -103,6 +103,8 @@
     </nav>
 
          {% block body_block %}{% endblock %}
+
+    <div class="footer" style="margin-bottom: 200px;"></div>
 
 
     <script src="{% static 'js/popper.min.js' %}"></script>

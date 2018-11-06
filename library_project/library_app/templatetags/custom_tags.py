@@ -21,4 +21,8 @@ def get_bookcopy_borrow(p_book_copy_id):
 @register.simple_tag(name='get_borrow_by_user_count')
 def get_borrow_by_user_count(user_obj):
     return models.Borrow.objects.filter(user=user_obj).count()
-    
+
+# zwraca wypozyczone przez usera ksiazki
+@register.simple_tag(name='get_borrow_by_user')
+def get_borrow_by_user(user_obj):
+    return models.Borrow.objects.filter(user=user_obj)

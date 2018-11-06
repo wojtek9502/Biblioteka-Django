@@ -31,7 +31,7 @@ urlpatterns = [
     url(r'^update_category/(?P<pk>\d+)/$', views.UpdateCategoryView.as_view(), name='category_update'),
 
     url(r'^borrow_list/$', views.BorrowListView.as_view(), name='borrow_list'),
-    url(r'^borrow/(?P<pk>\d+)$', views.BorrowDetailView.as_view(), name='borrow_detail'),
+    url(r'^borrow/(?P<pk>\d+)/$', views.BorrowDetailView.as_view(), name='borrow_detail'),
     url(r'^new_borrow/$', views.CreateBorrowView.as_view(), name='borrow_create'),
     url(r'^delete_borrow/(?P<pk>\d+)/$', views.DeleteBorrowView.as_view(), name='borrow_delete'),
     url(r'^update_borrow/(?P<pk>\d+)/$', views.UpdateBorrowView.as_view(), name='borrow_update'),
@@ -39,5 +39,8 @@ urlpatterns = [
     url(r'^my_borrow_list/$', views.MyBorrowListView.as_view(), name='my_borrow_list'),
 
     url(r'^users_list/$', views.UsersListView.as_view(), name='users_list'),
+    url(r'^user_profile/(?P<pk>\d+)/$', views.UserDetailView.as_view(), name='user_profile'),
+    url(r'^user_grant/(?P<pk>\d+)/$', views.UserGrantDetailView.as_view(), name='user_grant'),
+
 
 ]

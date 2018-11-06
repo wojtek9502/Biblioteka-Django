@@ -5,22 +5,22 @@
     <div class="page-title publishing_house_detail jumbotron">
         <h2>Szczegóły wypożyczenia</h2>
         <ul>
-            <li class="user"><b>Wypożyczający: </b> {{borrow.user.get_full_name}} </li>
+            <li class="user"><b>Pożyczone dla: </b> {{borrow.user.get_full_name}} </li>
             <li class="book"><b>Książka: </b> {{borrow.book_copy_id.book}} </li>
             <li class="book_copy_nr"><b>Nr egzeplarza: </b> {{borrow.book_copy_id.id}} </li>
+            <li class="librarian"><b>Pożyczone przez: </b>{{borrow.borrow_librarian.get_full_name}}</li>
             <li class="borrow_date"><b>Data wypozyczenia: </b> {{borrow.borrow_date}} </li>
             <li class="receive_date"><b>Data oddania: </b> {{borrow.receive_date}} </li>
         </ul>
 
         {% if user.is_authenticated and user.is_superuser %}
         <div class="borrow_book_link button">
-            <a href="{% url 'library_app:borrow_delete' pk=borrow.pk %}"><input type="submit" class="btn btn-danger"
-                    value="Oddaj książkę"></a>
+            <a href="{% url 'library_app:borrow_delete' pk=borrow.pk %}"><input type="submit" class="btn btn-danger" value="Oddaj książkę"></a>
         </div>
         {% endif %}
 
         <div class="borrow_list_back_link button">
-            <a href="{% url 'library_app:borrow_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
+            <a href="javascript:history.back()"><input type="button" class="btn btn-dark" value="Powrót"></a>
         </div>
     </div>
 </div>
