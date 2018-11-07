@@ -4,7 +4,7 @@
 
 <div class="container">
     <div class="jumbotron">
-        <h2>Nadać prawa bibliotekarza dla {{user_profile.user.get_full_name}}?</h2>
+        <h2>Odebrać prawa bibliotekarza dla {{user_profile.user.get_full_name}}?</h2>
         <ul>
                 <li><b>Imię i nazwisko: </b>{{user_profile.user.get_full_name}}</li>
                 <li><b>Email: </b> {{user_profile.user.email}}</li>
@@ -14,7 +14,7 @@
         </ul>
         <form method="POST">
             {% csrf_token %}
-            <input type="submit" class="btn btn-success" value="Nadaj prawa">
+            <input type="submit" class="btn btn-danger" value="Odbierz prawa">
             <a class="btn btn-primary" href=javascript:history.back()>Powrót</a>
         </form>
     </div>

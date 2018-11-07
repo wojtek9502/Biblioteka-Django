@@ -2,9 +2,10 @@ from django.http import Http404
 from django.views import generic
 from library_app import forms
 from library_app import models
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from datetime import datetime
  
 from braces.views import SuperuserRequiredMixin, LoginRequiredMixin
@@ -349,3 +350,54 @@ class UserGrantDetailView(LoginRequiredMixin, SuperuserRequiredMixin, generic.De
     model = models.UserProfileInfo
     context_object_name = "user_profile" #w templatce teraz user_profile zamiast user_profile_set
     template_name = 'library_app/user_grant.html'
+
+    #gdy dajemy post w formularzu (klikniecie w nadaj) to nadaj userowi, superuser
+    def post(self, request, pk):
+        userProfileInfoObj = models.UserProfileInfo.objects.get(id=pk)
+        userProfileInfoObj.user.is_superuser = True
+        userProfileInfoObj.user.save() #zapisz usera
+        return redirect('library_app:users_list')
+
+
+class UserGetRightsDetailView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DetailView):
+    login_url = reverse_lazy('no_permission')
+    model = models.UserProfileInfo
+    # w templatce teraz user_profile zamiast user_profile_set
+    context_object_name = "user_profile"
+    template_name = 'library_app/user_get_rights.html'
+
+    #gdy dajemy post w formularzu (klikniecie w nadaj) to nadaj userowi, superuser
+    def post(self, request, pk):
+        userProfileInfoObj = models.UserProfileInfo.objects.get(id=pk)
+        userProfileInfoObj.user.is_superuser = False
+        userProfileInfoObj.user.save()  # zapisz usera
+        return redirect('library_app:users_list')
+
+class UserActivateDetailView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DetailView):
+    login_url = reverse_lazy('no_permission')
+    model = models.UserProfileInfo
+    # w templatce teraz user_profile zamiast user_profile_set
+    context_object_name = "user_profile"
+    template_name = 'library_app/user_activate.html'
+
+    #gdy dajemy post w formularzu (klikniecie w nadaj) to nadaj userowi, superuser
+    def post(self, request, pk):
+        userProfileInfoObj = models.UserProfileInfo.objects.get(id=pk)
+        userProfileInfoObj.user.is_active = True
+        userProfileInfoObj.user.save()  # zapisz usera
+        return redirect('library_app:users_list')
+
+
+class UserDeactivateDetailView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DetailView):
+    login_url = reverse_lazy('no_permission')
+    model = models.UserProfileInfo
+    # w templatce teraz user_profile zamiast user_profile_set
+    context_object_name = "user_profile"
+    template_name = 'library_app/user_deactivate.html'
+
+    #gdy dajemy post w formularzu (klikniecie w nadaj) to nadaj userowi, superuser
+    def post(self, request, pk):
+        userProfileInfoObj = models.UserProfileInfo.objects.get(id=pk)
+        userProfileInfoObj.user.is_active = False
+        userProfileInfoObj.user.save()  # zapisz usera
+        return redirect('library_app:users_list')

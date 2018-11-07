@@ -41,6 +41,9 @@ urlpatterns = [
     url(r'^users_list/$', views.UsersListView.as_view(), name='users_list'),
     url(r'^user_profile/(?P<pk>\d+)/$', views.UserDetailView.as_view(), name='user_profile'),
     url(r'^user_grant/(?P<pk>\d+)/$', views.UserGrantDetailView.as_view(), name='user_grant'),
+    url(r'^user_activate/(?P<pk>\d+)/$', views.UserActivateDetailView.as_view(), name='user_activate'),
+    url(r'^user_deactivate/(?P<pk>\d+)/$', views.UserDeactivateDetailView.as_view(), name='user_deactivate'),
+    url(r'^get_rights/(?P<pk>\d+)/$', views.UserGetRightsDetailView.as_view(), name='get_rights'),
 
 
 ]
