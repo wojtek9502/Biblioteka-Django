@@ -114,4 +114,4 @@ class UserProfileInfo(models.Model):
     house_number = models.CharField(max_length=20, verbose_name='Numer domu')
 
     def __str__(self):
-        return 'user profile ' + self.user.username
+        return self.user.get_full_name() + ',  PESEL: ' + self.pesel
