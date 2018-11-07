@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load custom_tags %}
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
@@ -70,7 +71,7 @@
                             <a class="dropdown-item" href="{% url 'library_app:publishinghouse_create' %}">Dodaj wydawnictwo</a>
                             <a class="dropdown-item" href="{% url 'library_app:category_create' %}">Dodaj kategorię</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'library_app:users_list' %}">Zarządzaj użytkownikami @TODO</a>
+                            <a class="dropdown-item" href="{% url 'library_app:users_list' %}">Zarządzaj użytkownikami</a>
                         </div>
                     </li>
 
@@ -84,9 +85,23 @@
                     <li class="nav-item active">
                         <a class="nav-link">Witaj {{user.first_name}} {{user.last_name}}</a>
                     </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{% url 'accounts:password_reset' %}">Zresetuj hasło</a>
+                    <li class="nav-item dropdown active">
+                        <a class="nav-link dropdown-toggle" href="#" id="UserSettings" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                            Twój profil
+                        </a>
+                        
+                        <div class="dropdown-menu" aria-labelledby="UserSettings">
+                            <a class="dropdown-item" href="{% url 'library_app:my_profile' %}">Wyświetl profil</a>
+                            <a class="dropdown-item" href="{% url 'library_app:my_statistics' %}">Twoje statystyki</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'accounts:password_reset' %}">Zresetuj hasło</a>
+                            
+                            {% get_user_profile user as userProfileObj %}
+                            <a class="dropdown-item" href="{% url 'library_app:my_profile_update' pk=userProfileObj.id %}">Edytuj dane kontaktowe</a>
+                        </div>
                     </li>
+
                     <li class="nav-item active">
                     <a class="nav-link" href="{% url 'accounts:logout' %}">Wyloguj</a>
                     </li>

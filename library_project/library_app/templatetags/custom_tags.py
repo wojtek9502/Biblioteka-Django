@@ -26,3 +26,8 @@ def get_borrow_by_user_count(user_obj):
 @register.simple_tag(name='get_borrow_by_user')
 def get_borrow_by_user(user_obj):
     return models.Borrow.objects.filter(user=user_obj)
+
+# zwraca id_profilu usera na podstawie obietu usera
+@register.simple_tag(name='get_user_profile')
+def get_user_profile(user_obj):
+    return models.UserProfileInfo.objects.get(user=user_obj)

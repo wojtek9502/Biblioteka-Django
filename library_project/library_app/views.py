@@ -329,13 +329,24 @@ class MyBorrowListView(LoginRequiredMixin, generic.ListView):
         context["current_borrow_list"] = models.Borrow.objects.filter(user=self.request.user)
         return context
     
-
+############ UŻYTKOWNIK
 class UsersListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):
     login_url = reverse_lazy('no_permission')
     model = models.UserProfileInfo
     paginate_by = 10
     context_object_name = "users_profile_list" #w templatce teraz user_list zamiast user_list_set
     template_name = 'library_app/users_list.html'
+
+
+class UpdateUserProfileView(LoginRequiredMixin, generic.UpdateView):
+    login_url = reverse_lazy('login')
+
+    model = models.UserProfileInfo
+    form_class = forms.UserProfileInfoForm
+    template_name = 'library_app/user_update_form.html'
+
+    def get_success_url(self):
+            return reverse_lazy('index')
 
 
 class UserDetailView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DetailView):
@@ -401,3 +412,31 @@ class UserDeactivateDetailView(LoginRequiredMixin, SuperuserRequiredMixin, gener
         userProfileInfoObj.user.is_active = False
         userProfileInfoObj.user.save()  # zapisz usera
         return redirect('library_app:users_list')
+
+
+
+############# PROFIL USERA
+class UpdateMyProfileView(LoginRequiredMixin, generic.UpdateView):
+    login_url = reverse_lazy('login')
+
+    model = models.UserProfileInfo
+    form_class = forms.UserProfileInfoForm
+    template_name = 'library_app/my_profile_update_form.html'
+
+    def get_success_url(self):
+            return reverse('index')
+
+
+class MyProfileTemplateView(LoginRequiredMixin, generic.TemplateView):
+    login_url = reverse_lazy('login')
+    template_name = 'library_app/my_profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user_profile"] = models.UserProfileInfo.objects.get(user=self.request.user)
+        return context
+
+
+class MyProfileStatisticsTemplateView(LoginRequiredMixin, generic.TemplateView):
+    login_url = reverse_lazy('login')
+    template_name = 'library_app/my_statistics.html'

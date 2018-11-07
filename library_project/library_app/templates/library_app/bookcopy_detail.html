@@ -41,24 +41,17 @@
             <li class="book_detail_description"><b>Opis: </b> {{bookcopy.book.description|safe|linebreaksbr}} </li>
         </ul>
 
-        
-        <div class="book_list_back_link button">
-            <a href="{% url 'library_app:bookcopy_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
-        </div>
-
         {% if user.is_authenticated and user.is_superuser %}
-            <div class="update_book_link button">
-                <a href="{% url 'library_app:bookcopy_update' pk=bookcopy.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj egzemplarz książki"></a>
-            </div>
-
-
             {% if bookcopy.is_borrowed == False %}
                 <div class="delete_book_link button">
                     <a href="{% url 'library_app:bookcopy_delete' pk=bookcopy.pk %}"><input type="submit" class="btn btn-danger" value="Usuń egzemplarz książki"></a>
                 </div>
             {% endif %}
-            
         {% endif %}
+
+        <div class="book_list_back_link button">
+            <a href="{% url 'library_app:bookcopy_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
+        </div>
     </div>
 </div>
 {% endblock %}

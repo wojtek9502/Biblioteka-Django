@@ -37,6 +37,9 @@ urlpatterns = [
     url(r'^update_borrow/(?P<pk>\d+)/$', views.UpdateBorrowView.as_view(), name='borrow_update'),
 
     url(r'^my_borrow_list/$', views.MyBorrowListView.as_view(), name='my_borrow_list'),
+    url(r'^my_profile_update/(?P<pk>\d+)/$', views.UpdateMyProfileView.as_view(), name='my_profile_update'),
+    url(r'^my_profile/', views.MyProfileTemplateView.as_view(), name='my_profile'),
+    url(r'^my_statistics/', views.MyProfileStatisticsTemplateView.as_view(), name='my_statistics'),
 
     url(r'^users_list/$', views.UsersListView.as_view(), name='users_list'),
     url(r'^user_profile/(?P<pk>\d+)/$', views.UserDetailView.as_view(), name='user_profile'),

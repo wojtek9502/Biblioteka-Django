@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+{% load static %}
+
+{% block body_block %}
+{% get_borrow_by_user user_profile.user as user_obj_borrow %}
+
+
+<div class="container text-center">
+    <div class="jumbotron">
+        <div class="page-title">
+            <h3>Twój profil</h3>
+        </div>
+
+        <ul>
+            <li><b>Imię i nazwisko: </b>{{user_profile.user.get_full_name}}</li>
+            <li><b>Email: </b>{{user_profile.user.email}}</a></li>
+            <li><b>Telefon: </b>{{user_profile.phone}}</li>
+            <li><b>PESEL: </b>{{user_profile.pesel}} </li>
+            <li><b>Adres: </b>{{user_profile.street}} {{user_profile.house_number}} {{user_profile.post_code}} {{user_profile.city}} </li>
+            <br>
+
+            <li><b>Liczba wypożyczeń: </b>{{user_obj_borrow.count}}</li>
+            <li><b>Dołączyłeś/aś dnia: </b> {{user_profile.user.date_joined}}</li>
+            <li><b>Ostatnie logowanie dnia: </b> {{user_profile.user.last_login}} </li>
+        </ul>
+
+        <br>
+            <div class="button">
+                <a href="{% url 'library_app:my_borrow_list' %}"><input type="submit" class="btn btn-primary" value="Zobacz wypożyczenia"></a>
+            </div>
+            <div class="button">
+                <a href="{% url 'library_app:my_statistics' %}"><input type="submit" class="btn btn-primary" value="Twoje statystyki"></a>
+            </div>
+
+    </div>
+</div>
+{% endblock %}

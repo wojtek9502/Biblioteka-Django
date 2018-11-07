@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load custom_tags %}
+
+{% block body_block %}
+<div class="container">
+    <h1>Edytuj dane </h1>
+    {% get_user_profile user as userProfile %}
+    <form method="POST" action="{% url 'library_app:user_update' pk=userProfile.pk %}">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <input type="submit" value="Edytuj" class="btn btn-primary btn-large text-center">
+    </form>
+</div>
+{% endblock %}
