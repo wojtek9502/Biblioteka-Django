@@ -105,7 +105,7 @@ class BorrowHistory(models.Model):
 
     
 class UserProfileInfo(models.Model):
-    user = models.OneToOneField(User,verbose_name='Użytkownik')
+    user = models.OneToOneField(User,verbose_name='Użytkownik', related_name='user_profile')
     pesel = models.CharField(max_length=11, verbose_name='PESEL')
     street = models.CharField(max_length=200, verbose_name='Ulica')
     city = models.CharField(max_length=200, verbose_name='Miasto')

@@ -5,19 +5,20 @@
 {% block body_block %}
 <div class="container">
     <div class="page-title">
-        <h2>Wypożyczenia</h2>
+        <h2>Historia wypożyczeń</h2>
     </div>
 
             <div class="search-bar">
-                <form class="form-inline" action="{% url 'library_app:borrow_list' %}" method="GET">
+                <form class="form-inline" action="{% url 'library_app:borrow_history_list' %}" method="GET">
                     <div class="input-group">
                         <input type="search" class="form-control" name="search_query" placeholder="Wyszukaj">
                         <select class="search-select" name="search_type">
                             <option value="author" selected>Autor</option>
                             <option value="title">Tytuł</option>
                             <option value="bookcopy_nr">Nr kopii</option>
-                            <option value="borrow_by_user">Wypożyczone dla</option>
-                            <option value="borrow_by_librarian">Wypożyczone przez</option>
+                            <option value="borrow_by_user">Czytelnik wypożyczający</option>
+                            <option value="borrow_by_librarian">Bibliotekarz wypożyczający</option>
+                            <option value="receive_by_librarian">Bibliotekarz odbierający</option>
                         </select>
                         <div class="input-group-append search-button">
                             <button class="btn btn-primary" type="submit">Szukaj</button>
@@ -29,78 +30,61 @@
     <table class="table table-bordered table-hover">
         <thead class="thead-light">
             <tr>
-                <th scope="col">Opcje</th>
                 <th scope="col">Książka</th>
                 <th scope="col">Nr egzemplarza</th>
                 <th scope="col">Wypożyczone dla</th>
                 <th scope="col">Wypożyczone przez</th>
+                <th scope="col">Odebrane przez</th>
                 <th scope="col">Data wypożyczenia</th>
                 <th scope="col">Data oddania</th>
             </tr>
         </thead>
         <tbody>
-            {% for borrow in borrow_list %}
+            {% for borrow in borrow_history_list %}
             <tr>
                 <td>
-                    <a href="{% url 'library_app:borrow_detail' pk=borrow.pk %}"><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20"></a>
-                    {% if user.is_superuser %}
-                        <a href="{% url 'library_app:borrow_delete' pk=borrow.pk %}"><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Usuń" width="20" height="20"></a> 
-                    {% endif %}
-                </td>
-               
-                <td>
                     {% for author in borrow.book_copy_id.book.authors.all %}
-                        <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author.first_name}} {{author.last_name}}</a>
-                        <br>
+                    <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author.first_name}} {{author.last_name}}</a>
+                    <br>
                     {% endfor %}
                     <a href="{% url 'library_app:book_detail' pk=borrow.book_copy_id.book.pk %}">{{borrow.book_copy_id.book.title}}</a>
                 </td>
-
                 <td><a href="{% url 'library_app:bookcopy_detail' pk=borrow.book_copy_id.pk %}">{{borrow.book_copy_id.id}}</a></td>
-
-                {% get_user_profile borrow.user as user_profile_obj %}
-                <td><a href="{% url 'library_app:user_profile' pk=user_profile_obj.pk %}">{{borrow.user.get_full_name}}</a></td>
+                <td>{{borrow.user.get_full_name}}</td>
                 <td>{{borrow.borrow_librarian.get_full_name}}</td>
+                <td>{{borrow.receive_librarian.get_full_name}}</td>
                 <td>{{borrow.borrow_date}}</td>
                 <td>{{borrow.receive_date}}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-
+    
     <!-- pagination bar -->
-     <div class="pagination_bar">
+    <div class="pagination_bar">
         {% if is_paginated %}
         <div class="btn-group" role="group">
-            
+    
             {% if page_obj.has_previous %}
-                <a class="btn btn-light disable" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+            <a class="btn btn-light disable" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
             {% else %}
-                <a class="btn btn-light"><span>&laquo;</span></a>
+            <a class="btn btn-light"><span>&laquo;</span></a>
             {% endif %}
-
+    
             {% for i in paginator.page_range %}
-                {% if page_obj.number == i %}
-                <a  class="btn btn-dark active"><span>{{ i }} <span class="sr-only">(current)</span></span></a>
-                {% else %}
-                <a class="btn btn-light" href="?page={{ i }}">{{ i }}</a>
-                {% endif %}
+            {% if page_obj.number == i %}
+            <a class="btn btn-dark active"><span>{{ i }} <span class="sr-only">(current)</span></span></a>
+            {% else %}
+            <a class="btn btn-light" href="?page={{ i }}">{{ i }}</a>
+            {% endif %}
             {% endfor %}
-                
+    
             {% if page_obj.has_next %}
             <a class="btn btn-light" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
             {% else %}
             <a type="button" class="btn btn-light"><span>&raquo;</span></a>
             {% endif %}
         </div>
-        {% endif %}
-    </div>
-
-        <div class="table-legend">
-        <p><b>Legenda:</b></p>
-        <p><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20">Szczegóły wypożyczenia</p>
-        {% if user.is_superuser %}
-            <p><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Usuń wypozyczenie" width="20" height="20">Usuń wypożyczenie egzemplarza</p>
         {% endif %}
     </div>
 

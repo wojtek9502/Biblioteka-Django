@@ -311,7 +311,39 @@ class DeleteBorrowView(LoginRequiredMixin, SuperuserRequiredMixin, generic.Delet
         self.object.delete()                 #usun wypozyczenie z bazy
         return HttpResponseRedirect(self.get_success_url())
 
-########### WYPOŻYCZENIA UŻYTKOWNIKA
+
+########### HISTORIA WYPOŻYCZEŃ WIDOK ADMIN
+class BorrowHistoryListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):
+    login_url = reverse_lazy('no_permission')
+    model = models.BorrowHistory
+    context_object_name = "borrow_history_list" 
+    paginate_by = 10
+
+    def get_queryset(self):
+        search_query = self.request.GET.get("search_query")
+        search_type = self.request.GET.get("search_type")
+        if search_query is not None:
+            if search_type == "title":
+                return models.BorrowHistory.objects.filter(book_copy_id__book__title__icontains=search_query)
+            elif search_type == "author":
+                authors_result = models.BorrowHistory.objects.filter(book_copy_id__book__authors__first_name__icontains=search_query) | models.BorrowHistory.objects.filter(book_copy_id__book__authors__last_name__icontains=search_query)
+                return authors_result
+            elif search_type == "bookcopy_nr":
+                return models.BorrowHistory.objects.filter(book_copy_id__id__icontains=search_query)
+            elif search_type == "borrow_by_user":
+                borrow_by_result = models.BorrowHistory.objects.filter(user__first_name__contains=search_query) | models.BorrowHistory.objects.filter(user__last_name__contains=search_query)
+                return borrow_by_result
+            elif search_type == "borrow_by_librarian":
+                borrow_by_result = models.BorrowHistory.objects.filter(borrow_librarian__first_name__contains=search_query) | models.BorrowHistory.objects.filter(borrow_librarian__last_name__contains=search_query)
+                return borrow_by_result
+            elif search_type == "receive_by_librarian":
+                borrow_by_result = models.BorrowHistory.objects.filter(receive_librarian__first_name__contains=search_query) | models.BorrowHistory.objects.filter(receive_librarian__last_name__contains=search_query)
+                return borrow_by_result
+        else:
+            return models.BorrowHistory.objects.all()
+
+
+########### WYPOŻYCZENIA WIDOK UŻYTKOWNIKA
 class MyBorrowListView(LoginRequiredMixin, generic.ListView):
     login_url = reverse_lazy('login')
     model = models.BorrowHistory

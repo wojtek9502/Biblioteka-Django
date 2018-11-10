@@ -23,7 +23,5 @@ from library_app import models
 
 class UserProfileInfoAdmin(admin.ModelAdmin):
     exclude = ('user', 'pesel')
-    
-
 
 admin.site.register(models.UserProfileInfo, UserProfileInfoAdmin)

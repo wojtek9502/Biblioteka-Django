@@ -4,13 +4,13 @@ from library_app import views
 app_name = 'library_app' #uzywane w navbar w base.html
 urlpatterns = [
     url(r'^book_list/$',views.BookListView.as_view(),name='book_list'),
-    url(r'^book_list/book_detail/(?P<pk>\d+)/$', views.BookDetailView.as_view(), name='book_detail'),
+    url(r'^book_detail/(?P<pk>\d+)/$', views.BookDetailView.as_view(), name='book_detail'),
     url(r'^new_book/$', views.CreateBookView.as_view(), name='book_create'),
     url(r'^update_book/(?P<pk>\d+)/$', views.UpdateBookView.as_view(), name='book_update'),
     url(r'^delete_book/(?P<pk>\d+)/$', views.DeleteBookView.as_view(), name='book_delete'),
 
     url(r'^book_copy_list/$', views.BookCopyListView.as_view(), name='bookcopy_list'),
-    url(r'^bookcopy_list/bookcopy_detail/(?P<pk>\d+)/$', views.BookCopyDetailView.as_view(), name='bookcopy_detail'),
+    url(r'^bookcopy_detail/(?P<pk>\d+)/$', views.BookCopyDetailView.as_view(), name='bookcopy_detail'),
     url(r'^new_bookcopy/$', views.CreateBookCopyView.as_view(), name='bookcopy_create'),
     url(r'^update_bookcopy/(?P<pk>\d+)/$', views.UpdateBookCopyView.as_view(), name='bookcopy_update'),
     url(r'^delete_bookcopy/(?P<pk>\d+)/$', views.DeleteBookCopyView.as_view(), name='bookcopy_delete'),
@@ -35,6 +35,8 @@ urlpatterns = [
     url(r'^new_borrow/$', views.CreateBorrowView.as_view(), name='borrow_create'),
     url(r'^delete_borrow/(?P<pk>\d+)/$', views.DeleteBorrowView.as_view(), name='borrow_delete'),
     url(r'^update_borrow/(?P<pk>\d+)/$', views.UpdateBorrowView.as_view(), name='borrow_update'),
+
+    url(r'^borrow_history_list/$', views.BorrowHistoryListView.as_view(), name='borrow_history_list'),
 
     url(r'^my_borrow_list/$', views.MyBorrowListView.as_view(), name='my_borrow_list'),
     url(r'^my_profile_update/(?P<pk>\d+)/$', views.UpdateMyProfileView.as_view(), name='my_profile_update'),
