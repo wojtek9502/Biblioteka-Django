@@ -7,12 +7,14 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from datetime import datetime
+from django.db import transaction
  
 from braces.views import SuperuserRequiredMixin, LoginRequiredMixin
 
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
+BORROW_LIMIT = 5
 
 class BookListView(generic.ListView):
     model = models.Book
@@ -263,11 +265,21 @@ class CreateBorrowView(LoginRequiredMixin, SuperuserRequiredMixin, generic.Creat
     success_url = reverse_lazy("library_app:borrow_list")
 
     #przed dodaniem wypożyczenia trzeba zmienic w egzemplarzu ksiazki ze jest wypozyczony
+    @transaction.atomic
     def form_valid(self, form):
         self.object = form.save(commit=False) #wez z formularza stworzony obiekt wypozyczenia
         bookcopy = self.object.book_copy_id   # w obiekcie wypozyczenia jest obiekt egzemplarza ksiazki
         bookcopy.is_borrowed = True           #zmien w obiekcie egzemplarza "wypozyczony" na true
         bookcopy.save()                       #zapisz obiekt egzemplarza
+
+        #jesli user osiagnal limit wypozyczen to w userProfileInfo.can_borrow ustaw na False
+        user_curr_borrow_count = models.Borrow.objects.filter(user=self.object.user.id).count()
+        user_curr_borrow_count = user_curr_borrow_count + 1
+        if(user_curr_borrow_count==BORROW_LIMIT): #jesli liczba wypozyczen == limit
+            userProfileInfoObj =  models.UserProfileInfo.objects.get(user=self.object.user.id)
+            userProfileInfoObj.can_borrow = False
+            userProfileInfoObj.save()
+
 
         self.object.borrow_librarian = User.objects.get(id=self.request.user.id) # zapisz jako wypozyczajacego zalogowanego usera (wypozyczac moze tylko bibliotekarz)
         self.object.save()                    #wszystko zmienione, mozna zapisac wypozyczenie
@@ -289,6 +301,7 @@ class DeleteBorrowView(LoginRequiredMixin, SuperuserRequiredMixin, generic.Delet
     model = models.Borrow
     success_url = reverse_lazy("library_app:borrow_list")
 
+    @transaction.atomic
     def delete(self, *args, **kwargs):
         self.object = self.get_object()
         bookcopy = self.object.book_copy_id   # w obiekcie wypozyczenia jest obiekt egzemplarza ksiazki
@@ -297,6 +310,11 @@ class DeleteBorrowView(LoginRequiredMixin, SuperuserRequiredMixin, generic.Delet
        
         self.object.receive_librarian = User.objects.get(id=self.request.user.id) #ustaw bibliotekarza ktory przyjal ksiazke
         self.object.receive_date = datetime.now()                                 #ustaw date oddania na aktualna
+
+        #przy oddaniu ksiązki ustaw UserProfileInfo.can_borrow na true, moze teraz wypożyczać
+        userProfileInfoObj = models.UserProfileInfo.objects.get(user=self.object.user.id)
+        userProfileInfoObj.can_borrow = True
+        userProfileInfoObj.save()
 
         #zapisanie obiektu borrow jako obiekt borrowHistory przed usunieciem obiektu Borrow
         models.BorrowHistory.objects.create(

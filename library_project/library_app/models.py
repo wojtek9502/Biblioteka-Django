@@ -112,6 +112,7 @@ class UserProfileInfo(models.Model):
     phone = models.CharField(max_length=20, verbose_name='Telefon')
     post_code = models.CharField(max_length=6, verbose_name='Kod pocztowy')
     house_number = models.CharField(max_length=20, verbose_name='Numer domu')
+    can_borrow = models.BooleanField(default=True, verbose_name='Czy może wypożyczać?')
 
     def __str__(self):
         return self.user.get_full_name() + ',  PESEL: ' + self.pesel

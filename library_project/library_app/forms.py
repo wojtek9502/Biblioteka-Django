@@ -64,6 +64,8 @@ class BorrowForm(forms.ModelForm):
         
         #wyswietl w polu user formularza, jego imie i nazwisko zamiast loginu
         users = User.objects.all()
+        for user_obj in User.objects.all():
+            print(user_obj)
         self.fields['user'].choices = [(user.pk, user.get_full_name()) for user in users]
 
     class Meta:
