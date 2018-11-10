@@ -62,13 +62,21 @@ class BorrowForm(forms.ModelForm):
         super(BorrowForm, self).__init__(*args, **kwargs)  # wywolaj formularz najpierw żeby ustawić mu pola fields
         self.fields['book_copy_id'].queryset = models.BookCopy.objects.filter(is_borrowed=False)
         
-        #wyswietl w polu user formularza, jego imie i nazwisko zamiast loginu
-        users = User.objects.all()
+        #stworz liste id userów którzy maja w UserProfileInfo.can_borrow = True
+        borrow_allowed_users_ids = []
         for user_obj in User.objects.all():
-            print(user_obj)
-        self.fields['user'].choices = [(user.pk, user.get_full_name()) for user in users]
+            userProfileObj = models.UserProfileInfo.objects.get(user=user_obj.id)
+            if(userProfileObj.can_borrow == True):
+                borrow_allowed_users_ids.append(user_obj.id)
+
+        users = User.objects.filter(pk__in=borrow_allowed_users_ids)  # wez userow których id znajduje się w borrow_allowed_users_ids
+        self.fields['user'].choices = [(user.pk, get_user_info_for_field(user)) for user in users]
 
     class Meta:
         model = models.Borrow
         fields = ('user', 'book_copy_id', 'receive_date')
 
+
+def get_user_info_for_field(user_obj):
+    userProfileObj = models.UserProfileInfo.objects.get(user=user_obj.id)
+    return user_obj.get_full_name() + ', PESEL: ' + userProfileObj.pesel
