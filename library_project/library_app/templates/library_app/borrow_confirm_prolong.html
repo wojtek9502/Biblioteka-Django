@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+<div class="container">
+    <div class="jumbotron">
+        <h2>Prolongować wypożyczenie?</h2>
+        <br>
+        <h4>Szczegóły wypożyczenia</h4>
+        <ul>
+            <li class="book"><b>Książka: </b>  
+                {% for author in borrow.book_copy_id.book.authors.all %}
+                    {{author.first_name}} {{author.last_name}},
+                {% endfor %}   
+                {{borrow.book_copy_id.book}}
+            </li>
+            <li class="book_copy_nr"><b>Nr egzemplarza: </b> {{borrow.book_copy_id.id}} </li>
+            <li class="user"><b>Wypożyczone dla: </b> {{borrow.user.get_full_name}} </li>
+            <li class="user"><b>Wypożyczone przez: </b> {{borrow.borrow_librarian.get_full_name}} </li>
+            <li class="borrow_date"><b>Data wypozyczenia: </b> {{borrow.borrow_date}} </li>
+            <li class="receive_date"><b>Data oddania: </b> {{borrow.receive_date}} </li>
+        </ul>
+        <br>
+        <form method="POST">
+            {% if borrow.is_prolong == True %}
+            <p>Wypożyczenie było już prolongowane</p>
+            {% else %}
+                {% csrf_token %}
+                <input type="submit" class="btn btn-success" value="Prolonguj">
+                <a class="btn btn-primary" href="{% url 'library_app:my_borrow_list' %}">Powrót</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

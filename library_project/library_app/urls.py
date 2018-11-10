@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^update_bookcopy/(?P<pk>\d+)/$', views.UpdateBookCopyView.as_view(), name='bookcopy_update'),
     url(r'^delete_bookcopy/(?P<pk>\d+)/$', views.DeleteBookCopyView.as_view(), name='bookcopy_delete'),
 
+
     url(r'^authors/(?P<pk>\d+)$', views.AuthorDetailView.as_view(), name='author_detail'),
     url(r'^new_author/$', views.CreateAuthorView.as_view(), name='author_create'),
     url(r'^update_author/(?P<pk>\d+)/$', views.UpdateAuthorView.as_view(), name='author_update'),
@@ -35,6 +36,7 @@ urlpatterns = [
     url(r'^new_borrow/$', views.CreateBorrowView.as_view(), name='borrow_create'),
     url(r'^delete_borrow/(?P<pk>\d+)/$', views.DeleteBorrowView.as_view(), name='borrow_delete'),
     url(r'^update_borrow/(?P<pk>\d+)/$', views.UpdateBorrowView.as_view(), name='borrow_update'),
+    url(r'^borrow_prolong/(?P<pk>\d+)/$', views.BorrowProlongDetailView.as_view(), name='borrow_prolong'),
 
     url(r'^borrow_history_list/$', views.BorrowHistoryListView.as_view(), name='borrow_history_list'),
 

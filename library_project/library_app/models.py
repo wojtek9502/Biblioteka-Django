@@ -73,6 +73,7 @@ class Book(models.Model):
 class BookCopy(models.Model):
     book = models.ForeignKey(Book, related_name="bookcopies", verbose_name='Wybierz książkę') #teraz w templatce mozemy z poziomu klasy book odnosic sie do obiektow bookcopy, np {{book.bookcopies.count}} da liczbe kopii ksiazek ktore maja w polu book id danej ksiazki
     is_borrowed = models.BooleanField(default=False)
+
    
     def __str__(self):
         return self.book.title + ', ISBN: ' + str(self.book.isbn) + ', nr egzemplarza: ' + str(self.id)
@@ -88,7 +89,8 @@ class Borrow(models.Model):
     book_copy_id = models.ForeignKey(BookCopy, related_name="borrow_bookcopy", verbose_name='Egzemplarz ksiązki')
     borrow_date = models.DateField(auto_now=True, verbose_name='Data wypożyczenia')
     receive_date = models.DateField(default=datetime.now()+timedelta(days=60), verbose_name='Data oddania')
-    
+    is_prolong = models.BooleanField(default=False)
+
     def __str__(self):
         return "user=" + self.user.username + " book= " + str(self.book_copy_id) 
 

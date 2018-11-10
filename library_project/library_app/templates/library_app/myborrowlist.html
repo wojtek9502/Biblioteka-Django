@@ -31,17 +31,25 @@
             <table class="table table-bordered table-hover">
                 <thead class="thead-light">
                     <tr>
+                        <th scope="col">Opcje</th>
                         <th scope="col">Książka</th>
                         <th scope="col">Nr egzemplarza</th>
                         <th scope="col">Wypożyczone przez</th>
                         <th scope="col">Data wypożyczenia</th>
                         <th scope="col">Data oddania</th>
+                        <th scope="col">Czy prolongowany?</th>
                     </tr>
                 </thead>
                 <tbody>
                     
                     {% for borrow in current_borrow_list %}
                     <tr>
+                        <td>
+                            {% if borrow.is_prolong == False %}
+                                <a href="{% url 'library_app:borrow_prolong' pk=borrow.pk %}"><img src="{% static 'website_icons/prolong_ico.png' %}" alt="Szczegóły" width="20" height="20"></a>
+                            {% endif %}
+                        </td>
+
                         <td>
                             {% for author in borrow.book_copy_id.book.authors.all %}
                                 <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author.first_name}} {{author.last_name}}</a>
@@ -53,11 +61,24 @@
                         <td>{{borrow.borrow_librarian.get_full_name}}</td>
                         <td>{{borrow.borrow_date}}</td>
                         <td>{{borrow.receive_date}}</td>
+                        <td>
+                            {% if borrow.is_prolong %}
+                                Tak
+                            {% else %}
+                                Nie
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         {% endif %}
+
+        <div class="table-legend">
+            <p><b>Legenda:</b></p>
+            <p><img src="{% static 'website_icons/prolong_ico.png' %}" alt="Szczegóły" width="20" height="20">Prolonguj egzemplarz</p>
+        </div>
+
 </div>
  
     <!-- Historia wypożyczeń -->

@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.db import transaction
  
 from braces.views import SuperuserRequiredMixin, LoginRequiredMixin
@@ -15,6 +15,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 BORROW_LIMIT = 5
+PROLONG_DAYS = 30
 
 class BookListView(generic.ListView):
     model = models.Book
@@ -121,7 +122,6 @@ class DeleteBookCopyView(LoginRequiredMixin, SuperuserRequiredMixin, generic.Del
 
     model = models.BookCopy
     success_url = reverse_lazy("library_app:bookcopy_list")
-
 
 ############################   AUTOR
 class AuthorDetailView(generic.DetailView):
@@ -329,6 +329,20 @@ class DeleteBorrowView(LoginRequiredMixin, SuperuserRequiredMixin, generic.Delet
         self.object.delete()                 #usun wypozyczenie z bazy
         return HttpResponseRedirect(self.get_success_url())
 
+
+class BorrowProlongDetailView(LoginRequiredMixin, generic.DetailView):
+    login_url = reverse_lazy('login')
+    model = models.Borrow
+    context_object_name = "borrow" #w templatce
+    template_name = 'library_app/borrow_confirm_prolong.html'
+
+    @transaction.atomic
+    def post(self, request, pk):
+        borrowObj = models.Borrow.objects.get(id=pk)
+        borrowObj.receive_date = borrowObj.receive_date + timedelta(days=PROLONG_DAYS)
+        borrowObj.is_prolong=True
+        borrowObj.save()  # zapisz wypożyczenie ze zmienioną datą
+        return redirect('library_app:my_borrow_list')
 
 ########### HISTORIA WYPOŻYCZEŃ WIDOK ADMIN
 class BorrowHistoryListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):
