@@ -7,10 +7,14 @@
     <form method="POST">
         {% csrf_token %}
         {% bootstrap_form form %}
-        <input type="submit" class="btn btn-primary login-btn" value="Zaloguj się">
+        <input type="submit" class="btn btn-success login-btn" value="Zaloguj się">
         
     </form>
-    <a class="btn btn-primary login-btn" href="{% url 'accounts:password_reset' %}">Zresetuj hasło</a>
+    <a class="btn btn-dark login-btn" href="{% url 'accounts:password_reset' %}">Zresetuj hasło</a>
+    <br>
+    <br>
+
+    <a class="btn btn-primary login-btn" href="{% url 'social:begin' 'facebook' %}">Logowanie przez Facebook</a>
 </div>
 
 {% endblock body_block %}

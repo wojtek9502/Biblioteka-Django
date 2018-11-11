@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'accounts',
     'bootstrap4',
     'anymail',
+    'social_django',
 ]
 
 # haslo na mailgun G_O_T_C_Z
@@ -81,6 +82,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'library_project.urls'
@@ -96,11 +98,23 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect', 
             ],
 
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.facebook.FacebookOAuth2',
+
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_FACEBOOK_KEY = '513472972502140'  # App ID
+SOCIAL_AUTH_FACEBOOK_SECRET = 'a8cbfdeb11bf356ef6395becda1d70e0'  # App Secret
 
 WSGI_APPLICATION = 'library_project.wsgi.application'
 
@@ -163,6 +177,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR,'static')
 ]
 
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = 'thanks'
