@@ -339,13 +339,11 @@ class BorrowProlongDetailView(LoginRequiredMixin, generic.DetailView):
         borrowObj = models.Borrow.objects.get(id=pk)
         #jesli user wejdzie za pomoca linku do nie swojego wypozyczenia to wróci do listy wypożyczeń
         if borrowObj.user.id is not self.request.user.id:
-            print('to nie jest')
-            return redirect('library_app:my_borrow_list')
-        else:
-            context = {
-                'borrow': borrowObj
-            }
-            return render(request, self.template_name, context)
+            redirect('library_app:my_borrow_list'')
+        context = {
+            'borrow_set': borrowObj
+        }
+        return render(request, self.template_name, context)
 
     @transaction.atomic
     def post(self, request, pk):

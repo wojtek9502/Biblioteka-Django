@@ -11,6 +11,14 @@
             <li class="librarian"><b>Pożyczone przez: </b>{{borrow.borrow_librarian.get_full_name}}</li>
             <li class="borrow_date"><b>Data wypozyczenia: </b> {{borrow.borrow_date}} </li>
             <li class="receive_date"><b>Data oddania: </b> {{borrow.receive_date}} </li>
+            <li class="prolongate">
+                <b>Czy prolongowana: </b> 
+                {% if borrow.is_prolong %}
+                    Tak
+                {% else %}
+                    Nie
+                {% endif %}
+            </li>
         </ul>
 
         {% if user.is_authenticated and user.is_superuser %}
