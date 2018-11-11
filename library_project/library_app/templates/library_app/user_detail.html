@@ -14,10 +14,6 @@
             </a>
             <a class="btn" data-toggle="collapse" href="#collapse-next2" role="button" aria-expanded="false"
                 aria-controls="collapseExample">
-                Pokaż wypożyczenia
-            </a>
-            <a class="btn" data-toggle="collapse" href="#collapse-next3" role="button" aria-expanded="false"
-                aria-controls="collapseExample">
                 Opcje
             </a>
         </ul>
@@ -59,62 +55,16 @@
         <br>
     </div>
 
-    <div class="collapse" id="collapse-next2">
-
-        {% if user_obj_borrow.count == 0 %}
-            <div class="page-title">
-                <h5>Brak wypożyczeń </h5>
-            </div>
-        {% else %}
-            <div class="page-title">
-                <h5>Wypożyczenia </h5>
-            </div>
-            <table class="table table-bordered table-hover">
-                <thead class="thead-light">
-                    <tr>
-                        <th scope="col">Opcje</th>
-                        <th scope="col">Książka</th>
-                        <th scope="col">Nr egzemplarza</th>
-                        <th scope="col">Wypożyczone dla</th>
-                        <th scope="col">Wypożyczone przez</th>
-                        <th scope="col">Data wypożyczenia</th>
-                        <th scope="col">Data oddania</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for borrow in user_obj_borrow %}
-                    <tr>
-                        <td>
-                            <a href="{% url 'library_app:borrow_detail' pk=borrow.pk %}"><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20"></a>
-                            <a href="{% url 'library_app:borrow_delete' pk=borrow.pk %}"><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Usuń" width="20" height="20"></a> 
-                        </td>
-                    
-                        <td>
-                            {% for author in borrow.book_copy_id.book.authors.all %}
-                                <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author.first_name}} {{author.last_name}}</a>
-                                <br>
-                            {% endfor %}
-                            <a href="{% url 'library_app:book_detail' pk=borrow.book_copy_id.book.pk %}">{{borrow.book_copy_id.book.title}}</a>
-                        </td>
-
-                        <td><a href="{% url 'library_app:bookcopy_detail' pk=borrow.book_copy_id.pk %}">{{borrow.book_copy_id.id}}</a></td>
-                        <td>{{borrow.user.get_full_name}}</td>
-                        <td>{{borrow.borrow_librarian.get_full_name}}</td>
-                        <td>{{borrow.borrow_date}}</td>
-                        <td>{{borrow.receive_date}}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
-    </div>
-
-
-    <div class="collapse" id="collapse-next3">  
+    <div class="collapse show" id="collapse-next2">  
         <div class="page-title">
             <h5>Opcje</h5>
          </div>   
 
+        <!-- Wypożyczenia_usera przekazuje id usera -->
+        <div class="button">
+            <a href="{% url 'library_app:user_borrows' pk=user_profile.user.pk %}"><input type="submit" class="btn btn-primary button" value="Wyświetl wypożyczenia"></a>
+        </div>
+        
         <!-- Aktywowanie usera -->
         {% if user.is_superuser and user_profile.user.is_active == False %}
             <div class="button">

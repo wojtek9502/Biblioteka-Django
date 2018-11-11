@@ -50,3 +50,14 @@ def get_days_between_borrow_date_and_today(borrow_date_param):
 @register.simple_tag(name='calc_bookcopy_receive_delay')
 def calc_bookcopy_receive_delay(bookcopy_obj):
     return get_days_between_borrow_date_and_today(bookcopy_obj.receive_date)
+
+
+#zwraca czy użytkownik ma jakieś wypożyczenia nie oddane w terminie
+
+@register.simple_tag(name='have_any_borrows_with_exceeded_receive_date')
+def have_any_borrows_with_exceeded_receive_date(user_obj):
+    for borrow in models.Borrow.objects.filter(user=user_obj):
+        if borrow.is_date_exceeded:
+            return True
+    
+    return False

@@ -20,16 +20,25 @@
     </div>
 </nav>
 
+
 <div class="container">
+
+    <div class="page-title">
+        <h4>Użytkownik {{user_full_name}}</h4>
+    </div>
+
+    <div class="back_link button text-center">
+        <a href="javascript:history.back()"><input type="button" class="btn btn-dark" value="Powrót"></a>
+    </div>
 <!-- Aktualne wypożyczenia -->
 <div class="collapse show" id="collapse_current_borrow">
         {% if current_borrow_list.count is 0 %}
             <div class="page-title">
-                <h4>Aktualnie nie wypożyczasz żadnej książki</h4>
+                <h4>Brak wypożyczeń</h4>
             </div>
         {% else %}
             <div class="page-title">
-                <h4>Twoje wypożyczenia</h4>
+                <h4>Wypożyczenia</h4>
             </div>
 
             <table class="table table-bordered table-hover">
@@ -53,13 +62,11 @@
                     {% else %}
                     <tr>
                     {% endif %}
-
                         <td>
-                            {% if borrow.is_prolong == False and borrow.is_date_exceeded == False %}
-                                <a href="{% url 'library_app:borrow_prolong' pk=borrow.pk %}"><img src="{% static 'website_icons/prolong_ico.png' %}" alt="Szczegóły" width="20" height="20"></a>
+                            {% if user.is_superuser %}
+                                <a href="{% url 'library_app:borrow_delete' pk=borrow.pk %}"><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Usuń" width="20" height="20"></a> 
                             {% endif %}
                         </td>
-
                         <td>
                             {% for author in borrow.book_copy_id.book.authors.all %}
                                 <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author.first_name}} {{author.last_name}}</a>
@@ -83,15 +90,17 @@
                 </tbody>
             </table>
 
-            <div class="table-legend">
-                <p><b>Legenda:</b></p>
-                <p><img src="{% static 'website_icons/prolong_ico.png' %}" alt="Szczegóły" width="20" height="20">Prolonguje egzemplarz (30 dni)</p>
-            </div>
-        {% endif %}
+        <div class="table-legend">
+            <p><b>Legenda:</b></p>
+            {% if user.is_superuser %}
+                <p><img src="{% static 'website_icons/del_ico.png' %}" alt="Usuń wypozyczenie" width="20" height="20">Usuń wypożyczenie</p>
+            {% endif %}
+        </div>
+        {% endif %} <!-- if od liczby wypozyczen = 0-->
 </div>
 
     <!-- Należności -->
-<div class="collapse" id="collapse_receivables">
+<div class="collapse show" id="collapse_receivables">
     {% if borrows_with_exceeded_date.count is 0 %}
             <div class="page-title">
                 <h4>Brak należności</h4>
@@ -133,7 +142,6 @@
     {% endif %}
 </div>
 <br>
-
 
     <!-- Historia wypożyczeń -->
 <div class="collapse" id="collapse_borrow_history">

@@ -13,17 +13,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
             try:
                 for borrow in models.Borrow.objects.all():
-                    userProfileInfo = models.UserProfileInfo.objects.get(user=borrow.user)
-
-                    if is_bookcopy_receive_date_exceeded(borrow):
-                        if borrow.is_date_exceeded == False:
-                            mark_bookcopy_as_exceeded(borrow)
-                            self.stdout.write("Egzemplarz nr %s oznaczony jako nieoddany w terminie" %
-                                              str(borrow.book_copy_id.id) )
-
-                    if userProfileInfo.can_borrow == True:
-                        change_user_can_borrow(userProfileInfo)
-                        self.stdout.write("Użytkownik %s stacił prawa do wypożyczania" % borrow.user.get_full_name())
+                
+                    if borrow.is_date_exceeded == False:
+                        userProfileInfo = models.UserProfileInfo.objects.get(user=borrow.user)
+                        
+                        if is_bookcopy_receive_date_exceeded(borrow):
+                            mark_bookcopy_as_exceeded(self, borrow)
+                            change_user_can_borrow(self, userProfileInfo)
+                        
             except Exception as e:
                 raise CommandError(repr(e))
 
@@ -32,18 +29,24 @@ class Command(BaseCommand):
 def is_bookcopy_receive_date_exceeded(borrow):
     borrow_date = datetime.strptime(str(borrow.receive_date), "%Y-%m-%d")
     today_date = datetime.strptime(str(date.today()), "%Y-%m-%d")
-    if borrow_date > today_date:
+    date_delta = (borrow_date - today_date).days
+
+    if date_delta >= 0:
         return False
     else:
         return True
 
 
 #oznacza wypożyczenie jako przekroczone
-def mark_bookcopy_as_exceeded(borrow):
+def mark_bookcopy_as_exceeded(command_obj, borrow):
     borrow.is_date_exceeded = True
     borrow.save()
+    command_obj.stdout.write("Egzemplarz nr %s oznaczony jako nieoddany w terminie" %
+                      str(borrow.book_copy_id.id))
 
 #oznacza w profilu użytkownika flage 'can_borrow'
-def change_user_can_borrow(userProfileInfo):
+def change_user_can_borrow(command_obj, userProfileInfo):
     userProfileInfo.can_borrow = False  # ustaw flage
     userProfileInfo.save()
+    command_obj.stdout.write("Uzytkownik %s posiada książki nie oddane w terminie, nie moze wypożyczać" %
+                             str(userProfileInfo.user.get_full_name()) )

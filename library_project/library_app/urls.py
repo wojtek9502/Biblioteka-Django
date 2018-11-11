@@ -51,6 +51,7 @@ urlpatterns = [
     url(r'^user_activate/(?P<pk>\d+)/$', views.UserActivateDetailView.as_view(), name='user_activate'),
     url(r'^user_deactivate/(?P<pk>\d+)/$', views.UserDeactivateDetailView.as_view(), name='user_deactivate'),
     url(r'^get_rights/(?P<pk>\d+)/$', views.UserGetRightsDetailView.as_view(), name='get_rights'),
+    url(r'^user_borrows/(?P<pk>\d+)/$', views.UserBorrowsList.as_view(), name='user_borrows'),
 
 
 ]

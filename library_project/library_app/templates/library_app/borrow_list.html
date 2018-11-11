@@ -30,9 +30,9 @@
         <thead class="thead-light">
             <tr>
                 <th scope="col">Opcje</th>
+                <th scope="col">Wypożyczone dla</th>
                 <th scope="col">Książka</th>
                 <th scope="col">Nr egzemplarza</th>
-                <th scope="col">Wypożyczone dla</th>
                 <th scope="col">Wypożyczone przez</th>
                 <th scope="col">Data wypożyczenia</th>
                 <th scope="col">Data oddania</th>
@@ -40,26 +40,35 @@
         </thead>
         <tbody>
             {% for borrow in borrow_list %}
-            <tr>
+            
+                {% if borrow.is_date_exceeded %} <!--Jesli termin oddania minął zmiana koloru wiersza-->
+                <tr style="color:red">
+                {% else %}
+                    <tr>
+                {% endif %}
+
                 <td>
-                    <a href="{% url 'library_app:borrow_detail' pk=borrow.pk %}"><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20"></a>
-                    {% if user.is_superuser %}
-                        <a href="{% url 'library_app:borrow_delete' pk=borrow.pk %}"><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Usuń" width="20" height="20"></a> 
-                    {% endif %}
+                    <a href="{% url 'library_app:user_borrows' pk=borrow.user.pk %}"><img src="{% static 'website_icons/info_ico.png' %}" alt="Wypożyczenia" width="20" height="20"></a>
+                    
+                    {% get_user_profile borrow.user as user_profile_obj %}
+                    <a href="{% url 'library_app:user_profile' pk=user_profile_obj.pk %}"><img src="{% static 'website_icons/user_ico.png' %}" alt="Profil" width="20" height="20"></a>
+                    <a href="{% url 'library_app:borrow_delete' pk=borrow.pk %}"><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Usuń" width="20" height="20"></a> 
                 </td>
                
+                
+                <td>{{borrow.user.get_full_name}}</td>
+
                 <td>
                     {% for author in borrow.book_copy_id.book.authors.all %}
-                        <a href="{% url 'library_app:author_detail' pk=author.pk %}">{{author.first_name}} {{author.last_name}}</a>
+                        {{author.first_name}} {{author.last_name}}
                         <br>
                     {% endfor %}
-                    <a href="{% url 'library_app:book_detail' pk=borrow.book_copy_id.book.pk %}">{{borrow.book_copy_id.book.title}}</a>
+                    {{borrow.book_copy_id.book.title}}
                 </td>
 
-                <td><a href="{% url 'library_app:bookcopy_detail' pk=borrow.book_copy_id.pk %}">{{borrow.book_copy_id.id}}</a></td>
+                <td>{{borrow.book_copy_id.id}}</td>
 
-                {% get_user_profile borrow.user as user_profile_obj %}
-                <td><a href="{% url 'library_app:user_profile' pk=user_profile_obj.pk %}">{{borrow.user.get_full_name}}</a></td>
+                
                 <td>{{borrow.borrow_librarian.get_full_name}}</td>
                 <td>{{borrow.borrow_date}}</td>
                 <td>{{borrow.receive_date}}</td>
@@ -96,12 +105,11 @@
         {% endif %}
     </div>
 
-        <div class="table-legend">
+    <div class="table-legend">
         <p><b>Legenda:</b></p>
-        <p><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20">Szczegóły wypożyczenia</p>
-        {% if user.is_superuser %}
-            <p><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Usuń wypozyczenie" width="20" height="20">Usuń wypożyczenie egzemplarza</p>
-        {% endif %}
+        <p><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20">Przejdź do wypożyczeń użytkownika </p>
+        <p><img src="{% static 'website_icons/user_ico.png' %}" alt="Szczegóły" width="20" height="20">Przejdź do profilu użytkownika </p>
+        <p><img src="{% static 'website_icons/del_borrow_ico.png' %}" alt="Szczegóły" width="20" height="20">Usuń egzemplarz z wypożyczonych </p>
     </div>
 
 </div>

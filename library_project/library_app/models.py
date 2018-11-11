@@ -89,8 +89,8 @@ class Borrow(models.Model):
     book_copy_id = models.ForeignKey(BookCopy, related_name="borrow_bookcopy", verbose_name='Egzemplarz ksiązki')
     borrow_date = models.DateField(auto_now=True, verbose_name='Data wypożyczenia')
     receive_date = models.DateField(default=datetime.now()+timedelta(days=60), verbose_name='Data oddania')
-    is_prolong = models.BooleanField(default=False)
-    is_date_exceeded = models.BooleanField(default=False)
+    is_prolong = models.BooleanField(default=False, verbose_name="Czy prolongowana")
+    is_date_exceeded = models.BooleanField(default=False, verbose_name="Czy data oddania przekroczona")
 
     def __str__(self):
         return "user=" + self.user.username + " book= " + str(self.book_copy_id) 

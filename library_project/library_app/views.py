@@ -428,7 +428,7 @@ class MyBorrowListView(LoginRequiredMixin, generic.ListView):
         return result            
 
 
-############ UŻYTKOWNIK
+############ UŻYTKOWNIK - WIDOKI DLA BIBLIOTEKARZA
 class UsersListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):
     login_url = reverse_lazy('no_permission')
     model = models.UserProfileInfo
@@ -447,6 +447,7 @@ class UpdateUserProfileView(LoginRequiredMixin, generic.UpdateView):
     def get_success_url(self):
             return reverse_lazy('index')
 
+    
 
 class UserDetailView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DetailView):
     login_url = reverse_lazy('no_permission')
@@ -454,6 +455,45 @@ class UserDetailView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DetailV
     context_object_name = "user_profile" #w templatce teraz user_profile zamiast user_profile_set
     template_name = 'library_app/user_detail.html'
 
+class UserBorrowsList(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):
+    login_url = reverse_lazy('no_permission')
+    model = models.BorrowHistory
+    context_object_name = "history_borrow_list"
+    paginate_by = 10
+    template_name = "library_app/user_borrows.html"
+
+    def get_queryset(self):
+        queryset = models.BorrowHistory.objects.filter(user=self.request.user)
+        return queryset 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_id_from_url = str(self.request.path).split('/')[3]
+        user_obj = User.objects.get(id=user_id_from_url)
+
+        borrows_with_exceeded_date = self.get_borrows_with_exceeded_date(user_obj.id)
+
+        context['user_full_name'] = user_obj.get_full_name()
+        context["current_borrow_list"] = models.Borrow.objects.filter(user__id=user_obj.id).order_by("receive_date")
+        context['borrows_with_exceeded_date'] = borrows_with_exceeded_date
+        context['EXCEEDED_DATE_COST_PER_DAY'] = EXCEEDED_DATE_COST_PER_DAY
+        context['receivables_cost'] = self.calc_receivables_for_borrows_with_exceeded_date(borrows_with_exceeded_date)
+        return context
+    
+    def get_borrows_with_exceeded_date(self, user_id):
+        return models.Borrow.objects.filter(user__id=user_id).filter(is_date_exceeded=True).order_by("receive_date")
+
+    def get_days_between_borrow_date_and_today(self, borrow_date_param):
+        borrow_date = datetime.strptime(str(borrow_date_param), "%Y-%m-%d")
+        today_date = datetime.strptime(str(date.today()), "%Y-%m-%d")
+        return abs((borrow_date - today_date).days)
+
+    def calc_receivables_for_borrows_with_exceeded_date(self, borrows):
+        result = 0.0
+        for borrow in borrows:
+            days = self.get_days_between_borrow_date_and_today(borrow.receive_date)
+            result += days * EXCEEDED_DATE_COST_PER_DAY
+        return result 
 
 class UserGrantDetailView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DetailView):
     login_url = reverse_lazy('no_permission')
