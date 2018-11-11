@@ -90,6 +90,7 @@ class Borrow(models.Model):
     borrow_date = models.DateField(auto_now=True, verbose_name='Data wypożyczenia')
     receive_date = models.DateField(default=datetime.now()+timedelta(days=60), verbose_name='Data oddania')
     is_prolong = models.BooleanField(default=False)
+    is_date_exceeded = models.BooleanField(default=False)
 
     def __str__(self):
         return "user=" + self.user.username + " book= " + str(self.book_copy_id) 

@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from django.db import transaction
  
 from braces.views import SuperuserRequiredMixin, LoginRequiredMixin
@@ -16,6 +16,7 @@ User = get_user_model()
 
 BORROW_LIMIT = 5
 PROLONG_DAYS = 30
+EXCEEDED_DATE_COST_PER_DAY = 0.50 #koszt za przekroczenie daty oddania (zł/dzien)
 
 class BookListView(generic.ListView):
     model = models.Book
@@ -233,22 +234,24 @@ class BorrowListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListVie
     def get_queryset(self):
         search_query = self.request.GET.get("search_query")
         search_type = self.request.GET.get("search_type")
+        query_result = None
         if search_query is not None:
             if search_type == "title":
-                return models.Borrow.objects.all().filter(book_copy_id__book__title__icontains=search_query)
+                query_result = models.Borrow.objects.all().filter(book_copy_id__book__title__icontains=search_query)
             elif search_type == "author":
                 authors_result = models.Borrow.objects.all().filter(book_copy_id__book__authors__first_name__icontains=search_query) | models.Borrow.objects.all().filter(book_copy_id__book__authors__last_name__icontains=search_query)
-                return authors_result
+                query_result = authors_result
             elif search_type == "bookcopy_nr":
-                return models.Borrow.objects.all().filter(book_copy_id__id__icontains=search_query)
+                query_result = models.Borrow.objects.all().filter(book_copy_id__id__icontains=search_query)
             elif search_type == "borrow_by_user":
                 borrow_by_result = models.Borrow.objects.all().filter(user__first_name__contains=search_query) | models.Borrow.objects.all().filter(user__last_name__contains=search_query)
-                return borrow_by_result
+                query_result = borrow_by_result
             elif search_type == "borrow_by_librarian":
                 borrow_by_result = models.Borrow.objects.all().filter(borrow_librarian__first_name__contains=search_query) | models.Borrow.objects.all().filter(borrow_librarian__last_name__contains=search_query)
-                return borrow_by_result
+                query_result = borrow_by_result
+            return query_result.order_by("receive_date")
         else:
-            return models.Borrow.objects.all()
+            return models.Borrow.objects.all().order_by("receive_date")
 
 
 class BorrowDetailView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DetailView):
@@ -337,9 +340,9 @@ class BorrowProlongDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get(self, request, pk):
         borrowObj = models.Borrow.objects.get(id=pk)
+
         #jesli user wejdzie za pomoca linku do nie swojego wypozyczenia to wróci do listy wypożyczeń
         if borrowObj.user.id is not self.request.user.id:
-            print('to nie jest')
             return redirect('library_app:my_borrow_list')
         else:
             context = {
@@ -401,9 +404,30 @@ class MyBorrowListView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["current_borrow_list"] = models.Borrow.objects.filter(user=self.request.user)
+        borrows_with_exceeded_date = self.get_borrows_with_exceeded_date()
+
+        context["current_borrow_list"] = models.Borrow.objects.filter(user=self.request.user).order_by("receive_date")
+        context['borrows_with_exceeded_date'] = borrows_with_exceeded_date
+        context['EXCEEDED_DATE_COST_PER_DAY'] = EXCEEDED_DATE_COST_PER_DAY
+        context['receivables_cost'] = self.calc_receivables_for_borrows_with_exceeded_date(borrows_with_exceeded_date)
         return context
     
+    def get_borrows_with_exceeded_date(self):
+        return models.Borrow.objects.filter(user=self.request.user).filter(is_date_exceeded=True).order_by("receive_date")
+
+    def get_days_between_borrow_date_and_today(self, borrow_date_param):
+        borrow_date = datetime.strptime(str(borrow_date_param), "%Y-%m-%d")
+        today_date = datetime.strptime(str(date.today()), "%Y-%m-%d")
+        return abs((borrow_date - today_date).days)
+
+    def calc_receivables_for_borrows_with_exceeded_date(self, borrows):
+        result = 0.0
+        for borrow in borrows:
+            days = self.get_days_between_borrow_date_and_today(borrow.receive_date)
+            result += days * EXCEEDED_DATE_COST_PER_DAY
+        return result            
+
+
 ############ UŻYTKOWNIK
 class UsersListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):
     login_url = reverse_lazy('no_permission')

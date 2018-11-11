@@ -1,5 +1,6 @@
 from django import template
 from library_app import models
+from datetime import datetime, date
 
 register = template.Library()
 
@@ -31,3 +32,21 @@ def get_borrow_by_user(user_obj):
 @register.simple_tag(name='get_user_profile')
 def get_user_profile(user_obj):
     return models.UserProfileInfo.objects.get(user=user_obj)
+
+# zwraca kwote do zapłaty za nieoddaną książkę
+# calc_receivable_for_bookcopy
+@register.simple_tag(name='calc_receivable_for_bookcopy')
+def calc_receivable_for_bookcopy(bookcopy_obj, cost_per_day):
+    days_delta = get_days_between_borrow_date_and_today(bookcopy_obj.receive_date)
+    return days_delta * cost_per_day
+
+
+def get_days_between_borrow_date_and_today(borrow_date_param):
+    borrow_date = datetime.strptime(str(borrow_date_param), "%Y-%m-%d")
+    today_date = datetime.strptime(str(date.today()), "%Y-%m-%d")
+    return abs((borrow_date - today_date).days)
+
+# zwraca liczbe dni spóżnienia w oddaniu książki
+@register.simple_tag(name='calc_bookcopy_receive_delay')
+def calc_bookcopy_receive_delay(bookcopy_obj):
+    return get_days_between_borrow_date_and_today(bookcopy_obj.receive_date)

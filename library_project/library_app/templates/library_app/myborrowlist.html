@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load custom_tags %}
 
 {% block body_block %}
 
@@ -8,6 +9,9 @@
         <ul class="navbar-nav mr-auto">
             <a class="btn" data-toggle="collapse" href="#collapse_current_borrow" role="button" aria-expanded="false" aria-controls="collapseExample">
                 Pokaż wypożyczenia
+            </a>
+            <a class="btn" data-toggle="collapse" href="#collapse_receivables" role="button" aria-expanded="false" aria-controls="collapseExample">
+                Należności
             </a>
             <a class="btn" data-toggle="collapse" href="#collapse_borrow_history" role="button" aria-expanded="false" aria-controls="collapseExample">
                 Pokaż historię wypożyczeń
@@ -43,9 +47,15 @@
                 <tbody>
                     
                     {% for borrow in current_borrow_list %}
+                    
+                    {% if borrow.is_date_exceeded %} <!--Jesli termin oddania minął zmiana koloru wiersza-->
+                    <tr style="color:red">
+                    {% else %}
                     <tr>
+                    {% endif %}
+
                         <td>
-                            {% if borrow.is_prolong == False %}
+                            {% if borrow.is_prolong == False and borrow.is_date_exceeded == False %}
                                 <a href="{% url 'library_app:borrow_prolong' pk=borrow.pk %}"><img src="{% static 'website_icons/prolong_ico.png' %}" alt="Szczegóły" width="20" height="20"></a>
                             {% endif %}
                         </td>
@@ -78,11 +88,51 @@
                 <p><img src="{% static 'website_icons/prolong_ico.png' %}" alt="Szczegóły" width="20" height="20">Prolonguje gzemplarz (30 dni)</p>
             </div>
         {% endif %}
-
-
-
 </div>
- 
+
+    <!-- Należności -->
+<div class="collapse" id="collapse_receivables">
+    {% if borrows_with_exceeded_date.count is 0 %}
+            <div class="page-title">
+                <h4>Brak należności</h4>
+            </div>
+    {% else %}
+            <div class="page-title">
+                <h4>Należności</h4>
+            </div>
+             <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Egzemplarz</th>
+                            <th scope="col">Data oddania</th>
+                            <th scope="col">Dni spóżnienia</th>
+                            <th scope="col">Kwota za dzień</th>
+                            <th scope="col">Kwota</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for borrow in borrows_with_exceeded_date %}
+                            <tr>
+                                <th>{{borrow.book_copy_id.book.title}}</th>
+                                <th>{{borrow.receive_date}}</th>
+                                <th>{% calc_bookcopy_receive_delay borrow %}</th>
+                                <th>{{EXCEEDED_DATE_COST_PER_DAY}} zł</th>
+                                <th>{% calc_receivable_for_bookcopy borrow EXCEEDED_DATE_COST_PER_DAY %} zł</th>
+                            </tr>
+                        {% endfor %}
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th style="color:red">Suma: </th>
+                                <th style="color:red">{{receivables_cost}} zł</th>
+                            </tr>
+                    </tbody>
+                </table>
+            
+    {% endif %}
+</div>
+
     <!-- Historia wypożyczeń -->
 <div class="collapse" id="collapse_borrow_history">
 
