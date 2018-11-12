@@ -3,7 +3,6 @@ Biblioteka w Django
 
 pip install django-anymail[mailgun]
 pip install django-braces
-pip install social-auth-app-django
 argon2-cffi                      18.2.0
 astroid                          2.0.1
 autopep8                         1.3.5
