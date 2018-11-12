@@ -1,4 +1,57 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block head_block %}
+    <script src="{% static 'js/my_charts.js' %}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var currentTime = new Date()
+
+
+            var ctx = $('#bar-chart-books-per-month');
+            ctx.height(300);
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
+                             "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"],
+                    datasets: [
+                        {
+                            label: "Wypożyczeń w miesiącu",
+                            backgroundColor: ["#6F9FD8", "#6F9FD8", "#BFD641",
+                                              "#BFD641", "#BFD641", "#FFD662",
+                                              "#FFD662", "#FFD662", "#DC4C46",
+                                              "#DC4C46", "#DC4C46", "#6F9FD8",
+                                              ],
+                            data: {{borrows_per_month_chart_data}}
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Liczba wypożyczeń w roku ' + currentTime.getFullYear() + ''
+                    },
+                    scales: {
+                        yAxes: [{
+                            stacked: true,
+                            ticks: {
+                                min: 0,
+                                stepSize: 1,
+                            }
+                        }]
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock head_block %}
+
 
 {% block body_block %}
 <div class="container">
@@ -9,5 +62,12 @@
         <p>"Projekt i implementacja systemu obsługi biblioteki w oparciu o technologie Django, Bootstrap, HTML, CSS, JavaScript, SQL."</p>
         <p>Autor: Wojciech Kłusek</p>
     </div>
+    <br>
+    <br>
+    <br>
+            <div class="borrows_by_months">
+                <canvas id="bar-chart-books-per-month" width="300" height="300"></canvas>
+            </div>
+            <p class="text-center">Wykres przedstawia książki które zostały wypożyczone a następnie zwrócone przez czytelników</p>
 </div>
 {% endblock %}

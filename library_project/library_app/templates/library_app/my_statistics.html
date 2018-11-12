@@ -1,13 +1,68 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block head_block %}
+    <script src="{% static 'js/my_charts.js' %}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+            var ctx = $('#bar-chart-books-per-month');
+            ctx.height(400);
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
+                             "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"],
+                    datasets: [
+                        {
+                            label: "Przeczytanych w miesiącu",
+                            backgroundColor: ["#6F9FD8", "#6F9FD8", "#BFD641",
+                                              "#BFD641", "#BFD641", "#FFD662",
+                                              "#FFD662", "#FFD662", "#DC4C46",
+                                              "#DC4C46", "#DC4C46", "#6F9FD8",
+                                              ],
+                            data: {{borrows_per_month_chart_data}}
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Przeczytanych w ciągu roku'
+                    },
+                    scales: {
+                        yAxes: [{
+                            stacked: true,
+                            ticks: {
+                                min: 0,
+                                stepSize: 1,
+                            }
+                        }]
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock head_block %}
+
+
 {% block body_block %}
 <div class="container text-center">
     <div class="jumbotron">
         <div class="page-title">
-            <h3>Twóje statystyki @TODO</h3>
+            <h3>Twóje statystyki</h3>
         </div>
-
+        <div class="borrows_by_months">
+            <canvas id="bar-chart-books-per-month" width="300" height="300"></canvas>
+        </div>
+        <p>Wykres przedstawia książki które zostały wypożyczone a następnie zwrócone.</p>
+        
     </div>
 </div>
 {% endblock %}

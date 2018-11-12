@@ -8,6 +8,9 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from datetime import datetime, timedelta, date
 from django.db import transaction
+from chartjs.views.lines import BaseLineChartView
+import json
+
  
 from braces.views import SuperuserRequiredMixin, LoginRequiredMixin
 
@@ -75,8 +78,6 @@ class DeleteBookView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DeleteV
     success_url = reverse_lazy("library_app:book_list")
 
 ############################ Egzemplarz książki
-
-
 class BookCopyListView(generic.ListView):
     model = models.BookCopy
     paginate_by = 10
@@ -579,3 +580,25 @@ class MyProfileTemplateView(LoginRequiredMixin, generic.TemplateView):
 class MyProfileStatisticsTemplateView(LoginRequiredMixin, generic.TemplateView):
     login_url = reverse_lazy('login')
     template_name = 'library_app/my_statistics.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        borrowHistoryObj = models.BorrowHistory.objects.filter(user=self.request.user)
+
+        context["borrows_per_month_chart_data"] = self.get_borrows_per_months_data(borrowHistoryObj)
+        return context
+
+    def get_borrows_per_months_data(self, borrow_history_obj):
+        months_counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        for borrow in borrow_history_obj:
+            if(str(borrow.receive_date).split('-')[0] == str(datetime.now().year)): #tylko z biezacego roku
+                months_counter_index = int(str(borrow.receive_date).split('-')[1].strip('0'))-1
+                months_counter[months_counter_index] +=1
+        
+        return months_counter
+
+
+
+
+
+    
