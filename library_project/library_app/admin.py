@@ -14,9 +14,9 @@ from library_app import models
 
 # admin.site.register(models.Book, BookAdmin)
 # admin.site.register(models.BookCopy)
-# admin.site.register(models.Author)
-# admin.site.register(models.Category)
-# admin.site.register(models.PublishingHouse)
+admin.site.register(models.Author)
+admin.site.register(models.Category)
+admin.site.register(models.PublishingHouse)
 # admin.site.register(models.Borrow)
 # admin.site.register(models.BorrowHistory)
 
