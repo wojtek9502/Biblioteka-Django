@@ -24,7 +24,7 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 SECRET_KEY = '#y5yg^0$#u4-kr-^-8j7#kg4(a(-_5d5nfr2t-d86dicdvu^tk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['wojtek9502.pythonanywhere.com', '127.0.0.1', 'localhost']
 
@@ -41,38 +41,10 @@ INSTALLED_APPS = [
     'library_app',
     'accounts',
     'bootstrap4',
-    'anymail',
     'chartjs',
 ]
 
-# haslo na mailgun G_O_T_C_Z
-# EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
-# MAILGUN_ACCESS_KEY = 'cb2b0923078891832fa67ea4c3856519-4836d8f5-30ee330c'
-# MAILGUN_SERVER_NAME = 'wojtek9502.pythonanywhere.com'
 
-# EMAIL_USE_SSL = True
-# EMAIL_HOST = 'smtp.wp.pl'
-# EMAIL_HOST_USER = 'w.k.praca_inz'
-# EMAIL_HOST_PASSWORD = 'wojtek1243%!'
-# EMAIL_PORT = 465
-
-# EMAIL_HOST = 'smtp.mailgun.org'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'postmaster@sandbox1713d00516124338a9cecbcb9311f950.mailgun.org'
-# EMAIL_HOST_PASSWORD = 'wojtek1243'
-# EMAIL_USE_TLS = True
-# EMAIL_USE_SSL = True
-
-# During development only
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-ANYMAIL = {
-    # (exact settings here depend on your ESP...)
-    "MAILGUN_API_KEY": "cb2b0923078891832fa67ea4c3856519-4836d8f5-30ee330c",
-    "MAILGUN_SENDER_DOMAIN": 'wojtek9502.pythonanywhere.com',  # your Mailgun domain, if needed
-}
-EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"  # or sendgrid.EmailBackend, or...
-DEFAULT_FROM_EMAIL = "biblioteka@biblioteka.com"  # if you don't already have this in settings
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -83,6 +55,16 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+EMAIL_HOST = 'smtp.emaillabs.net.pl'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = '1.wojtek9502.smtp'
+EMAIL_HOST_PASSWORD = 'Wojtek95021243%!'
+EMAIL_USE_SSL = False
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+DEFAULT_FROM_EMAIL = "biblioteka@biblioteka.com"
 
 ROOT_URLCONF = 'library_project.urls'
 
