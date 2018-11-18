@@ -33,10 +33,13 @@ urlpatterns = [
 
     url(r'^borrow_list/$', views.BorrowListView.as_view(), name='borrow_list'),
     url(r'^borrow/(?P<pk>\d+)/$', views.BorrowDetailView.as_view(), name='borrow_detail'),
-    url(r'^new_borrow/$', views.CreateBorrowView.as_view(), name='borrow_create'),
     url(r'^delete_borrow/(?P<pk>\d+)/$', views.DeleteBorrowView.as_view(), name='borrow_delete'),
     url(r'^update_borrow/(?P<pk>\d+)/$', views.UpdateBorrowView.as_view(), name='borrow_update'),
     url(r'^borrow_prolong/(?P<pk>\d+)/$', views.BorrowProlongDetailView.as_view(), name='borrow_prolong'),
+    
+    url(r'^new_borrow_search_user/$', views.BorrowBookCopySearchUser.as_view(), name='borrow_create_search_user'),
+    url(r'^new_borrow_search_bookcopy/$', views.BorrowBookCopySearchBookCopy.as_view(), name='borrow_create_search_bookcopy'),
+    url(r'^new_borrow_confirm/$', views.CreateBorrowView.as_view(), name='borrow_create_confirm'),
 
     url(r'^borrow_history_list/$', views.BorrowHistoryListView.as_view(), name='borrow_history_list'),
 

@@ -260,34 +260,7 @@ class BorrowDetailView(LoginRequiredMixin, SuperuserRequiredMixin, generic.Detai
     model = models.Borrow
 
 
-class CreateBorrowView(LoginRequiredMixin, SuperuserRequiredMixin, generic.CreateView):
-    login_url = reverse_lazy('no_permission')
 
-    form_class = forms.BorrowForm
-    model = models.Borrow
-    success_url = reverse_lazy("library_app:borrow_list")
-
-    #przed dodaniem wypożyczenia trzeba zmienic w egzemplarzu ksiazki ze jest wypozyczony
-    @transaction.atomic
-    def form_valid(self, form):
-        self.object = form.save(commit=False) #wez z formularza stworzony obiekt wypozyczenia
-        bookcopy = self.object.book_copy_id   # w obiekcie wypozyczenia jest obiekt egzemplarza ksiazki
-        bookcopy.is_borrowed = True           #zmien w obiekcie egzemplarza "wypozyczony" na true
-        bookcopy.save()                       #zapisz obiekt egzemplarza
-
-        #jesli user osiagnal limit wypozyczen to w userProfileInfo.can_borrow ustaw na False
-        user_curr_borrow_count = models.Borrow.objects.filter(user=self.object.user.id).count()
-        user_curr_borrow_count = user_curr_borrow_count + 1
-        if(user_curr_borrow_count==BORROW_LIMIT): #jesli liczba wypozyczen == limit
-            userProfileInfoObj =  models.UserProfileInfo.objects.get(user=self.object.user.id)
-            userProfileInfoObj.can_borrow = False
-            userProfileInfoObj.save()
-
-
-        self.object.borrow_librarian = User.objects.get(id=self.request.user.id) # zapisz jako wypozyczajacego zalogowanego usera (wypozyczac moze tylko bibliotekarz)
-        self.object.save()                    #wszystko zmienione, mozna zapisac wypozyczenie
-        return HttpResponseRedirect(self.get_success_url())
-    
     
 class UpdateBorrowView(LoginRequiredMixin, SuperuserRequiredMixin, generic.UpdateView):
     login_url = reverse_lazy('no_permission')
@@ -358,6 +331,104 @@ class BorrowProlongDetailView(LoginRequiredMixin, generic.DetailView):
         borrowObj.is_prolong=True
         borrowObj.save()  # zapisz wypożyczenie ze zmienioną datą
         return redirect('library_app:my_borrow_list')
+
+########## Wypożyczanie userowi egzemplarza książki
+
+##etap 1 wyszukiwanie usera
+class BorrowBookCopySearchUser(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):
+    login_url = reverse_lazy('no_permission')
+    context_object_name = "users_profile_list"
+    paginate_by = 10
+    model = models.UserProfileInfo
+    template_name = 'library_app/borrow_bookcopy_search_user.html'
+
+    def get_queryset(self):
+        search_query = self.request.GET.get("search_query")
+        search_type = self.request.GET.get("search_type")
+        if search_query is not None:
+            if search_type == "full_name":
+                return models.UserProfileInfo.objects.filter(user__first_name__icontains=search_query) | models.UserProfileInfo.objects.filter(user__last_name__icontains=search_query)
+            elif search_type == "phone":
+                authors_result = models.UserProfileInfo.objects.filter(phone__icontains=search_query)
+                return authors_result
+            elif search_type == "pesel":
+                return models.UserProfileInfo.objects.filter(pesel__icontains=search_query)
+        else:
+            return models.UserProfileInfo.objects.all()
+
+##etap 2 wyszukiwanie egzemplarza
+class BorrowBookCopySearchBookCopy(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):
+    login_url = reverse_lazy('no_permission')
+    context_object_name = "bookcopy_list"
+    paginate_by = 20
+    model = models.BookCopy
+    template_name = 'library_app/borrow_bookcopy_search_bookcopy.html'
+
+    def get_queryset(self):
+        search_query = self.request.GET.get("search_query")
+        search_type = self.request.GET.get("search_type")
+        if search_query is not None:
+            if search_type == "title":
+                return models.BookCopy.objects.all().filter(book__title__icontains=search_query).filter(is_borrowed=False)
+            elif search_type == "author":
+                authors_result = ( models.BookCopy.objects.all().filter(book__authors__first_name__icontains=search_query) | models.BookCopy.objects.all().filter(book__authors__last_name__icontains=search_query) ) & models.BookCopy.objects.filter(is_borrowed=False)
+                return authors_result
+            elif search_type == "bookcopy_nr":
+                return models.BookCopy.objects.all().filter(id__icontains=search_query).filter(is_borrowed=False).filter(is_borrowed=False)
+            elif search_type == "isbn":
+                return models.BookCopy.objects.all().filter(book__isbn__icontains=search_query).filter(is_borrowed=False)
+        else:
+            return models.BookCopy.objects.filter(is_borrowed=False)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["userProfileInfoObj"] = models.UserProfileInfo.objects.get(user=self.request.GET['user_id'])
+        return context
+    
+##### etap 3 tworzenie wypożyczenia
+class CreateBorrowView(LoginRequiredMixin, SuperuserRequiredMixin, generic.TemplateView):
+    login_url = reverse_lazy('no_permission')   
+    template_name = "library_app/borrow_bookcopy_confirm.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user_profile"] = models.UserProfileInfo.objects.get(user=self.request.GET['user_id'])
+        context["bookcopy"] = models.BookCopy.objects.get(id=self.request.GET['bookcopy_id'])
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('library_app:borrow_create_search_user')
+   
+
+    @transaction.atomic
+    def post(self, request):
+        print(request)
+        borrow_user = User.objects.get(id=request.GET['user_id'])
+        borrow_bookcopy = models.BookCopy.objects.get(id=request.GET['bookcopy_id'])
+
+        borrow_obj = models.Borrow.objects.create(
+            user = borrow_user,
+            borrow_librarian = User.objects.get(id=request.user.id), #aktualnie zalogowany bibliotekarz
+            book_copy_id = borrow_bookcopy,
+        )
+
+       #jesli user osiagnal limit wypozyczen to w userProfileInfo.can_borrow ustaw na False
+        user_curr_borrow_count = models.Borrow.objects.filter( user=borrow_user.id).count()
+        if(user_curr_borrow_count==BORROW_LIMIT): #jesli liczba wypozyczen == limit
+            userProfileInfoObj =  models.UserProfileInfo.objects.get(user=borrow_user.id)
+            userProfileInfoObj.can_borrow = False
+            userProfileInfoObj.save()
+
+        borrow_bookcopy.is_borrowed = True  # zmien w obiekcie egzemplarza "wypozyczony" na true
+        borrow_bookcopy.save()                       #zapisz obiekt egzemplarza
+
+        borrow_obj.save()                    #wszystko zmienione, mozna zapisac wypozyczenie
+        return HttpResponseRedirect(self.get_success_url())
+    
+
+
+
 
 ########### HISTORIA WYPOŻYCZEŃ WIDOK ADMIN
 class BorrowHistoryListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):
@@ -437,6 +508,20 @@ class UsersListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView
     context_object_name = "users_profile_list" #w templatce teraz user_list zamiast user_list_set
     template_name = 'library_app/users_list.html'
 
+    def get_queryset(self):
+        search_query = self.request.GET.get("search_query")
+        search_type = self.request.GET.get("search_type")
+        if search_query is not None:
+            if search_type == "full_name":
+                return models.UserProfileInfo.objects.filter(user__first_name__icontains=search_query) | models.UserProfileInfo.objects.filter(user__last_name__icontains=search_query)
+            elif search_type == "phone":
+                authors_result = models.UserProfileInfo.objects.filter(phone__icontains=search_query)
+                return authors_result
+            elif search_type == "pesel":
+                return models.UserProfileInfo.objects.filter(pesel__icontains=search_query)
+        else:
+            return models.UserProfileInfo.objects.all()
+
 
 class UpdateUserProfileView(LoginRequiredMixin, generic.UpdateView):
     login_url = reverse_lazy('login')
@@ -447,8 +532,6 @@ class UpdateUserProfileView(LoginRequiredMixin, generic.UpdateView):
 
     def get_success_url(self):
             return reverse_lazy('index')
-
-    
 
 class UserDetailView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DetailView):
     login_url = reverse_lazy('no_permission')

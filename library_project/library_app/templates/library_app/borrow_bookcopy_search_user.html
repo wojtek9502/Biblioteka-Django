@@ -6,12 +6,13 @@
 {% block body_block %}
 <div class="container">
     <div class="page-title">
-        <h2>Zarządzaj użytkownikami</h2>
+        <h2>Wypożycz egzemplarz książki</h2>
+        <h5>Wyszukaj użytkownika</h5>
     </div>
 
 
 <div class="search-bar">
-<form class="form-inline" action="{% url 'library_app:users_list' %}" method="GET">
+<form class="form-inline" action="{% url 'library_app:borrow_create_search_user' %}" method="GET">
     <div class="input-group">
         <input type="search" class="form-control" name="search_query" placeholder="Wyszukaj">
         <select class="search-select" name="search_type">
@@ -25,7 +26,7 @@
     </div>
 </form>
 </div>
-
+        {{user_profile_obj.user}}
       <table class="table table-bordered table-hover">
             <thead class="thead-light">
                 <tr>
@@ -35,54 +36,29 @@
                     <th scope="col">Email</th>
                     <th scope="col">Telefon</th>
                     <th scope="col">Liczba wypożyczeń</th>
-                    <th scope="col">Czy aktywny</th>
-                    <th scope="col">Typ konta</th>
+                    <th scope="col">Ksiązki oddane w terminie</th>
+                    <th scope="col">Akcje</th>
                 </tr>
             </thead>
             <tbody>
-
+               
             {% for user_profile_obj in users_profile_list %}
                 {% get_borrow_by_user_count user_profile_obj.user as user_obj_borrow_count %}
                     
                 <!-- Jeśli ma jakieś nieoddane wypożyczenia to kolor czerwony -->
                 {% have_any_borrows_with_exceeded_receive_date user_profile_obj.user as have_borrows_with_exceeded_receive_date %}
-                {% if have_borrows_with_exceeded_receive_date %}
-                    <tr style="color:red">
-                {% else %}
                     <tr>
-                {% endif %}
                         <td>
                             <a href="{% url 'library_app:user_borrows' pk=user_profile_obj.user.pk %}"><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20"></a>
-                            <!-- Aktywowanie usera -->
-                            {% if user.is_superuser and user_profile_obj.user.is_active == False %}
-                                <a href="{% url 'library_app:user_activate' pk=user_profile_obj.pk %}"><img src="{% static 'website_icons/activate_user_ico.png' %}" alt="Aktywuj konto" width="20" height="20"></a>
-                            {% endif %}
-                            
-                            <!-- Dezaktywowanie usera -->
-                            {% if user_profile_obj.user.is_active == True and user_obj_borrow_count == 0 and user_profile_obj.user.is_superuser == False %}
-                                <a href="{% url 'library_app:user_deactivate' pk=user_profile_obj.pk %}"><img src="{% static 'website_icons/deactivate_user_ico.png' %}" alt="Usuń konto" width="20" height="20"></a> 
-                            {% endif %}
-
-                            <!-- Nadanie praw bibliotekarza -->
-                            {% if user_profile_obj.user.is_active == True and user_profile_obj.user.is_superuser == False %}
-                                <a href="{% url 'library_app:user_grant' pk=user_profile_obj.pk %}"><img src="{% static 'website_icons/grant_to_librarian_ico.png' %}" alt="Nadaj uprawnienia bibliotekrza" width="20" height="20"></a>
-                            {% endif %}
-                            
-                            <!-- Odebranie praw usera, zalogowany bibliotekarz nie moze sobie odebrac prac -->
-                            {% if user.id is not user_profile_obj.user.id and user_profile_obj.user.is_active == True and user_profile_obj.user.is_superuser == True %}
-                                <a href="{% url 'library_app:get_rights' pk=user_profile_obj.pk %}"><img src="{% static 'website_icons/get_librarian_rights_ico.png' %}" alt="Odebranie uprawnienia bibliotekrza" width="20" height="20"></a>
-                            {% endif %}
                         </td>
-
                         <td>{{user_profile_obj.user.get_full_name}}</td>
                         <td>{{user_profile_obj.pesel}}</td>
                         <td>{{user_profile_obj.user.email}}</td>
                         <td>{{user_profile_obj.phone}}</td>
                         <td>{{user_obj_borrow_count}}</td>
-                        
-
+                    
                         <td>
-                            {% if user_profile_obj.user.is_active %}
+                            {% if have_borrows_with_exceeded_receive_date == False %}
                                 Tak
                             {% else %}
                                 Nie
@@ -90,10 +66,12 @@
                         </td>
 
                         <td>
-                            {% if user_profile_obj.user.is_superuser %}
-                                Bibliotekarz
-                            {% else %}
-                                Czytelnik
+                        <!-- ListView nie obsługuje post -->
+                            {% if have_borrows_with_exceeded_receive_date == False and user_profile_obj.can_borrow == True %}
+                                <form class="form-inline" action="{% url 'library_app:borrow_create_search_bookcopy' %}" method="get">
+                                    <input type="hidden" name="user_id" value="{{ user_profile_obj.user.id }}">
+                                    <button type="submit" class="btn btn-primary btn-sm">Dalej</button>
+                                </form>
                             {% endif %}
                         </td>
                         
@@ -133,11 +111,6 @@
     <div class="table-legend">
         <p><b>Legenda:</b></p>
         <p><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20">Zobacz wypożyczenia</p>
-        <p><img src="{% static 'website_icons/activate_user_ico.png' %}" alt="Aktywuj użytkownika" width="20" height="20">Aktywuj konto</p>
-        <p><img src="{% static 'website_icons/deactivate_user_ico.png' %}" alt="Usuń wypozyczenie" width="20" height="20">Dezaktywwuj konto (gdy dany użytkownik nie ma wypożyczeń i jego konto nie ma statusu bibliotekarza)</p>
-        <p><img src="{% static 'website_icons/grant_to_librarian_ico.png' %}" alt="Nadaj uprawnienia bibliotekrza" width="20" height="20">Nadaj uprawnienia bibliotekrza</p>
-        <p><img src="{% static 'website_icons/get_librarian_rights_ico.png' %}" alt="Odbierz uprawnienia bibliotekrza" width="20" height="20">Odbierz uprawnienia bibliotekrza</p>
-        <p>Wiersz w kolorze czerwonym oznacza użytkownika z wypożyczeniem w których minął czas oddania wypożyczenia</p>
     </div>
 
 </div>

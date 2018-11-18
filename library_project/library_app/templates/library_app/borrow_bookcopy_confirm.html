@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+<div class="container">
+    <div class="jumbotron text-center">
+        <div class="page-title">
+                <h3>Wypożyczyć egzemplarz książki?</h3>
+        </div>
+
+        <br>
+        <h4>Szczegóły egzemplarza książki</h4>
+        <ul>
+                <li class="bookcopy_id"><b>Nr egzemplarza: </b>{{bookcopy.id}}</li>
+                <li class="authors">
+                    <b>Autor: </b>
+                    {% for author in bookcopy.book.authors.all %}
+                        {{author.first_name}} {{author.last_name}}
+                    {% endfor %}
+                </li>
+                <li class="title"><b>Tytuł: </b> {{bookcopy.book.title}} </li>
+
+                <li class="category"><b>Kategoria: </b>
+                    {{bookcopy.book.category.category_name}}
+                </li>
+        </ul>
+        <br>
+
+        <h4>Szczegóły użytkownika</h4>
+        <ul>
+            <li><b>Imię i nazwisko:</b> {{user_profile.user.get_full_name}}</li>
+            <li><b>PESEL:</b> {{user_profile.pesel}}</li>
+        </ul>
+        <br>
+
+
+        {% if user_profile.can_borrow and bookcopy.is_borrowed == False %}
+            <form method="POST">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-success" value="Wypożycz">
+            </form>
+        {% endif %}
+            <a href="javascript:history.back()" class="btn btn-primary">Powrót</a>
+
+    </div>
+</div>
+
+{% endblock %}
