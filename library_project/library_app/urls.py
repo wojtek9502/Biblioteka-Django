@@ -37,7 +37,6 @@ urlpatterns = [
     url(r'^update_borrow/(?P<pk>\d+)/$', views.UpdateBorrowView.as_view(), name='borrow_update'),
     url(r'^borrow_prolong/(?P<pk>\d+)/$', views.BorrowProlongDetailView.as_view(), name='borrow_prolong'),
     
-    url(r'^new_borrow_search_user/$', views.BorrowBookCopySearchUser.as_view(), name='borrow_create_search_user'),
     url(r'^new_borrow_search_bookcopy/$', views.BorrowBookCopySearchBookCopy.as_view(), name='borrow_create_search_bookcopy'),
     url(r'^new_borrow/$', views.CreateBorrowView.as_view(), name='borrow_create'),
 
