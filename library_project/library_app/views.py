@@ -379,52 +379,95 @@ class BorrowBookCopySearchBookCopy(LoginRequiredMixin, SuperuserRequiredMixin, g
                 return models.BookCopy.objects.all().filter(book__isbn__icontains=search_query).filter(is_borrowed=False)
         else:
             return models.BookCopy.objects.filter(is_borrowed=False)
-
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["userProfileInfoObj"] = models.UserProfileInfo.objects.get(user=self.request.GET['user_id'])
-        return context
     
-##### etap 3 tworzenie wypożyczenia
-class CreateBorrowView(LoginRequiredMixin, SuperuserRequiredMixin, generic.TemplateView):
-    login_url = reverse_lazy('no_permission')   
-    template_name = "library_app/borrow_bookcopy_confirm.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["user_profile"] = models.UserProfileInfo.objects.get(user=self.request.GET['user_id'])
-        context["bookcopy"] = models.BookCopy.objects.get(id=self.request.GET['bookcopy_id'])
-        return context
 
-    def get_success_url(self):
-        return reverse_lazy('library_app:borrow_create_search_user')
-   
+class CreateBorrowView(LoginRequiredMixin, SuperuserRequiredMixin, generic.CreateView):
+    login_url = reverse_lazy('no_permission')
+    form_class = forms.BorrowForm
+    model = models.Borrow
+    success_url = reverse_lazy("library_app:borrow_list")
 
+    #dodanie do formularza argumentu z bookcopy
+
+    
+    def get_form(self, form_class=None): 
+        try:
+            self.request.session['bookcopy_id'] = self.request.GET['bookcopy_id']
+            print('session ',  self.request.session['bookcopy_id'])
+        except:
+            pass
+
+
+        if form_class is None: 
+            form_class = self.get_form_class()
+        form = super(CreateBorrowView, self).get_form(form_class)
+        form.fields['book_copy_id'].queryset = models.BookCopy.objects.filter(pk=self.request.session['bookcopy_id'])
+        form.fields['book_copy_id'].initial = self.request.session['bookcopy_id']
+        form.fields['book_copy_id'].disabled = True
+        
+        return form
+
+    #przed dodaniem wypożyczenia trzeba zmienic w egzemplarzu ksiazki ze jest wypozyczony
     @transaction.atomic
-    def post(self, request):
-        print(request)
-        borrow_user = User.objects.get(id=request.GET['user_id'])
-        borrow_bookcopy = models.BookCopy.objects.get(id=request.GET['bookcopy_id'])
-
-        borrow_obj = models.Borrow.objects.create(
-            user = borrow_user,
-            borrow_librarian = User.objects.get(id=request.user.id), #aktualnie zalogowany bibliotekarz
-            book_copy_id = borrow_bookcopy,
-        )
-
-       #jesli user osiagnal limit wypozyczen to w userProfileInfo.can_borrow ustaw na False
-        user_curr_borrow_count = models.Borrow.objects.filter( user=borrow_user.id).count()
+    def form_valid(self, form):
+        self.object = form.save(commit=False) #wez z formularza stworzony obiekt wypozyczenia
+        bookcopy = self.object.book_copy_id   # w obiekcie wypozyczenia jest obiekt egzemplarza ksiazki
+        bookcopy.is_borrowed = True           #zmien w obiekcie egzemplarza "wypozyczony" na true
+        bookcopy.save()                       #zapisz obiekt egzemplarza
+        
+        #jesli user osiagnal limit wypozyczen to w userProfileInfo.can_borrow ustaw na False
+        user_curr_borrow_count = models.Borrow.objects.filter(user=self.object.user.id).count()
+        user_curr_borrow_count = user_curr_borrow_count + 1
         if(user_curr_borrow_count==BORROW_LIMIT): #jesli liczba wypozyczen == limit
-            userProfileInfoObj =  models.UserProfileInfo.objects.get(user=borrow_user.id)
+            userProfileInfoObj =  models.UserProfileInfo.objects.get(user=self.object.user.id)
             userProfileInfoObj.can_borrow = False
             userProfileInfoObj.save()
-
-        borrow_bookcopy.is_borrowed = True  # zmien w obiekcie egzemplarza "wypozyczony" na true
-        borrow_bookcopy.save()                       #zapisz obiekt egzemplarza
-
-        borrow_obj.save()                    #wszystko zmienione, mozna zapisac wypozyczenie
+        self.object.borrow_librarian = User.objects.get(id=self.request.user.id) # zapisz jako wypozyczajacego zalogowanego usera (wypozyczac moze tylko bibliotekarz)
+        self.object.save()                                                       #wszystko zmienione, mozna zapisac wypozyczenie
         return HttpResponseRedirect(self.get_success_url())
+
+
+
+# ##### etap 3 tworzenie wypożyczenia
+# class CreateBorrowView(LoginRequiredMixin, SuperuserRequiredMixin, generic.TemplateView):
+#     login_url = reverse_lazy('no_permission')   
+#     template_name = "library_app/borrow_bookcopy_confirm.html"
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context["user_profile"] = models.UserProfileInfo.objects.get(user=self.request.GET['user_id'])
+#         context["bookcopy"] = models.BookCopy.objects.get(id=self.request.GET['bookcopy_id'])
+#         return context
+
+#     def get_success_url(self):
+#         return reverse_lazy('library_app:borrow_create_search_user')
+   
+
+#     @transaction.atomic
+#     def post(self, request):
+#         print(request)
+#         borrow_user = User.objects.get(id=request.GET['user_id'])
+#         borrow_bookcopy = models.BookCopy.objects.get(id=request.GET['bookcopy_id'])
+
+#         borrow_obj = models.Borrow.objects.create(
+#             user = borrow_user,
+#             borrow_librarian = User.objects.get(id=request.user.id), #aktualnie zalogowany bibliotekarz
+#             book_copy_id = borrow_bookcopy,
+#         )
+
+#        #jesli user osiagnal limit wypozyczen to w userProfileInfo.can_borrow ustaw na False
+#         user_curr_borrow_count = models.Borrow.objects.filter( user=borrow_user.id).count()
+#         if(user_curr_borrow_count==BORROW_LIMIT): #jesli liczba wypozyczen == limit
+#             userProfileInfoObj =  models.UserProfileInfo.objects.get(user=borrow_user.id)
+#             userProfileInfoObj.can_borrow = False
+#             userProfileInfoObj.save()
+
+#         borrow_bookcopy.is_borrowed = True  # zmien w obiekcie egzemplarza "wypozyczony" na true
+#         borrow_bookcopy.save()                       #zapisz obiekt egzemplarza
+
+#         borrow_obj.save()                    #wszystko zmienione, mozna zapisac wypozyczenie
+#         return HttpResponseRedirect(self.get_success_url())
     
 
 

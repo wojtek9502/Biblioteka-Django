@@ -6,7 +6,7 @@
 <div class="container">
     <div class="page-title">
         <h2>Wypożycz egzemplarz książki</h2>
-        <h5>Wyszukaj egzemplarz książki dla użytkownika <br>{{userProfileInfoObj.user.get_full_name}}, PESEL:{{userProfileInfoObj.pesel}}</h5>
+        <h5>Wyszukaj egzemplarz książki dla użytkownika</h5>
         <br>
         <a href="javascript:history.back()" class="btn btn-primary">Powrót</a>
     </div>
@@ -52,15 +52,10 @@
                         <td>{{bookcopy.id}}</td>
 
                          <td>
-                        <!-- ListView nie obsługuje post -->
-                        {% have_any_borrows_with_exceeded_receive_date userProfileInfoObj.user as have_borrows_with_exceeded_receive_date %}
-                        {% if have_borrows_with_exceeded_receive_date == False and userProfileInfoObj.can_borrow == True %}
-                                <form class="form-inline" action="{% url 'library_app:borrow_create_confirm' %}" method="get">
-                                    <input type="hidden" name="user_id" value="{{ userProfileInfoObj.user.id }}">
+                                <form class="form-inline" action="{% url 'library_app:borrow_create' %}" method="get">
                                     <input type="hidden" name="bookcopy_id" value="{{ bookcopy.id }}">
                                     <button type="submit" class="btn btn-primary btn-sm">Wypożycz</button>
                                 </form>
-                        {% endif %}
                         </td>
                     </tr>
                     {% endfor %}

@@ -60,7 +60,7 @@ class BorrowForm(forms.ModelForm):
     ## w formularzu daj do wyboru tylko niewypozyczone egzemplarze
     def __init__(self, *args, **kwargs):
         super(BorrowForm, self).__init__(*args, **kwargs)  # wywolaj formularz najpierw żeby ustawić mu pola fields
-        self.fields['book_copy_id'].queryset = models.BookCopy.objects.filter(is_borrowed=False)
+
         
         #stworz liste id userów którzy maja w UserProfileInfo.can_borrow = True
         borrow_allowed_users_ids = []
