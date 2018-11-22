@@ -5,12 +5,10 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div id="navbarNavDropdown" class="navbar-collapse collapse">
         <ul class="navbar-nav mr-auto">
-            <a class="btn" data-toggle="collapse" href="#collapse1" role="button" aria-expanded="false" aria-controls="collapse"
-                onclick="scrollToIdElem('collapse1')">
+            <a class="btn" data-toggle="collapse" href="#collapse1" role="button" aria-expanded="false" aria-controls="collapse">
                 Pokaż szczegóły
             </a>
-            <a class="btn" data-toggle="collapse" href="#collapse2" role="button" aria-expanded="false" aria-controls="collapse"
-                onclick="scrollToIdElem('collapse2')">
+            <a class="btn" data-toggle="collapse" href="#collapse2" role="button" aria-expanded="false" aria-controls="collapse"">
                 Pokaż książki z tej kategorii
             </a>
         </ul>
@@ -27,20 +25,9 @@
                 <li class="books_in_category"><b>Ksiązki z tej kategorii: </b> {{category_books.count}} </li>
             </ul>
 
-            
             <div class="category_list_back_link button">
-                <a href="{% url 'library_app:book_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
+                <a href="{% url 'library_app:categories_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
             </div>
-
-            {% if user.is_authenticated and user.is_superuser %}
-                <div class="update_category_link button">
-                    <a href="{% url 'library_app:category_update' pk=category.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj kategorię"></a>
-                </div>
-
-                <div class="delete_category_link button">
-                    <a href="{% url 'library_app:category_delete' pk=category.pk %}"><input type="submit" class="btn btn-danger" value="Usuń kategorię"></a>
-                </div>
-            {% endif %}
         </div>  
 
         <!-- Książki w kategorii -->

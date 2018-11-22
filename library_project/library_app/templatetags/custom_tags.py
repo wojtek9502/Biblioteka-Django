@@ -65,3 +65,15 @@ def have_any_borrows_with_exceeded_receive_date(user_obj):
 @register.simple_tag(name='get_authors_book_count')
 def get_authors_book_count(author_obj):
       return models.Book.objects.filter(authors=author_obj).count()
+
+
+#zwraca liczbe ksiazek w danej kategorii
+@register.simple_tag(name='get_categories_book_count')
+def get_categories_book_count(category_obj):
+      return models.Book.objects.filter(category=category_obj).count()
+
+#zwraca liczbe ksiażek danego wydawnictwa
+@register.simple_tag(name='get_publishing_house_book_count')
+def get_publishing_house_book_count(publishing_house_obj):
+      return models.Book.objects.filter(publishing_house=publishing_house_obj).count()
+

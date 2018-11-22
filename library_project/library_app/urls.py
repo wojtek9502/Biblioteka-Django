@@ -24,11 +24,13 @@ urlpatterns = [
 
     url(r'^publishing_house/(?P<pk>\d+)$', views.PublishingHouseDetailView.as_view(), name='publishinghouse_detail'),
     url(r'^new_publishing_house/$', views.CreatePublishingHouseView.as_view(), name='publishinghouse_create'),
+    url(r'^publishing_houses_list/$', views.PublishingHouseListView.as_view(), name='publishinghouses_list'),
     url(r'^delete_publishing_house/(?P<pk>\d+)/$', views.DeletePublishingHouseView.as_view(), name='publishinghouse_delete'),
     url(r'^update_publishing_house/(?P<pk>\d+)/$', views.UpdatePublishingHouseView.as_view(), name='publishinghouse_update'),
 
     url(r'^category/(?P<pk>\d+)$', views.CategoryDetailView.as_view(), name='category_detail'),
     url(r'^new_category/$', views.CreateCategoryView.as_view(), name='category_create'),
+    url(r'^categories_list/$', views.CategoryListView.as_view(), name='categories_list'),
     url(r'^delete_category/(?P<pk>\d+)/$', views.DeleteCategoryView.as_view(), name='category_delete'),
     url(r'^update_category/(?P<pk>\d+)/$', views.UpdateCategoryView.as_view(), name='category_update'),
 

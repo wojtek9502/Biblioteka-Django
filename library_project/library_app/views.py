@@ -162,6 +162,7 @@ class CreateAuthorView(LoginRequiredMixin, SuperuserRequiredMixin, generic.Creat
 
     form_class = forms.AuthorForm
     model = models.Author
+    success_url = reverse_lazy("library_app:authors_list")
 
 
 class UpdateAuthorView(LoginRequiredMixin, SuperuserRequiredMixin, generic.UpdateView):
@@ -169,6 +170,7 @@ class UpdateAuthorView(LoginRequiredMixin, SuperuserRequiredMixin, generic.Updat
     
     model = models.Author
     form_class = forms.AuthorForm
+    success_url = reverse_lazy("library_app:authors_list")
     template_name_suffix = '_update_form' #czyli templatka = author_update_form.html
 
 
@@ -176,7 +178,7 @@ class DeleteAuthorView(LoginRequiredMixin, SuperuserRequiredMixin, generic.Delet
     login_url = reverse_lazy('no_permission')
 
     model = models.Author
-    success_url = reverse_lazy("library_app:book_list")
+    success_url = reverse_lazy("library_app:authors_list")
 
 
 ##########################      Wydawnictwo
@@ -195,22 +197,41 @@ class CreatePublishingHouseView(LoginRequiredMixin, SuperuserRequiredMixin, gene
 
     form_class = forms.PublishingHouseForm
     model = models.PublishingHouse
-    success_url = reverse_lazy("library_app:book_list")
+    success_url = reverse_lazy("library_app:publishinghouses_list")
+
+
+class PublishingHouseListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):
+    login_url = reverse_lazy('no_permission')
+    model = models.PublishingHouse
+    context_object_name = "publishing_houses_list"
+    paginate_by = 10
+
+    def get_queryset(self):
+        search_query = self.request.GET.get("search_query")
+        search_type = self.request.GET.get("search_type")
+        query_result = None
+        if search_query is not None:
+            if search_type == "name":
+                query_result = models.PublishingHouse.objects.filter(name__icontains=search_query)
+            return query_result.order_by("name")
+        else:
+            return models.PublishingHouse.objects.all().order_by("name")
     
 
 class DeletePublishingHouseView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DeleteView):
     login_url = reverse_lazy('no_permission')
 
     model = models.PublishingHouse
-    success_url = reverse_lazy("library_app:book_list")
+    success_url = reverse_lazy("library_app:publishinghouses_list")
 
 
 class UpdatePublishingHouseView(LoginRequiredMixin, SuperuserRequiredMixin, generic.UpdateView):
     login_url = reverse_lazy('no_permission')
-
+    
     fields = ('name', 'city', 'street', 'house_number', 'postal_code')
     model = models.PublishingHouse
-
+    context_object_name = "publishing_house"
+    success_url = reverse_lazy("library_app:publishinghouses_list")
     template_name_suffix = '_update_form'
 
 
@@ -225,11 +246,30 @@ class CategoryDetailView(generic.DetailView):
         return context
 
 
+class CategoryListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):
+    login_url = reverse_lazy('no_permission')
+    model = models.Category
+    context_object_name = "categories_list"
+    paginate_by = 10
+
+    def get_queryset(self):
+        search_query = self.request.GET.get("search_query")
+        search_type = self.request.GET.get("search_type")
+        query_result = None
+        if search_query is not None:
+            if search_type == "name":
+                query_result = models.Category.objects.filter(category_name__icontains=search_query)
+            return query_result.order_by("category_name")
+        else:
+            return models.Category.objects.all().order_by("category_name")
+
+
 class CreateCategoryView(LoginRequiredMixin, SuperuserRequiredMixin, generic.CreateView):
     login_url = reverse_lazy('no_permission')
 
     form_class = forms.CategoryForm
     model = models.Category
+    success_url = reverse_lazy("library_app:categories_list")
     
 
 class UpdateCategoryView(LoginRequiredMixin, SuperuserRequiredMixin, generic.UpdateView):
@@ -238,13 +278,13 @@ class UpdateCategoryView(LoginRequiredMixin, SuperuserRequiredMixin, generic.Upd
     model = models.Category
     form_class = forms.CategoryForm
     template_name_suffix = '_update_form' 
-
+    success_url = reverse_lazy("library_app:categories_list")
 
 class DeleteCategoryView(LoginRequiredMixin, SuperuserRequiredMixin, generic.DeleteView):
     login_url = reverse_lazy('no_permission')
 
     model = models.Category
-    success_url = reverse_lazy("library_app:book_list")
+    success_url = reverse_lazy("library_app:categories_list")
 
 ########################## Wypozyczenia
 class BorrowListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):

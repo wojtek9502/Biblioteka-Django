@@ -3,9 +3,9 @@
 
 {% block body_block %}
 <div class="container">
-    <h1>Wydawnictwo</h1>
+    <h1>Edytuj wydawnictwo</h1>
     
-    <form method="POST" action="{% url 'library_app:publishinghouse_create' %}" class="publishing-house-form">
+    <form method="POST" action="{% url 'library_app:publishinghouse_update' pk=publishing_house.pk %}" class="publishing-house-form">
         {% csrf_token %}
         {% bootstrap_form form %}
         <input type="submit" value="Uaktualnij" class="btn btn-primary btn-large">

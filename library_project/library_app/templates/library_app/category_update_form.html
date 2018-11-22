@@ -4,10 +4,10 @@
 {% block body_block %}
 <div class="container">
     <h1>Edytuj kategorię</h1>
-    <form method="POST" action="{% url 'library_app:category_create' %}" class="category-form">
+    <form method="POST" action="{% url 'library_app:category_update' pk=category.pk%}" class="category-form">
         {% csrf_token %}
         {% bootstrap_form form %}
-        <input type="submit" value="Dodaj" class="btn btn-primary btn-large">
+        <input type="submit" value="Uaktualnij" class="btn btn-primary btn-large">
     </form>
 </div>
 {% endblock %}

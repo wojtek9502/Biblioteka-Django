@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 
 {% block body_block %}
+{% load custom_tags %}
 <div class="container">
+
+{% get_publishing_house_book_count publishinghouse as publishing_house_book_count %}
     <h2>Usunąć {{publishinghouse.name}}?</h2>
     <br>
 
@@ -11,12 +14,15 @@
         <li class="address"><b>Adres: </b> {{publishinghouse.street}} {{publishinghouse.house_number}}, {{publishinghouse.postal_code}} {{publishinghouse.city}}</li>
     </ul>
     <br>
-    <form method="POST">
-        {% csrf_token %}
-        <input type="submit" class="btn btn-danger" value="Usuń">
-        <a class="btn btn-primary" href="{% url 'library_app:publishinghouse_detail' pk=publishinghouse.pk %}">Powrót</a>
-    </form>
-    <br>
-    <h6>Uwaga. Ta akcja usunie także wszystkie książki danego wydawnictwa</h6>
+     {% if publishing_house_book_count == 0 %}
+        <form method="POST">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-danger" value="Usuń">
+            <a class="btn btn-dark" href="javascript:history.back()">Powrót</a>
+        </form>
+    {% else %}
+        <h6>Nie można usunąć wydawnictwa jeśli ma przypisane książki</h6>
+        <a class="btn btn-dark" href="javascript:history.back()">Powrót</a>
+    {% endif %}
 </div>
 {% endblock %}
