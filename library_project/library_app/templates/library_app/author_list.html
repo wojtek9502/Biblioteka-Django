@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_tags %}
+
+
+{% block body_block %}
+<div class="container">
+    <div class="page-title">
+        <h2>Autorzy</h2>
+    </div>
+
+    <div class="other_create_buttons">
+        <a class="btn btn-primary" style="width:200px;" href="{% url 'library_app:author_create' %}">Dodaj autora</a>
+    </div>
+
+<div class="search-bar">
+<form class="form-inline" action="{% url 'library_app:authors_list' %}" method="GET">
+    <div class="input-group">
+        <input type="search" class="form-control" name="search_query" placeholder="Wyszukaj">
+        <select class="search-select" name="search_type">
+            <option value="full_name" selected>Imię i/lub nazwisko</option>
+            <option value="country">Narodowość</option>
+        </select>
+        <div class="input-group-append search-button">
+            <button class="btn btn-primary" type="submit">Szukaj</button>
+        </div>
+    </div>
+</form>
+</div>
+
+
+      <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Opcje</th>
+                    <th scope="col">Imię i nazwisko</th>
+                    <th scope="col">Narodowość</th>
+                    <th scope="col">Liczba książek</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            {% for author in authors_list %}
+                {% get_authors_book_count author as authors_book_count %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'library_app:author_detail' pk=author.pk %}"><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20"></a>
+                            <a href="{% url 'library_app:author_update' pk=author.pk %}"><img src="{% static 'website_icons/edit_ico.png' %}" alt="Edytuj" width="20" height="20"></a> 
+                            {% if authors_book_count == 0 %}
+                                <a href="{% url 'library_app:author_delete' pk=author.pk %}"><img src="{% static 'website_icons/del_ico.png' %}" alt="Usuń" width="20" height="20"></a> 
+                            {% endif %}
+                        </td>
+                        <td>{{author.first_name}} {{author.last_name}}</td>
+                        <td>{{author.country}}</td>
+                        <td>{{authors_book_count}}</td>
+                    </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    <!-- pagination bar -->
+    <div class="pagination_bar">
+        {% if is_paginated %}
+        <div class="btn-group pagination_bar" role="group">
+            
+            {% if page_obj.has_previous %}
+                <a class="btn btn-light disable" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+            {% else %}
+                <a class="btn btn-light"><span>&laquo;</span></a>
+            {% endif %}
+
+            {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                <a  class="btn btn-dark active"><span>{{ i }} <span class="sr-only">(current)</span></span></a>
+                {% else %}
+                <a class="btn btn-light" href="?page={{ i }}">{{ i }}</a>
+                {% endif %}
+            {% endfor %}
+                
+            {% if page_obj.has_next %}
+            <a class="btn btn-light" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+            {% else %}
+            <a type="button" class="btn btn-light"><span>&raquo;</span></a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="table-legend">
+        <p><b>Legenda:</b></p>
+        <p><img src="{% static 'website_icons/info_ico.png' %}" alt="Szczegóły" width="20" height="20">Szczegóły autora</p>
+        <p><img src="{% static 'website_icons/edit_ico.png' %}" alt="Edytuj autora" width="20" height="20">Edytuj autora</p>
+        <p><img src="{% static 'website_icons/del_ico.png' %}" alt="Usuń autora" width="20" height="20">Usuń autora (gdy nie posiada przypisanych książek)</p>
+    </div>
+
+</div>
+{% endblock %}
+
+

@@ -6,11 +6,11 @@
     <div id="navbarNavDropdown" class="navbar-collapse collapse">
         <ul class="navbar-nav mr-auto">
             <a class="btn" data-toggle="collapse" href="#collapse1" role="button" aria-expanded="false"
-                aria-controls="collapse" onclick="scrollToIdElem('collapse1')">
+                aria-controls="collapse" >
                 Pokaż szczegóły
             </a>
             <a class="btn" data-toggle="collapse" href="#collapse2" role="button" aria-expanded="false"
-                aria-controls="collapse" onclick="scrollToIdElem('collapse2')">
+                aria-controls="collapse">
                 Pokaż książki autora
             </a>
         </ul>
@@ -45,16 +45,6 @@
             <div class="detail_back_link button">
                 <a href="javascript:history.back()"><input type="button" class="btn btn-dark" value="Powrót"></a>
             </div>
-
-            {% if user.is_authenticated and user.is_superuser %}
-                <div class="update_author_link button">
-                    <a href="{% url 'library_app:author_update' pk=author.pk %}"><input type="submit" class="btn btn-warning" value="Edytuj autora"></a>
-                </div>
-
-                <div class="delete_author_link button">
-                    <a href="{% url 'library_app:author_delete' pk=author.pk %}"><input type="submit" class="btn btn-danger" value="Usuń autora"></a>
-                </div>
-            {% endif %}
         </div>
 
     <!-- Książki autora -->

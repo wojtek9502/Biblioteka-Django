@@ -53,11 +53,15 @@ def calc_bookcopy_receive_delay(bookcopy_obj):
 
 
 #zwraca czy użytkownik ma jakieś wypożyczenia nie oddane w terminie
-
 @register.simple_tag(name='have_any_borrows_with_exceeded_receive_date')
 def have_any_borrows_with_exceeded_receive_date(user_obj):
     for borrow in models.Borrow.objects.filter(user=user_obj):
         if borrow.is_date_exceeded:
             return True
-    
     return False
+
+
+#zwraca liczbe książek autora
+@register.simple_tag(name='get_authors_book_count')
+def get_authors_book_count(author_obj):
+      return models.Book.objects.filter(authors=author_obj).count()

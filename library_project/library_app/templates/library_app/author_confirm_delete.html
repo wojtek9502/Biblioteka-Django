@@ -1,13 +1,31 @@
 {% extends "base.html" %}
 
 {% block body_block %}
-<div class="container">
-    <h2>Usunąć {{author.first_name}} {{author.last_name}}?</h2>
-    <form method="POST">
-        {% csrf_token %}
-        <input type="submit" class="btn btn-danger" value="Usuń">
-        <a href="{% url 'library_app:author_detail' pk=author.pk %}">Powrót</a>
+{% load custom_tags %}
 
-    </form>
+<div class="container">
+{% get_authors_book_count author as authors_book_count %}
+    <h2>Usunąć autora?</h2>
+    <h4>Szczegóły</h4>
+    <ul>
+        <li class="full_name"><b>Imię i nazwisko: </b>{{author.first_name}} {{author.last_name}} </li>
+        <li class="country"><b>Narodowość: </b> {{author.country}}</li>
+        <li class="books_count"><b>liczba książek: </b> {{authors_book_count}}</li>
+    </ul>
+
+    <br>
+
+        
+       
+    {% if authors_book_count == 0 %}
+        <form method="POST">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-danger" value="Usuń">
+            <a class="btn btn-dark" href="javascript:history.back()">Powrót</a>
+        </form>
+    {% else %}
+        <h6>Nie można usunąć autora jeśli ma przypisane książki</h6>
+        <a class="btn btn-dark" href="javascript:history.back()">Powrót</a>
+    {% endif %}
 </div>
 {% endblock %}

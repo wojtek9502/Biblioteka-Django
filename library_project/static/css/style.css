@@ -13,8 +13,7 @@
 
 .other_create_buttons{
     text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 40px;
 }
 
 .book_detail_description{
@@ -107,4 +106,10 @@ h1{
 #collapse2{
     margin-top: 50px;
     margin-bottom: 200px;
+}
+
+
+.add-button{
+    margin-top: 600px;
+    margin-bottom: 20px;
 }

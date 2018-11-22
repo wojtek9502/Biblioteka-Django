@@ -37,7 +37,7 @@
     {% else %}
         <form method="POST">
             {% csrf_token %}
-            <a href="{% url 'library_app:bookcopy_list' %}" class="btn btn-primary">Powrót</a>
+            <a href="javascript:history.back()" class="btn btn-primary">Powrót</a>
             <input type="submit" class="btn btn-danger" value="Usuń">
         </form>
     {% endif %}

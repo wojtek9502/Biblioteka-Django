@@ -126,6 +126,28 @@ class DeleteBookCopyView(LoginRequiredMixin, SuperuserRequiredMixin, generic.Del
     success_url = reverse_lazy("library_app:bookcopy_list")
 
 ############################   AUTOR
+class AuthorListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):
+    login_url = reverse_lazy('no_permission')
+    model = models.Author
+    context_object_name = "authors_list"
+    paginate_by = 10
+    success_url = reverse_lazy("library_app:authors_list")
+
+    def get_queryset(self):
+        search_query = self.request.GET.get("search_query")
+        search_type = self.request.GET.get("search_type")
+        query_result = None
+        if search_query is not None:
+            if search_type == "full_name":
+                query_result = models.Author.objects.filter(first_name__icontains=search_query) | models.Author.objects.filter(last_name__icontains=search_query)
+            elif search_type == "country":
+                query_result =  models.Author.objects.filter(country__icontains=search_query)
+            return query_result.order_by("last_name")
+        else:
+            return models.Author.objects.all().order_by("last_name")
+    
+    
+
 class AuthorDetailView(generic.DetailView):
     model = models.Author
 
