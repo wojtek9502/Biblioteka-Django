@@ -12,7 +12,11 @@ class BookForm(forms.ModelForm):
                 'unique': ("Istnieje już książka o takim numerze ISBN"),
             },
         }
-        
+
+    def __init__(self, *args, **kwargs):
+        super(BookForm, self).__init__(*args, **kwargs)
+        authors = models.Author.objects.all().order_by('last_name')
+        self.fields['authors'].choices = [(author.pk, get_authors_info_for_field(author)) for author in authors] 
 
 
 class BookCopyForm(forms.ModelForm):
@@ -80,3 +84,7 @@ class BorrowForm(forms.ModelForm):
 def get_user_info_for_field(user_obj):
     userProfileObj = models.UserProfileInfo.objects.get(user=user_obj.id)
     return user_obj.get_full_name() + ', PESEL: ' + userProfileObj.pesel
+
+
+def get_authors_info_for_field(author_obj):
+    return author_obj.first_name + ' ' + author_obj.last_name

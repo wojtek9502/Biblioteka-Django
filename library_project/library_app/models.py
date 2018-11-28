@@ -20,7 +20,7 @@ class Category(models.Model):
 class Author(models.Model):
     first_name = models.CharField(max_length=200, verbose_name='Imię')
     last_name = models.CharField(max_length=200, verbose_name='Nazwisko')
-    country = models.CharField(max_length=200, verbose_name='Kraj')
+    country = models.CharField(max_length=200, verbose_name='Kraj', default='')
     biography = models.TextField(default='', blank=True, null=True, verbose_name='Biografia')
     birth_place = models.CharField(max_length=200, default='', blank=True, null=True, verbose_name='Miejsce urodzenia')
     image_url = models.URLField(default='', blank=True, null=True, verbose_name='Adres url portretu, zakończony rozszerzeniem')

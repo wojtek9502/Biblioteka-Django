@@ -50,7 +50,7 @@
         {% endif %}
 
         <div class="book_list_back_link button">
-            <a href="javascript:history.back()"><input type="button" class="btn btn-dark" value="Powrót"></a>
+            <a href="{% url 'library_app:book_list' %}"><input type="button" class="btn btn-dark" value="Powrót"></a>
         </div>
     </div>
 </div>

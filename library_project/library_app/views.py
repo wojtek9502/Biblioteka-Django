@@ -25,23 +25,24 @@ class BookListView(generic.ListView):
     model = models.Book
     context_object_name = "book_list" #human-understandable name of variable to access from templates
     paginate_by = 10
-    queryset = models.Book.objects.all()  # Default: Model.objects.all()
 
     def get_queryset(self):
+        query_result = None
         search_query = self.request.GET.get("search_query")
         search_type = self.request.GET.get("search_type")
         if search_query is not None:
             if search_type == "title":
-                return models.Book.objects.all().filter(title__icontains=search_query)
+                query_result = models.Book.objects.all().filter(title__icontains=search_query)
             elif search_type == "author":
                 authors_result = models.Book.objects.all().filter(authors__first_name__icontains=search_query) | models.Book.objects.all().filter(authors__last_name__icontains=search_query)
-                return authors_result
+                query_result = authors_result
             elif search_type == "category":
-                return models.Book.objects.all().filter(category__category_name__icontains=search_query)
+                query_result = models.Book.objects.all().filter(category__category_name__icontains=search_query)
             elif search_type == "publishing-house":
-                return models.Book.objects.all().filter(publishing_house__name__icontains=search_query)
+                query_result = models.Book.objects.all().filter(publishing_house__name__icontains=search_query)
+            return query_result.order_by('title')
         else:
-            return models.Book.objects.all()
+            return models.Book.objects.all().order_by('title')
 
        
 
