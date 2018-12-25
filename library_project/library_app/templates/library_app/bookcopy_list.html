@@ -29,6 +29,7 @@
             <div class="other_create_buttons">
                 <a class="btn btn-primary" href="{% url 'library_app:bookcopy_create' %}">Dodaj egzemplarz książki</a>
             </div>
+            <br>
 
             <table class="table table-bordered table-hover">
                 <thead class="thead-light">
@@ -38,6 +39,7 @@
                         <th scope="col">Książka</th>
                         <th scope="col">Nr egzemplarza</th>
                         <th scope="col">Pożyczone dla</th>
+                        <th scope="col">Pożyczone przez</th>
                         <th scope="col">Data wypożyczenia</th>
                         <th scope="col">Data oddania</th>
                     </tr>
@@ -70,10 +72,12 @@
                         <td><a href="{% url 'library_app:bookcopy_detail' pk=bookcopy.pk %}"></a>{{bookcopy.id}}</a></td>
             
                         {% if book_copy_borrow_obj %}
-                        <td>{{book_copy_borrow_obj.user.get_full_name}}</a></td>
-                        <td>{{book_copy_borrow_obj.borrow_date}}</a></td>
-                        <td>{{book_copy_borrow_obj.receive_date}}</a></td>
+                        <td>{{book_copy_borrow_obj.user.get_full_name}}</td>
+                        <td>{{book_copy_borrow_obj.borrow_librarian.get_full_name}}</a></td>
+                        <td>{{book_copy_borrow_obj.borrow_date}}</td>
+                        <td>{{book_copy_borrow_obj.receive_date}}</td>
                         {% else %}
+                        <td>-</td>
                         <td>-</td>
                         <td>-</td>
                         <td>-</td>

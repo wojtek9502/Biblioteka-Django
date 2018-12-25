@@ -11,7 +11,7 @@
                 Pokaż wypożyczenia
             </a>
             <a class="btn" data-toggle="collapse" href="#collapse_receivables" role="button" aria-expanded="false" aria-controls="collapseExample">
-                Należności
+                Należności 
             </a>
             <a class="btn" data-toggle="collapse" href="#collapse_borrow_history" role="button" aria-expanded="false" aria-controls="collapseExample">
                 Pokaż historię wypożyczeń
@@ -99,6 +99,7 @@
     {% else %}
             <div class="page-title">
                 <h4>Należności</h4>
+                <h6>Stan na dzień: {% now "d-m-Y" %}</h6>
             </div>
              <table class="table table-bordered table-hover">
                     <thead class="thead-light">
