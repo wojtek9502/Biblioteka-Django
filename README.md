@@ -9,8 +9,8 @@
 
 **Instalacja Linux**
 **Wymagania wstępne:**
-Zainstalowany pakiet python3 w wersji >= 3.5.3,
--ainstalowany pakiet pip3 w wersji >= 9.0.1
+- Zainstalowany pakiet python3 w wersji >= 3.5.3,
+- Zainstalowany pakiet pip3 w wersji >= 9.0.1
 
 - Uruchomić konsolę i przejść do katalogu praca_inz.
 - Zainstalować niezbędne pakiety poleceniem: pip3 install -r requirements.txt
