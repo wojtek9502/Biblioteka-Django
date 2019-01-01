@@ -204,8 +204,9 @@ class CreatePublishingHouseView(LoginRequiredMixin, SuperuserRequiredMixin, gene
 class PublishingHouseListView(LoginRequiredMixin, SuperuserRequiredMixin, generic.ListView):
     login_url = reverse_lazy('no_permission')
     model = models.PublishingHouse
-    context_object_name = "publishing_houses_list"
     paginate_by = 10
+    context_object_name = "publishing_houses_list"
+    template_name = "library_app/publishinghouse_list.html"
 
     def get_queryset(self):
         search_query = self.request.GET.get("search_query")

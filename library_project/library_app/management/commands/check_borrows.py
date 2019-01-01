@@ -12,6 +12,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
             try:
+                print("Sprawdzam daty wypozyczen")
                 for borrow in models.Borrow.objects.all():
                 
                     if borrow.is_date_exceeded == False:
@@ -20,6 +21,7 @@ class Command(BaseCommand):
                         if is_bookcopy_receive_date_exceeded(borrow):
                             mark_bookcopy_as_exceeded(self, borrow)
                             change_user_can_borrow(self, userProfileInfo)
+                print("Gotowe")
                         
             except Exception as e:
                 raise CommandError(repr(e))

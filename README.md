@@ -1,42 +1,47 @@
-# praca-inz
-Biblioteka w Django
 
-pip install django-anymail[mailgun]
-pip install django-braces
-pip install django-chartjs
-argon2-cffi                      18.2.0
-astroid                          2.0.1
-autopep8                         1.3.5
-bcrypt                           3.1.4
-certifi                          2018.8.13
-cffi                             1.11.5
-chardet                          3.0.4
-colorama                         0.3.9
-Django                           1.11
-django-bootstrap3                11.0.0
-django-bootstrap4                0.0.7
-django-bootstrap4-datetimepicker 4.2
-django-braces                    1.13.0
-django-extensions                2.1.2
-django-mailgun                   0.9.1
-Faker                            0.9.0
-idna                             2.7
-isort                            4.3.4
-lazy-object-proxy                1.3.1
-mccabe                           0.6.1
-misaka                           2.1.0
-Pillow                           5.2.0
-pip                              18.0
-pycodestyle                      2.4.0
-pycparser                        2.18
-pylint                           2.0.0
-python-dateutil                  2.7.3
-pytz                             2018.5
-requests                         2.20.0
-setuptools                       40.1.0
-six                              1.11.0
-text-unidecode                   1.2
-urllib3                          1.24
-wheel                            0.31.1
-wincertstore                     0.2
-wrapt                            1.10.11
+
+**System obsługi biblioteki stworzony w ramach pracy inżynierskiej pod tytułem:**
+
+**"Projekt i implementacja systemu obsługi biblioteki w oparciu o technologie Django, Bootstrap, HTML, CSS, JavaScript, SQL."**
+
+**Autor: Wojciech Kłusek**
+
+
+**Instalacja Linux**
+**Wymagania wstępne:**
+Zainstalowany pakiet python3 w wersji >= 3.5.3,
+-ainstalowany pakiet pip3 w wersji >= 9.0.1
+
+- Uruchomić konsolę i przejść do katalogu praca_inz.
+- Zainstalować niezbędne pakiety poleceniem: pip3 install -r requirements.txt
+- Będąc w konsoli należy przejść do folderu library_project: cd library_project/
+- Ostatnim krokiem jest uruchomienie lokalnego serwera poleceniem: python3 manage.py runserver
+- Po prawidłowym starcie serwera przejść na adres: http://127.0.0.1:8000/
+
+
+**Instalacja Windows**
+-  Należy pobrać najnowszą wersje Python 3 ze strony: https://www.python.org/downloads/ oraz zainstalować ją.
+- Uruchomić konsole cmd.
+- Sprawdzić czy zainstalowana wersja Pythona >= 3.6 komendą: python -V
+- Sprawdzić wersje narzędzia pip komendą: pip -V, jeśli wersja < 18.0 należy zaktualizować narzędzie pip ( **python -m pip install --upgrade pip** )
+-  Będąc w konsoli należy przejść do folderu praca_inż: **cd praca_inz**
+-  Zainstalować niezbędne pakiety poleceniem: **pip install -r requirements.txt**
+- Ostatnim krokiem jest uruchomienie lokalnego serwera poleceniem: **python manage.py runserver**
+- Po prawidłowym starcie serwera przejść na adres: http://127.0.0.1:8000/
+
+W projekcie istnieje użytkownik o statusie bibliotekarza
+login: superuser
+hasło: haslo123
+
+oraz użytkownik o statusie czytelnika
+login: wojtek
+haslo: haslo123
+
+
+**Uwaga:** W aplikacji zastosowano funkcjonalność oznaczania wypożyczeń jako nieodnane w terminie. W środowisku produkcyjnym byłby on wywoływany przez cron, Możliwe jest jednak uruchomienie go ręcznie poleceniem: python manage.py check_borrows z poziomu katalogu: praca_inz/library_project/. 
+
+Skrypt ten wykryje wypożyczenia z przekroczoną datą zwrotu, odpowiednio je oznaczy, a także zablokuje użytkownikowi którego dotyczyło wypożyczenie, możliwość dalszego wypożyczania przez bibliotekarza.
+
+
+
+

@@ -2,13 +2,10 @@
 {% load static %}
 
 {% block head_block %}
-    <script src="{% static 'js/my_charts.js' %}"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
             var currentTime = new Date()
-
-
             var ctx = $('#bar-chart-books-per-month');
             ctx.height(300);
             
