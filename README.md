@@ -29,14 +29,6 @@
 - Ostatnim krokiem jest uruchomienie lokalnego serwera poleceniem: **python manage.py runserver**
 - Po prawidłowym starcie serwera przejść na adres: http://127.0.0.1:8000/
 
-W projekcie istnieje użytkownik o statusie bibliotekarza
-login: superuser
-hasło: haslo123
-
-oraz użytkownik o statusie czytelnika
-login: wojtek
-haslo: haslo123
-
 
 **Uwaga:** W aplikacji zastosowano funkcjonalność oznaczania wypożyczeń jako nieodnane w terminie. W środowisku produkcyjnym byłby on wywoływany przez cron, Możliwe jest jednak uruchomienie go ręcznie poleceniem: python manage.py check_borrows z poziomu katalogu: praca_inz/library_project/. 
 
